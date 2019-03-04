@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">MathWithFriends</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="button_login">login</string>
+</resources>

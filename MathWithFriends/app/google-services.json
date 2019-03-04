@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "954748242955",
+    "firebase_url": "https://math-with-friends-f8fa1.firebaseio.com",
+    "project_id": "math-with-friends-f8fa1",
+    "storage_bucket": "math-with-friends-f8fa1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:954748242955:android:1097fee3f2e3ba2a",
+        "android_client_info": {
+          "package_name": "com.example.mathwithfriends"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "954748242955-3qe15cl58mhg8v8n3t4196mb5k52gu3o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mathwithfriends",
+            "certificate_hash": "f71514ae288851eea5c63e329a8d6701a0dd4db4"
+          }
+        },
+        {
+          "client_id": "954748242955-uiu0t55nln7ah5ejlg3k61kljjspv38j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAW45Spv7pEshQzDW_8JU7HXB7fvfFWI_g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "954748242955-uiu0t55nln7ah5ejlg3k61kljjspv38j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
