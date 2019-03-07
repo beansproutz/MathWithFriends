@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Math with Friends</string>
+    <string name="customchooseicon">Choose your icon:</string>
+    <string name="customhome">Home</string>
+</resources>
