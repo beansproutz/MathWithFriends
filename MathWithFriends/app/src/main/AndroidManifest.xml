@@ -12,8 +12,10 @@
         <activity android:name=".CustomizeActivity"
             android:screenOrientation="landscape"></activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".RegistrationActivity" />
-        <activity android:name=".LoginActivity">
+        <activity android:name=".RegistrationActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".LoginActivity"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
