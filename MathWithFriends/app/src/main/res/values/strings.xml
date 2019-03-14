@@ -3,4 +3,5 @@
     <string name="email_hint">Email</string>
     <string name="password_hint">Password</string>
     <string name="button_login">login</string>
+    <string name="game_button_send">Send</string>
 </resources>
