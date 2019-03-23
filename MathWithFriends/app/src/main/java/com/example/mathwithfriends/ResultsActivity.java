@@ -14,6 +14,15 @@ public class ResultsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         addListenerOnButton();
+        setCompletelyFullscreen(getWindow().getDecorView());
+    }
+
+    // Sets the screen to immersive fullscreen mode - hiding the system bars.
+    private void setCompletelyFullscreen(View view) {
+        view.setSystemUiVisibility(
+            View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
     }
 
     public void addListenerOnButton() {

@@ -4,50 +4,89 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/backgroundtemp"
+
     tools:context=".MainActivity">
+
+    <View
+        android:id="@+id/gameBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/game_bg"
+        android:elevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <View
+        android:id="@+id/gameButtonsBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
+        android:background="@drawable/game_button_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/playerStatus"
         android:layout_width="253dp"
         android:layout_height="62dp"
-        android:text="@string/resultLose"
+        android:layout_marginStart="80dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginRight="1dp"
+        android:text="YOU LOSE"
+        android:textColor="#000000"
         android:textSize="36sp"
         android:textStyle="bold"
-        android:textColor="#000000"
         app:layout_constraintBottom_toTopOf="@+id/playAgainButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.87" />
 
-    <ImageButton
-        android:id="@+id/playAgainButton"
-        android:layout_width="301dp"
-        android:layout_height="66dp"
-        android:layout_marginStart="215dp"
-        android:layout_marginLeft="215dp"
-        android:layout_marginTop="161dp"
-        android:layout_marginEnd="215dp"
-        android:layout_marginRight="215dp"
-        android:layout_marginBottom="184dp"
-        android:contentDescription="@string/playAgainButton"
+    <Button
+        android:id="@+id/homeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="321dp"
+        android:layout_marginLeft="321dp"
+        android:layout_marginTop="228dp"
+        android:layout_marginEnd="322dp"
+        android:layout_marginRight="322dp"
+        android:layout_marginBottom="135dp"
+        android:text="Home"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/peachyplayagin" />
+        app:layout_constraintVertical_bias="0.0" />
 
-    <ImageButton
-        android:id="@+id/homeButton"
-        android:layout_width="85dp"
-        android:layout_height="52dp"
-        android:contentDescription="@string/homeButton"
+    <Button
+        android:id="@+id/playAgainButton"
+        android:layout_width="301dp"
+        android:layout_height="89dp"
+        android:layout_marginStart="215dp"
+        android:layout_marginLeft="215dp"
+        android:layout_marginTop="130dp"
+        android:layout_marginEnd="215dp"
+        android:layout_marginRight="215dp"
+        android:layout_marginBottom="192dp"
+        android:background="#F7D54C"
+        android:text="Play Again"
+        android:textSize="36dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/playAgainButton"
-        app:layout_constraintVertical_bias="0.106"
-        app:srcCompat="@drawable/peachyhome" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
 
 </android.support.constraint.ConstraintLayout>
