@@ -2,7 +2,7 @@ package com.example.mathwithfriends;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.ImageButton;
+import android.widget.Button;
 
 import android.widget.Toast;
 import android.view.View;
@@ -27,8 +27,8 @@ public class ResultsActivity extends AppCompatActivity {
 
     public void addListenerOnButton() {
 
-        ImageButton playAgain = (ImageButton) findViewById(R.id.playAgainButton);
-        ImageButton homeButton = (ImageButton) findViewById(R.id.homeButton);
+        Button playAgain = findViewById(R.id.playAgainButton);
+        Button homeButton = findViewById(R.id.homeButton);
 
         playAgain.setOnClickListener(new OnClickListener() {
 
