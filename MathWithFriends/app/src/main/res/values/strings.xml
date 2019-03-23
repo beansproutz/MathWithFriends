@@ -3,4 +3,10 @@
     <string name="email_hint">Email</string>
     <string name="password_hint">Password</string>
     <string name="button_login">login</string>
+
+    // Strings used in results page
+    <string name="resultWin">You Won!</string>
+    <string name="resultLose">You Lost...</string>
+    <string name="playAgainButton">Play Again?</string>
+    <string name="homeButton">Home</string>
 </resources>
