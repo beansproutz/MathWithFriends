@@ -5,12 +5,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/custombackground2">
+    android:background="@drawable/game_bg">
 
 
     <Button
         android:id="@+id/playButton"
-        android:layout_width="201dp"
+        android:layout_width="359dp"
         android:layout_height="69dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
@@ -18,20 +18,21 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/button1"
+        android:background="#F7D54C"
         android:text="Play"
-        android:textAllCaps="false"
-        android:textColor="#ffffff"
+        android:textAllCaps="true"
+        android:textColor="#000000"
         android:textSize="27dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.227"></Button>
+        app:layout_constraintVertical_bias="0.067"></Button>
 
     <Button
         android:id="@+id/customizeButton"
-        android:layout_width="201dp"
+        android:layout_width="359dp"
         android:layout_height="69dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
@@ -39,20 +40,20 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/button1"
+        android:background="#F7D54C"
         android:text="Customize"
-        android:textAllCaps="false"
-        android:textColor="#FFFFFF"
+        android:textAllCaps="true"
+        android:textColor="#000000"
         android:textSize="27dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.411" />
+        app:layout_constraintVertical_bias="0.368" />
 
     <ToggleButton
         android:id="@+id/musicButton"
-        android:layout_width="201dp"
+        android:layout_width="160dp"
         android:layout_height="69dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
@@ -60,22 +61,23 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/button1"
-        android:textAllCaps="false"
-        android:textColor="#FFFFFF"
+        android:background="#F7D54C"
+        android:textAllCaps="true"
+        android:textColor="#000000"
         android:textOff="Music off"
         android:textOn="Music on"
         android:textSize="27dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.677"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.752" />
+        app:layout_constraintVertical_bias="0.677" />
 
 
     <ToggleButton
         android:id="@+id/sfxButton"
-        android:layout_width="201dp"
+        android:layout_width="160dp"
         android:layout_height="69dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
@@ -83,15 +85,45 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/button1"
-        android:textAllCaps="false"
-        android:textColor="#ffffff"
+        android:background="#F7D54C"
+        android:textAllCaps="true"
+        android:textColor="#000000"
         android:textOff="SFX off"
         android:textOn="SFX on"
         android:textSize="27dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.32"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.58" />
+        app:layout_constraintVertical_bias="0.68" />
+
+    <View
+        android:id="@+id/gameButtonsBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="84dp"
+        android:background="@drawable/game_button_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="405dp"
+        android:layout_height="68dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="MATH WITH FRIENDS"
+        android:fontFamily="sans-serif-thin"
+        android:textAlignment= "center"
+        android:textSize="36dp"
+        android:textColor="#ffffff"
+        app:layout_constraintBottom_toBottomOf="@+id/gameButtonsBackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 </android.support.constraint.ConstraintLayout>
