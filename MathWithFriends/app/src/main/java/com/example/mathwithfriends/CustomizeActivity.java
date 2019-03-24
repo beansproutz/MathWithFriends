@@ -18,7 +18,7 @@ public class CustomizeActivity extends AppCompatActivity
     private ImageButton iconButton6;
     private ImageButton iconButton7;
     private ImageButton iconButton8;
-    private ImageButton customToHomeButton;  // Return to home page button
+    private Button customToHomeButton;  // Return to home page button
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
