@@ -9,22 +9,31 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".CustomizeActivity"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape">
+        </activity>
+
         <activity android:name=".ResultsActivity"
-            android:screenOrientation="landscape"></activity>
-        <activity android:name=".MainActivity" />
+            android:screenOrientation="landscape">
+        </activity>
+
+
         <activity android:name=".RegistrationActivity"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape">
+        </activity>
+
         <activity android:name=".LoginActivity"
             android:screenOrientation="landscape">
-        <activity android:name=".HomeActivity" android:screenOrientation="landscape" android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            // Set the Login Screen as the initial activity
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
 
+        <activity android:name=".HomeActivity"
+            android:screenOrientation="landscape">
+        </activity>
+    </application>
 </manifest>

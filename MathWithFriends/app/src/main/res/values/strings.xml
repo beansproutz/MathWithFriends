@@ -2,6 +2,7 @@
     <string name="app_name">MathWithFriends</string>
     <string name="email_hint">Email</string>
     <string name="password_hint">Password</string>
+    <string name="password_confirmation_hint">Password Confirmation</string>
     <string name="button_login">login</string>
 
     // Strings used in results page

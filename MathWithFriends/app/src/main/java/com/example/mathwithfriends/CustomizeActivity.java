@@ -1,5 +1,6 @@
 package com.example.mathwithfriends;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,7 +11,7 @@ import android.widget.Toast;
 public class CustomizeActivity extends AppCompatActivity
         implements View.OnClickListener {
 
-    private ImageButton iconButton1;        // User icon choices 1 through 8
+    private ImageButton iconButton1;    // User icon choices 1 through 8
     private ImageButton iconButton2;
     private ImageButton iconButton3;
     private ImageButton iconButton4;
@@ -87,6 +88,8 @@ public class CustomizeActivity extends AppCompatActivity
                         "Icon 8 chosen!", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.custom2home:
+                Intent intent = new Intent(CustomizeActivity.this, HomeActivity.class);
+                startActivity(intent); // Change back to Home Screen
                 break;
         }
     }

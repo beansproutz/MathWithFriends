@@ -1,5 +1,6 @@
 package com.example.mathwithfriends;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -80,7 +81,8 @@ public class RegistrationActivity extends AppCompatActivity {
                                     "User Registration successful", Toast.LENGTH_SHORT).show();
                             FirebaseUser user = mAuth.getCurrentUser();
                             postUserData();
-
+                            Intent intent = new Intent(RegistrationActivity.this, HomeActivity.class);
+                            startActivity(intent); // Change back to Home Screen
                         } else {
 
                             // If sign in fails, display a message to the user.
@@ -97,7 +99,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private void postUserData(){
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        User user = new User(userEmail.getText().toString(), userPass.getText().toString());
+        User user = new User(userEmail.getText().toString(), userPass.getText().toString(), 1);
 
         mDatabase.child("Users").child(mAuth.getUid()).setValue(user);
     }

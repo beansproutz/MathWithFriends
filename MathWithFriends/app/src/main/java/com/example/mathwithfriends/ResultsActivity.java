@@ -1,5 +1,6 @@
 package com.example.mathwithfriends;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
@@ -47,8 +48,8 @@ public class ResultsActivity extends AppCompatActivity {
             @Override
             public void onClick(View arg0) {
 
-                Toast.makeText(ResultsActivity.this,
-                        "Let's Go Home Then...", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ResultsActivity.this, HomeActivity.class);
+                startActivity(intent); // Go to Home Screen
 
             }
 
