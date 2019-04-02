@@ -20,9 +20,6 @@ public class User implements Serializable {
     }
     public String getUserEmail() {return this.Email;}
     public String getPassword() {return this.Password;}
-    public Integer getIconID() {return this.AvatarID;}
-
-    public void setAvatarID(Integer avatarID) {
-        AvatarID = avatarID;
-    }
+    public Integer getAvatarID() {return this.AvatarID;}
+    public void setAvatarID(Integer avatarID) {AvatarID = avatarID;}
 }
