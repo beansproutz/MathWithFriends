@@ -20,14 +20,7 @@ public class GameActivity extends Activity {
         assignOperationButtonValues();
     }
 
-    private void setCompletelyFullscreen(View view) {
-        view.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_FULLSCREEN
-              | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-              | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-    }
-
-    // Assigns each
+    // Maps each button to the plus operation
     private void assignOperationButtonValues() {
         operationMap.put(R.id.operationButton1, "+");
         operationMap.put(R.id.operationButton2, "+");
