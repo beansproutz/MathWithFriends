@@ -2,7 +2,7 @@ package com.example.mathwithfriends;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,7 +15,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends Activity {
 
     public final static String TAG = "LoginActivity";
 
@@ -26,6 +26,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        FullScreenModifier.setFullscreen(getWindow().getDecorView());
         FirebaseApp.initializeApp(this);
 
         mAuth = FirebaseAuth.getInstance();

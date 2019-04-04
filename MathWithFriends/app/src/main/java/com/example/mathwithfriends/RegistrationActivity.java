@@ -28,6 +28,8 @@ public class RegistrationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
+        FullScreenModifier.setFullscreen(getWindow().getDecorView());
+
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 

@@ -33,6 +33,7 @@ public class CustomizeActivity extends AppCompatActivity
         // Initialize activities (buttons).
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customize);
+        FullScreenModifier.setFullscreen(getWindow().getDecorView());
 
         // Initialize Firebase stuffs.
         mAuth = FirebaseAuth.getInstance();

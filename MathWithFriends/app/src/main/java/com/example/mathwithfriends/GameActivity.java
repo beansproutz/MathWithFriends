@@ -16,11 +16,10 @@ public class GameActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        setCompletelyFullscreen(getWindow().getDecorView());
+        FullScreenModifier.setFullscreen(getWindow().getDecorView());
         assignOperationButtonValues();
     }
 
-    // Sets the screen to immersive fullscreen mode - hiding the system bars.
     private void setCompletelyFullscreen(View view) {
         view.setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_FULLSCREEN
