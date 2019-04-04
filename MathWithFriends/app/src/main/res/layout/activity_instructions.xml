@@ -13,6 +13,7 @@
         android:layout_marginTop="20dp"
         android:text="QUEUE"
         android:background="@drawable/loading_button_bg"
+        android:onClick="onInstructionsQueueClick"
         app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="@+id/constraintLayout"

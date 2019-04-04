@@ -37,4 +37,11 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    // Invoked when the play button is clicked.
+    // Starts the instructions from the home page.
+    public void onHomepagePlayClick(View view) {
+        Intent intent = new Intent(HomeActivity.this, InstructionsActivity.class);
+        startActivity(intent);
+    }
+
 }
