@@ -21,6 +21,7 @@ public class ResultsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FullScreenModifier.setFullscreen(getWindow().getDecorView());
         addListenerOnButton();
         setCompletelyFullscreen(getWindow().getDecorView());
 
@@ -50,12 +51,8 @@ public class ResultsActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View arg0) {
-                // Intent intent = new Intent(ResultsActivity.this, Instru.class);
-                // startActivity(intent);
-
-                Toast.makeText(ResultsActivity.this,
-                        "[Waiting on Jaren's stuff]: Let's Play Again!", Toast.LENGTH_SHORT).show();
-
+                Intent intent = new Intent(ResultsActivity.this, InstructionsActivity.class);
+                startActivity(intent);
             }
 
         });
@@ -64,10 +61,8 @@ public class ResultsActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View arg0) {
-
                 Intent intent = new Intent(ResultsActivity.this, HomeActivity.class);
                 startActivity(intent); // Go to Home Screen
-
             }
 
         });

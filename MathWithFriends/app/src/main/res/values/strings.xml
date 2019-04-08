@@ -10,4 +10,7 @@
     <string name="resultLose">You Lost...</string>
     <string name="playAgainButton">Play Again?</string>
     <string name="homeButton">Home</string>
+
+    // Strings used in game page
+    <string name="game_button_send">Send</string>
 </resources>

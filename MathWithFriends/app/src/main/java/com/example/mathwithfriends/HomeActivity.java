@@ -18,11 +18,11 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class HomeActivity extends AppCompatActivity {
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        FullScreenModifier.setFullscreen(getWindow().getDecorView());
 
         Button goToCustomize = (Button) findViewById(R.id.customizeButton);
 
@@ -35,6 +35,13 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    // Invoked when the play button is clicked.
+    // Starts the instructions from the home page.
+    public void onHomepagePlayClick(View view) {
+        Intent intent = new Intent(HomeActivity.this, InstructionsActivity.class);
+        startActivity(intent);
     }
 
 }
