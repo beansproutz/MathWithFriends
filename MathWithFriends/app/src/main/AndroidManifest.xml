@@ -25,7 +25,6 @@
 
         <activity android:name=".LoginActivity"
             android:screenOrientation="landscape">
-            // Set the Login Screen as the initial activity
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
