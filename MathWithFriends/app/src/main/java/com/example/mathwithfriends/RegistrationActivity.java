@@ -98,10 +98,15 @@ public class RegistrationActivity extends AppCompatActivity {
 
     }
 
+    public void goBack2Home (View view) {
+        Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
+        startActivity(intent);
+    }
+
     private void postUserData(){
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        User user = new User(userEmail.getText().toString(), userPass.getText().toString(), 1);
+        User user = new User(userEmail.getText().toString(), userPass.getText().toString(), 1, 0, 0);
 
         mDatabase.child("Users").child(mAuth.getUid()).setValue(user);
     }

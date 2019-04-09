@@ -20,4 +20,9 @@ public class InstructionsActivity extends Activity {
         Intent intent = new Intent(InstructionsActivity.this, GameActivity.class);
         startActivity(intent);
     }
+
+    public void goBack2Home (View view) {
+        Intent intent = new Intent(InstructionsActivity.this, HomeActivity.class);
+        startActivity(intent);
+    }
 }

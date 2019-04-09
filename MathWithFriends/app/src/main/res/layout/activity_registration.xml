@@ -55,4 +55,12 @@
         android:onClick="signUp"
         android:text="Sign Up" />
 
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@android:drawable/ic_menu_revert"
+        android:layout_gravity="bottom"
+        android:onClick="goBack2Home"/>
+
 </FrameLayout>
