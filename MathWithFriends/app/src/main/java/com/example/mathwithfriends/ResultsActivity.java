@@ -9,7 +9,14 @@ import android.widget.Toast;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class ResultsActivity extends AppCompatActivity {
+    FirebaseAuth mAuth;
+    DatabaseReference mDatabase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,6 +24,14 @@ public class ResultsActivity extends AppCompatActivity {
         FullScreenModifier.setFullscreen(getWindow().getDecorView());
         addListenerOnButton();
         setCompletelyFullscreen(getWindow().getDecorView());
+
+        // Initialize activities (buttons).
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_customize);
+
+        // Initialize Firebase stuffs.
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
     // Sets the screen to immersive fullscreen mode - hiding the system bars.
@@ -36,10 +51,8 @@ public class ResultsActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View arg0) {
-
-                Toast.makeText(ResultsActivity.this,
-                        "Let's Play Again!", Toast.LENGTH_SHORT).show();
-
+                Intent intent = new Intent(ResultsActivity.this, InstructionsActivity.class);
+                startActivity(intent);
             }
 
         });
@@ -48,10 +61,8 @@ public class ResultsActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View arg0) {
-
                 Intent intent = new Intent(ResultsActivity.this, HomeActivity.class);
                 startActivity(intent); // Go to Home Screen
-
             }
 
         });
