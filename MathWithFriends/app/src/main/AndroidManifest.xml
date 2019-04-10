@@ -42,5 +42,7 @@
         <activity android:name=".InstructionsActivity"
             android:screenOrientation="landscape">
         </activity>
+
+        <service android:enabled="true" android:name=".MusicPlayer" />
     </application>
 </manifest>
