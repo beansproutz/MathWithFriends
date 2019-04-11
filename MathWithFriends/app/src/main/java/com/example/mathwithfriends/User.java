@@ -10,6 +10,7 @@ public class User implements Serializable {
     private String Email, Password;
     private Integer AvatarID;
     private Integer Points, Level;
+    private boolean musicSetting , sfxSetting;
 
     public User() {
         // Default constructor
@@ -46,4 +47,8 @@ public class User implements Serializable {
     public Integer getLevel() {
         return this.Level;
     }
+
+    public boolean getMusicSetting() { return this.musicSetting; }
+
+    public boolean getSfxSetting() { return this.sfxSetting; }
 }

@@ -1,20 +1,27 @@
 package com.example.mathwithfriends;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -25,16 +32,50 @@ public class HomeActivity extends AppCompatActivity {
         FullScreenModifier.setFullscreen(getWindow().getDecorView());
 
         Button goToCustomize = (Button) findViewById(R.id.customizeButton);
+        ToggleButton sfxToggle = (ToggleButton) findViewById(R.id.sfxButton);
+        ToggleButton musicToggle = (ToggleButton) findViewById(R.id.musicButton);
 
-        goToCustomize.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this, CustomizeActivity.class);
-                startActivity(intent); //changes to Customize Screen
+        Intent svc = new Intent(this, MusicPlayer.class);
+        startService(svc); //starts MusicPlayer Service
+
+
+        /*Commented code may be used later for checking status of a toggle button*/
+
+/*
+        sfxToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // The toggle is enabled
+
+
+                } else {
+                    // The toggle is disabled
+
+
+                }
             }
         });
 
 
+        musicToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // The toggle is enabled
+
+                } else {
+                    // The toggle is disabled
+
+                }
+            }
+        });
+*/
+
+    }
+
+    // Invoked when the Customize button is clicked.
+    public void onHomepageCustomizeClick(View view) {
+        Intent intent = new Intent(HomeActivity.this, CustomizeActivity.class);
+        startActivity(intent);
     }
 
     // Invoked when the play button is clicked.
