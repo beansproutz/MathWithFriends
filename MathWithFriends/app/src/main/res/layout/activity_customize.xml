@@ -35,7 +35,8 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:color/holo_orange_light" />
+        app:srcCompat="@android:color/holo_orange_light"
+        android:onClick="chooseAvatar"/>
 
 
     <ImageButton
@@ -52,7 +53,8 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/userIcon1"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:color/holo_purple" />
+        app:srcCompat="@android:color/holo_purple"
+        android:onClick="chooseAvatar"/>
 
     <ImageButton
         android:id="@+id/userIcon4"
@@ -68,7 +70,8 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/userIcon3"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:color/holo_green_light" />
+        app:srcCompat="@android:color/holo_green_light"
+        android:onClick="chooseAvatar"/>
 
     <ImageButton
         android:id="@+id/userIcon3"
@@ -83,7 +86,8 @@
         app:layout_constraintEnd_toStartOf="@+id/userIcon4"
         app:layout_constraintStart_toEndOf="@+id/userIcon2"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:color/holo_red_light" />
+        app:srcCompat="@android:color/holo_red_light"
+        android:onClick="chooseAvatar"/>
 
     <ImageButton
         android:id="@+id/userIcon5"
@@ -101,7 +105,8 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/userIcon1"
-        app:srcCompat="@android:color/holo_blue_light" />
+        app:srcCompat="@android:color/holo_blue_light"
+        android:onClick="chooseAvatar"/>
 
     <ImageButton
         android:id="@+id/userIcon6"
@@ -119,7 +124,8 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/userIcon5"
         app:layout_constraintTop_toBottomOf="@+id/userIcon2"
-        app:srcCompat="@android:color/holo_green_dark" />
+        app:srcCompat="@android:color/holo_green_dark"
+        android:onClick="chooseAvatar"/>
 
     <ImageButton
         android:id="@+id/userIcon7"
@@ -137,7 +143,8 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/userIcon6"
         app:layout_constraintTop_toBottomOf="@+id/userIcon3"
-        app:srcCompat="@android:color/holo_blue_dark" />
+        app:srcCompat="@android:color/holo_blue_dark"
+        android:onClick="chooseAvatar"/>
 
     <ImageButton
         android:id="@+id/userIcon8"
@@ -155,7 +162,8 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/userIcon7"
         app:layout_constraintTop_toBottomOf="@+id/userIcon4"
-        app:srcCompat="@android:color/holo_red_dark" />
+        app:srcCompat="@android:color/holo_red_dark"
+        android:onClick="chooseAvatar"/>
 
     <Button
         android:id="@+id/custom2home"
@@ -167,6 +175,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:onClick="returnHome"/>
 
 </android.support.constraint.ConstraintLayout>

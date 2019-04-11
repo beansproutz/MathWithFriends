@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -43,17 +42,10 @@ public class RegistrationActivity extends AppCompatActivity {
         String user = userEmail.getText().toString();
         final String password = userPass.getText().toString();
         String confirmPassword = userConPass.getText().toString();
-        // Check to see if any of the sign-up fields are empty.
-        checkForEmptyString(user, password, confirmPassword);
 
-        // Check to see if the passwords match each other.
-        if(validatePasswords(password, confirmPassword)){
-            Toast.makeText(RegistrationActivity.this, "Passwords do not match.",
-                    Toast.LENGTH_SHORT).show();
-            userPass.setText(null);
-            userConPass.setText(null);
+        // Check to see if any of the sign-up fields are empty.
+        if(checkForEmptyString(user, password, confirmPassword))
             return;
-        }
 
         // Check to see if it's a valid email.
         if(!Patterns.EMAIL_ADDRESS.matcher(user).matches()) {
@@ -62,10 +54,18 @@ public class RegistrationActivity extends AppCompatActivity {
             return;
         }
 
-        // Minimum password length for firebase is 6. Thus we are checking for that.
+        // Check to see if the passwords match each other.
+        if(validatePasswords(password, confirmPassword)){
+            Toast.makeText(RegistrationActivity.this, "Passwords do not match",
+                    Toast.LENGTH_SHORT).show();
+            userPass.setText(null);
+            userConPass.setText(null);
+            return;
+        }
 
+        // Minimum password length for firebase is 6. Thus we are checking for that.
         if(password.length()<6){
-            userPass.setError("Password has to be at least 6 characters");
+            userPass.setError("Password must be at least 6 characters");
             userPass.requestFocus();
             return;
         }
@@ -80,7 +80,7 @@ public class RegistrationActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Toast.makeText(getApplicationContext(),
-                                    "User Registration successful", Toast.LENGTH_SHORT).show();
+                                    "User registration: successful", Toast.LENGTH_SHORT).show();
                             FirebaseUser user = mAuth.getCurrentUser();
                             postUserData();
                             Intent intent = new Intent(RegistrationActivity.this, HomeActivity.class);
@@ -89,7 +89,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
                             // If sign in fails, display a message to the user.
                             Toast.makeText(RegistrationActivity.this,
-                                    "Authentication failed.", Toast.LENGTH_SHORT).show();
+                                    "This email has already been used", Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -98,7 +98,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     }
 
-    public void goBack2Home (View view) {
+    public void goBack2Login (View view) {
         Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
         startActivity(intent);
     }
@@ -118,22 +118,24 @@ public class RegistrationActivity extends AppCompatActivity {
         return false;
     }
 
-    private void checkForEmptyString(String email, String password, String conPassword) {
+    private boolean checkForEmptyString(String email, String password, String conPassword) {
         if(validateEmptyString(email)){
             userEmail.setError("Email is required");
             userEmail.requestFocus();
-            return;
+            return true;
         }
         if(validateEmptyString(password)){
             userPass.setError("Password is required");
             userPass.requestFocus();
-            return;
+            return true;
         }
         if(validateEmptyString(conPassword)){
-            userConPass.setError("Confirmation Password is required");
+            userConPass.setError("Confirmation password is required");
             userConPass.requestFocus();
-            return;
+            return true;
         }
+
+        return false;
     }
 
     private boolean validateEmptyString(String curr) {

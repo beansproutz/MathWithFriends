@@ -38,23 +38,22 @@ public class LoginActivity extends Activity {
 
         String email = userEmail.getText().toString();
         String password = userPass.getText().toString();
-        checkForEmptyString(email, password);
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
-                            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+        if(checkForEmptyString(email, password)) {
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // If sign in succeeds, go to Home screen.
+                                startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Toast.makeText(LoginActivity.this, "Invalid email/password",
+                                        Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+        }
 
     }
 
@@ -64,17 +63,19 @@ public class LoginActivity extends Activity {
         return false;
     }
 
-    private void checkForEmptyString(String email, String password) {
+    private boolean checkForEmptyString(String email, String password) {
         if(validateEmptyString(email)){
             userEmail.setError("Email is required");
             userEmail.requestFocus();
-            return;
+            return false;
         }
         if(validateEmptyString(password)){
             userPass.setError("Password is required");
             userPass.requestFocus();
-            return;
+            return false;
         }
+
+        return true;
     }
 
     public void registration(View view) {

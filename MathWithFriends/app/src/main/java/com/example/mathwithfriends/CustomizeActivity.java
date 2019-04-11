@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -15,35 +13,28 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class CustomizeActivity extends AppCompatActivity
-        implements View.OnClickListener {
-
-    private ImageButton iconButton1;    // User icon choices 1 through 8
-    private ImageButton iconButton2;
-    private ImageButton iconButton3;
-    private ImageButton iconButton4;
-    private ImageButton iconButton5;
-    private ImageButton iconButton6;
-    private ImageButton iconButton7;
-    private ImageButton iconButton8;
-    private Button customToHomeButton;  // Return to home page button
+public class CustomizeActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;         // To get user id
     private DatabaseReference mDatabase;// To write to avatarID field
-
     private Integer currAvatar;         // Currently chosen avatar, updated as user presses buttons
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Initialize activities (buttons).
+        // Initialize activity/buttons.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customize);
         FullScreenModifier.setFullscreen(getWindow().getDecorView());
 
-        // Initialize Firebase stuffs.
+        // Initialize Firebase stuffs to use later.
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
+        // Access Firebase and get the user's current avatar.
+        getCurrAvatar();
+    }
+
+    public void getCurrAvatar() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getUid());
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -58,33 +49,12 @@ public class CustomizeActivity extends AppCompatActivity
                 System.out.println("Error: Can't retrieve avatar data");
             }
         });
-
-        iconButton1 = findViewById(R.id.userIcon1);
-        iconButton1.setOnClickListener(this);
-        iconButton2 = findViewById(R.id.userIcon2);
-        iconButton2.setOnClickListener(this);
-        iconButton3 = findViewById(R.id.userIcon3);
-        iconButton3.setOnClickListener(this);
-        iconButton4 = findViewById(R.id.userIcon4);
-        iconButton4.setOnClickListener(this);
-        iconButton5 = findViewById(R.id.userIcon5);
-        iconButton5.setOnClickListener(this);
-        iconButton6 = findViewById(R.id.userIcon6);
-        iconButton6.setOnClickListener(this);
-        iconButton7 = findViewById(R.id.userIcon7);
-        iconButton7.setOnClickListener(this);
-        iconButton8 = findViewById(R.id.userIcon8);
-        iconButton8.setOnClickListener(this);
-        customToHomeButton = findViewById(R.id.custom2home);
-        customToHomeButton.setOnClickListener(this);
     }
 
-    @Override
-    public void onClick(View view) {
-        // Perform tasks based on which button is pressed. If an icon
-        // button is pressed, inform user and store the corresponding
-        // icon number temporarily. If home button is pressed, update the
-        // avatarID field in Firebase return to home page.
+    // This method is called whenever the user presses any of the avatar
+    // icons. Depending on which icon is chosen, update currAvatar with
+    // the corresponding icon number and inform the user.
+    public void chooseAvatar(View view) {
         switch(view.getId()) {
             case R.id.userIcon1:
                 currAvatar = 1;
@@ -126,11 +96,15 @@ public class CustomizeActivity extends AppCompatActivity
                 Toast.makeText(CustomizeActivity.this,
                         "Icon 8 chosen!", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.custom2home:
-                mDatabase.child("Users").child(mAuth.getUid()).child("avatarID").setValue(currAvatar);
-                Intent intent = new Intent(CustomizeActivity.this, HomeActivity.class);
-                startActivity(intent);
-                break;
         }
+    }
+
+    // This method is called when the user presses the home button. Before
+    // switching back to the home activity, this method updates the user's
+    // avatarID field on Firebase with currAvatar.
+    public void returnHome(View view) {
+        mDatabase.child("Users").child(mAuth.getUid()).child("avatarID").setValue(currAvatar);
+        Intent intent = new Intent(CustomizeActivity.this, HomeActivity.class);
+        startActivity(intent);
     }
 }
