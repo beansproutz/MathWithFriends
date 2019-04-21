@@ -2,9 +2,9 @@ package com.example.mathwithfriends;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-
 import java.util.Hashtable;
 
 public class GameActivity extends Activity {
@@ -59,6 +59,12 @@ public class GameActivity extends Activity {
         int clickedButtonID = clickedButton.getId();
 
         String currentOperation = operationMap.get(clickedButtonID);
+
+        if (currentOperation == null) {
+            Log.e("GAME", "Operation not found in mapping!");
+            return;
+        }
+
         String updatedOperation = updateOperation(currentOperation);
 
         operationMap.put(clickedButtonID, updatedOperation);
