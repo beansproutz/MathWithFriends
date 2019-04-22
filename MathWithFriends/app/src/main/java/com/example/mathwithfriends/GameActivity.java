@@ -1,14 +1,19 @@
 package com.example.mathwithfriends;
 
+import com.example.utility.EquationSolver;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import java.util.Hashtable;
+import java.util.Stack;
 
 public class GameActivity extends Activity {
 
+    Button operandButtons[];
+    Button operationButtons[];
     Button selectedButton = null;
     Hashtable<Integer, String> operationMap = new Hashtable<>();
 
@@ -17,15 +22,28 @@ public class GameActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         FullScreenModifier.setFullscreen(getWindow().getDecorView());
+        assignButtons();
         assignOperationButtonValues();
     }
 
-    // Maps each button to the plus operation
-    private void assignOperationButtonValues() {
-        operationMap.put(R.id.operationButton1, "+");
-        operationMap.put(R.id.operationButton2, "+");
-        operationMap.put(R.id.operationButton3, "+");
-        operationMap.put(R.id.operationButton4, "+");
+    // Invoked when the send button is clicked.
+    // Computes equation, then sends results out to the server.
+    public void clickSend(View view) {
+        String[] equation = convertToEquation();
+        Long result = EquationSolver.solve(equation);
+    }
+
+    private String[] convertToEquation() {
+        String[] equation = new String[9];
+
+        equation[0] = operandButtons[0].getText().toString();
+
+        for (int i = 0; i < 4; i++) {
+            equation[i + 1] = operationButtons[i].getText().toString();
+            equation[i + 2] = operandButtons[i + 1].getText().toString();
+        }
+
+        return equation;
     }
 
     // Invoked when an operand button is clicked.
@@ -41,15 +59,6 @@ public class GameActivity extends Activity {
             swapButtonValues(clickedButton, selectedButton);
             selectedButton = null;
         }
-    }
-
-    // Swaps the values of two buttons.
-    private void swapButtonValues(Button firstButton, Button secondButton) {
-        CharSequence firstButtonText = firstButton.getText();
-        CharSequence secondButtonText = secondButton.getText();
-
-        firstButton.setText(secondButtonText);
-        secondButton.setText(firstButtonText);
     }
 
     // Invoked when an operation button is clicked.
@@ -71,6 +80,39 @@ public class GameActivity extends Activity {
         clickedButton.setText(updatedOperation);
     }
 
+    // Collects operandButtons into an array for easier access
+    private void assignButtons() {
+        operandButtons = new Button[5];
+        operandButtons[0] = findViewById(R.id.operandButton1);
+        operandButtons[1] = findViewById(R.id.operandButton2);
+        operandButtons[2] = findViewById(R.id.operandButton3);
+        operandButtons[3] = findViewById(R.id.operandButton4);
+        operandButtons[4] = findViewById(R.id.operandButton5);
+
+        operationButtons = new Button[4];
+        operationButtons[0] = findViewById(R.id.operationButton1);
+        operationButtons[1] = findViewById(R.id.operationButton2);
+        operationButtons[2] = findViewById(R.id.operationButton3);
+        operationButtons[3] = findViewById(R.id.operationButton4);
+    }
+
+    // Maps each button to the plus operation
+    private void assignOperationButtonValues() {
+        operationMap.put(R.id.operationButton1, "+");
+        operationMap.put(R.id.operationButton2, "+");
+        operationMap.put(R.id.operationButton3, "+");
+        operationMap.put(R.id.operationButton4, "+");
+    }
+
+    // Swaps the values of two operandButtons.
+    private void swapButtonValues(Button firstButton, Button secondButton) {
+        CharSequence firstButtonText = firstButton.getText();
+        CharSequence secondButtonText = secondButton.getText();
+
+        firstButton.setText(secondButtonText);
+        secondButton.setText(firstButtonText);
+    }
+
     // Tasty, hardcoded goodness
     // Iterates through operators as: +, -, *, /, then back to +
     private String updateOperation(String currentOperation) {
@@ -86,5 +128,13 @@ public class GameActivity extends Activity {
             return "/";
 
         return "+";
+    }
+
+    private long getOperand(Button operandButton) {
+        return Long.parseLong(operandButton.getText().toString());
+    }
+
+    private char getOperation(Button operationButton) {
+        return operationButton.getText().charAt(0);
     }
 }
