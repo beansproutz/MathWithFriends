@@ -1,21 +1,37 @@
 package com.example.mathwithfriends;
 
+import com.example.server.Room;
 import com.example.utility.EquationSolver;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+
 import java.util.Hashtable;
-import java.util.Stack;
 
 public class GameActivity extends Activity {
 
-    Button operandButtons[];
-    Button operationButtons[];
-    Button selectedButton = null;
-    Hashtable<Integer, String> operationMap = new Hashtable<>();
+    private Button operandButtons[];
+    private Button operationButtons[];
+    private Button selectedButton = null;
+    private Hashtable<Integer, String> operationMap = new Hashtable<>();
+
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference roomsRef = database.getReference("Rooms");
+    private String roomID = getIntent().getStringExtra("ROOM_ID");
+    private String userID = FirebaseAuth.getInstance().getUid();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +46,39 @@ public class GameActivity extends Activity {
     // Computes equation, then sends results out to the server.
     public void clickSend(View view) {
         String[] equation = convertToEquation();
-        Long result = EquationSolver.solve(equation);
+        final long result = EquationSolver.solve(equation);
+        final long goalNumber = Long.parseLong(((Button)findViewById(R.id.sendButton)).getText().toString());
+
+        roomsRef.child(roomID).runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                Room room = mutableData.getValue(Room.class);
+
+                if (room == null) {
+                    return Transaction.abort();
+                }
+
+                if (result == goalNumber) {
+                    if (userID.equals(room.getFirstUserID())) {
+                        Long questionsSolved = room.getFirstUserQuestionsSolved();
+                        room.setFirstUserQuestionsSolved(questionsSolved + 1);
+                    }
+                    if (userID.equals(room.getSecondUserID())) {
+                        Long questionsSolved = room.getSecondUserQuestionsSolved();
+                        room.setSecondUserQuestionsSolved(questionsSolved + 1);
+                    }
+                }
+
+                mutableData.setValue(room);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+
+            }
+        });
     }
 
     private String[] convertToEquation() {
