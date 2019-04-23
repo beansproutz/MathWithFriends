@@ -81,7 +81,6 @@ public class RegistrationActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Toast.makeText(getApplicationContext(),
                                     "User registration: successful", Toast.LENGTH_SHORT).show();
-                            FirebaseUser user = mAuth.getCurrentUser();
                             postUserData();
                             Intent intent = new Intent(RegistrationActivity.this, HomeActivity.class);
                             startActivity(intent); // Change back to Home Screen
@@ -106,16 +105,13 @@ public class RegistrationActivity extends AppCompatActivity {
     private void postUserData(){
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        User user = new User(userEmail.getText().toString(), userPass.getText().toString(), 1, 0, 0);
+        User user = new User(1, 0, 0);
 
         mDatabase.child("Users").child(mAuth.getUid()).setValue(user);
     }
 
     private boolean validatePasswords(String password, String confirmPassword){
-        if(!password.equals(confirmPassword)){
-            return true;
-        }
-        return false;
+        return !password.equals(confirmPassword);
     }
 
     private boolean checkForEmptyString(String email, String password, String conPassword) {

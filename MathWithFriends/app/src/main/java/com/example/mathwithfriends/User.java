@@ -7,45 +7,46 @@ import java.io.Serializable;
 
 @IgnoreExtraProperties
 public class User implements Serializable {
-    private String Email, Password;
-    private Integer AvatarID;
-    private Integer Points, Level;
+    private Integer avatarID;
+    private Integer points;
+    private Integer level;
     private boolean musicSetting , sfxSetting;
 
     public User() {
         // Default constructor
+        this.avatarID = 1;
+        this.points = 0;
+        this.level = 0;
     }
 
-    public User(String Email, String Password, Integer AvatarID, Integer Points, Integer Level) {
-        this.Email = Email;
-        this.Password = Password;
-        this.AvatarID = AvatarID;   // Initialize to default avatar. Users can change later.
-        this.Points = Points;       // Initialize to 0. Increments every time user wins a game.
-        this.Level = Level;         // Initialize to 0. Increments with every achievement reached.
-    }
-
-    public String getUserEmail() {
-        return this.Email;
-    }
-
-    public String getPassword() {
-        return this.Password;
+    public User(Integer avatarID, Integer points, Integer level) {
+        this.avatarID = avatarID;   // Initialize to default avatar. Users can change later.
+        this.points = points;       // Initialize to 0. Increments every time user wins a game.
+        this.level = level;         // Initialize to 0. Increments with every achievement reached.
     }
 
     public Integer getAvatarID() {
-        return this.AvatarID;
+        return this.avatarID;
     }
 
     public void setAvatarID(Integer avatarID) {
-        AvatarID = avatarID;
+        this.avatarID = avatarID;
     }
 
     public Integer getPoints() {
-        return this.Points;
+        return this.points;
+    }
+
+    public void setPoints(Integer points) {
+        this.points = points;
     }
 
     public Integer getLevel() {
-        return this.Level;
+        return this.level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
     }
 
     public boolean getMusicSetting() { return this.musicSetting; }

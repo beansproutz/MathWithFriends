@@ -15,9 +15,9 @@ import com.google.firebase.database.ValueEventListener;
 
 public class CustomizeActivity extends AppCompatActivity {
 
-    private FirebaseAuth mAuth;         // To get user id
-    private DatabaseReference mDatabase;// To write to avatarID field
-    private Integer currAvatar;         // Currently chosen avatar, updated as user presses buttons
+    private FirebaseAuth mAuth;          // To get user id
+    private DatabaseReference mDatabase; // To write to avatarID field
+    private Integer currAvatar;             // Currently chosen avatar, updated as user presses buttons
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
