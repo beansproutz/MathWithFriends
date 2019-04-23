@@ -10,8 +10,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class ResultsActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
@@ -47,6 +50,7 @@ public class ResultsActivity extends AppCompatActivity {
         Button playAgain = findViewById(R.id.playAgainButton);
         Button homeButton = findViewById(R.id.homeButton);
 
+        // Go back to instructions page
         playAgain.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -57,12 +61,13 @@ public class ResultsActivity extends AppCompatActivity {
 
         });
 
+        // Go back to home screen
         homeButton.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
                 Intent intent = new Intent(ResultsActivity.this, HomeActivity.class);
-                startActivity(intent); // Go to Home Screen
+                startActivity(intent);
             }
 
         });
