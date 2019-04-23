@@ -7,29 +7,19 @@ import java.io.Serializable;
 
 @IgnoreExtraProperties
 public class User implements Serializable {
-    private String Email, Password;
     private Integer AvatarID;
-    private Integer Points, Level;
+    private Integer Points;
+    private Integer Level;
     private boolean musicSetting , sfxSetting;
 
     public User() {
         // Default constructor
     }
 
-    public User(String Email, String Password, Integer AvatarID, Integer Points, Integer Level) {
-        this.Email = Email;
-        this.Password = Password;
+    public User(Integer AvatarID, Integer Points, Integer Level) {
         this.AvatarID = AvatarID;   // Initialize to default avatar. Users can change later.
         this.Points = Points;       // Initialize to 0. Increments every time user wins a game.
         this.Level = Level;         // Initialize to 0. Increments with every achievement reached.
-    }
-
-    public String getUserEmail() {
-        return this.Email;
-    }
-
-    public String getPassword() {
-        return this.Password;
     }
 
     public Integer getAvatarID() {

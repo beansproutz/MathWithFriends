@@ -1,8 +1,11 @@
 package com.example.mathwithfriends;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -13,12 +16,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private FirebaseAuth mAuth;         // To get user id
-    private Integer currAvatar;         //
+    private final String TAG = "HomeActivity";
+    private String userID = FirebaseAuth.getInstance().getUid();
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,30 +39,8 @@ public class HomeActivity extends AppCompatActivity {
         Intent svc = new Intent(this, MusicPlayer.class);
         startService(svc); //starts MusicPlayer Service
 
-        // Initialize Firebase stuffs to use later.
-        mAuth = FirebaseAuth.getInstance();
-
         // Access Firebase and get the user's current avatar.
         getAvatarID();
-
-        switch (currAvatar) {
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-            case 6:
-                break;
-            case 7:
-                break;
-            case 8:
-                break;
-        }
 
         /*Commented code may be used later for checking status of a toggle button*/
 
@@ -89,23 +72,79 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 */
-
-
     }
 
     public void getAvatarID() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getUid());
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        if (userID == null) {
+            Log.e(TAG, "User ID not found!");
+            return;
+        }
+
+        DatabaseReference userRef = database.getReference("Users").child(userID);
+
+        userRef.runTransaction(new Transaction.Handler() {
+            @NonNull
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get user's current avatar from Firebase.
-                User user = dataSnapshot.getValue(User.class);
-                currAvatar = user.getAvatarID();
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                User user = mutableData.getValue(User.class);
+
+                // Ignore when Firebase Transactions optimistically uses
+                // null before actually reading in from the database
+                if (user == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                // Ensure this user has an avatar setting if they somehow did not already
+                if (user.getAvatarID() == null) {
+                    user.setAvatarID(1);
+                }
+
+                mutableData.setValue(user);
+                return Transaction.success(mutableData);
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("Error: Can't retrieve avatar data");
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+                if (dataSnapshot == null) {
+                    Log.e(TAG, "Data Snapshot of user data was null. Could not update avatar.");
+                    return;
+                }
+
+                Integer currAvatar = dataSnapshot.child("avatarID").getValue(Integer.class);
+
+                if (currAvatar == null) {
+                    Log.e(TAG, "Data Snapshot of avatar ID was null. Could not update avatar.");
+                    return;
+                }
+
+                // TODO for Zack
+                // TODO guessing we will update the image on the screen?
+                switch (currAvatar) {
+                    case 1:
+                        Log.d(TAG, "This user has avatar ID 1 active!");
+                        break;
+                    case 2:
+                        Log.d(TAG, "This user has avatar ID 2 active!");
+                        break;
+                    case 3:
+                        Log.d(TAG, "This user has avatar ID 3 active!");
+                        break;
+                    case 4:
+                        Log.d(TAG, "This user has avatar ID 4 active!");
+                        break;
+                    case 5:
+                        Log.d(TAG, "This user has avatar ID 5 active!");
+                        break;
+                    case 6:
+                        Log.d(TAG, "This user has avatar ID 6 active!");
+                        break;
+                    case 7:
+                        Log.d(TAG, "This user has avatar ID 7 active!");
+                        break;
+                    case 8:
+                        Log.d(TAG, "This user has avatar ID 8 active!");
+                        break;
+                }
             }
         });
     }
@@ -114,6 +153,7 @@ public class HomeActivity extends AppCompatActivity {
     public void onHomepageCustomizeClick(View view) {
         Intent intent = new Intent(HomeActivity.this, CustomizeActivity.class);
         startActivity(intent);
+        finish();
     }
 
     // Invoked when the play button is clicked.
@@ -121,6 +161,7 @@ public class HomeActivity extends AppCompatActivity {
     public void onHomepagePlayClick(View view) {
         Intent intent = new Intent(HomeActivity.this, InstructionsActivity.class);
         startActivity(intent);
+        finish();
     }
 
 }
