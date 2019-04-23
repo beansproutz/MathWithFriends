@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.server.User;
+import com.example.utility.FullScreenModifier;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
@@ -47,6 +49,7 @@ public class LoginActivity extends Activity {
     public void login(View view) {
         String email = userEmail.getText().toString();
         String password = userPass.getText().toString();
+
         if (checkForEmptyString(email, password)) {
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -62,7 +65,6 @@ public class LoginActivity extends Activity {
                         }
                     });
         }
-
     }
 
     private void openHomeScreen() {
@@ -98,17 +100,17 @@ public class LoginActivity extends Activity {
         });
     }
 
-    private boolean validateEmptyString(String curr){
+    private boolean validateEmptyString(String curr) {
         return (curr == null) || curr.isEmpty();
     }
 
     private boolean checkForEmptyString(String email, String password) {
-        if(validateEmptyString(email)){
+        if (validateEmptyString(email)) {
             userEmail.setError("Email is required");
             userEmail.requestFocus();
             return false;
         }
-        if(validateEmptyString(password)){
+        if (validateEmptyString(password)) {
             userPass.setError("Password is required");
             userPass.requestFocus();
             return false;

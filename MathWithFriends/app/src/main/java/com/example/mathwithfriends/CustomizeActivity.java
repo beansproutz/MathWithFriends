@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.server.User;
+import com.example.utility.FullScreenModifier;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -21,7 +23,6 @@ import com.google.firebase.database.ValueEventListener;
 public class CustomizeActivity extends AppCompatActivity {
 
     private String userID = FirebaseAuth.getInstance().getUid();
-
     private DatabaseReference mDatabase; // To write to avatarID field
     private Integer currAvatar;          // Currently chosen avatar, updated as user presses buttons
 

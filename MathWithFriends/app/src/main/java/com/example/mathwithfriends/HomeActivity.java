@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ToggleButton;
 
+import com.example.server.User;
+import com.example.utility.FullScreenModifier;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,6 +32,11 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         FullScreenModifier.setFullscreen(getWindow().getDecorView());
+
+        if (userID == null) {
+            Log.e("HomeActivity", "Entered home page without authentication");
+            finish();
+        }
 
         ImageView avatar = (ImageView) findViewById(R.id.imageView2);                       //used to display avatar on Homescreen
         Button goToCustomize = (Button) findViewById(R.id.customizeButton);
