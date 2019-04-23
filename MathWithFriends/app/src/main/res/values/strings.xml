@@ -5,12 +5,21 @@
     <string name="password_confirmation_hint">Password Confirmation</string>
     <string name="button_login">login</string>
 
-    // Strings used in results page
+    <!-- Used for game equations -->
+    <string name="addition">+</string>
+    <string name="subtraction">-</string>
+    <string name="multiplication">*</string>
+    <string name="division">/</string>
+
+    <!-- Used in results page -->
     <string name="resultWin">You Won!</string>
     <string name="resultLose">You Lost...</string>
     <string name="playAgainButton">Play Again?</string>
     <string name="homeButton">Home</string>
 
-    // Strings used in game page
+    <!-- Used in instructions page -->
+    <string name="instructionsLoading">Loading...</string>
+
+    <!-- Strings used in game page -->
     <string name="game_button_send">Send</string>
 </resources>

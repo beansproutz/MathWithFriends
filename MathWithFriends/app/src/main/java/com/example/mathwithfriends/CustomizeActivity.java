@@ -1,23 +1,30 @@
 package com.example.mathwithfriends;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.server.User;
+import com.example.utility.FullScreenModifier;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 public class CustomizeActivity extends AppCompatActivity {
 
-    private FirebaseAuth mAuth;         // To get user id
-    private DatabaseReference mDatabase;// To write to avatarID field
-    private Integer currAvatar;         // Currently chosen avatar, updated as user presses buttons
+    private String userID = FirebaseAuth.getInstance().getUid();
+    private DatabaseReference mDatabase; // To write to avatarID field
+    private Integer currAvatar;          // Currently chosen avatar, updated as user presses buttons
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +34,6 @@ public class CustomizeActivity extends AppCompatActivity {
         FullScreenModifier.setFullscreen(getWindow().getDecorView());
 
         // Initialize Firebase stuffs to use later.
-        mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         // Access Firebase and get the user's current avatar.
@@ -35,17 +41,24 @@ public class CustomizeActivity extends AppCompatActivity {
     }
 
     public void getCurrAvatar() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getUid());
+        DatabaseReference ref = mDatabase.child("Users").child(userID);
+
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // Get user's current avatar from Firebase.
                 User user = dataSnapshot.getValue(User.class);
+
+                if (user == null) {
+                    Log.e("CustomizeActivity", "Could not retrieve user data.");
+                    return;
+                }
+
                 currAvatar = user.getAvatarID();
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 System.out.println("Error: Can't retrieve avatar data");
             }
         });
@@ -103,8 +116,33 @@ public class CustomizeActivity extends AppCompatActivity {
     // switching back to the home activity, this method updates the user's
     // avatarID field on Firebase with currAvatar.
     public void returnHome(View view) {
-        mDatabase.child("Users").child(mAuth.getUid()).child("avatarID").setValue(currAvatar);
-        Intent intent = new Intent(CustomizeActivity.this, HomeActivity.class);
-        startActivity(intent);
+        DatabaseReference userRef = mDatabase.child("Users").child(userID);
+
+        userRef.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                User user = mutableData.getValue(User.class);
+
+                // Ignore when Firebase Transactions optimistically uses
+                // null before actually reading in from the database
+                if (user == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                // Update avatar ID on the database from what the user selected
+                user.setAvatarID(currAvatar);
+                mutableData.setValue(user);
+
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+                Intent intent = new Intent(CustomizeActivity.this, HomeActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 }

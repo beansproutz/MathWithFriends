@@ -10,11 +10,12 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.server.User;
+import com.example.utility.FullScreenModifier;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -44,18 +45,18 @@ public class RegistrationActivity extends AppCompatActivity {
         String confirmPassword = userConPass.getText().toString();
 
         // Check to see if any of the sign-up fields are empty.
-        if(checkForEmptyString(user, password, confirmPassword))
+        if (checkForEmptyString(user, password, confirmPassword))
             return;
 
         // Check to see if it's a valid email.
-        if(!Patterns.EMAIL_ADDRESS.matcher(user).matches()) {
+        if (!Patterns.EMAIL_ADDRESS.matcher(user).matches()) {
             userEmail.setError("Please enter a valid email");
             userEmail.requestFocus();
             return;
         }
 
         // Check to see if the passwords match each other.
-        if(validatePasswords(password, confirmPassword)){
+        if (validatePasswords(password, confirmPassword)){
             Toast.makeText(RegistrationActivity.this, "Passwords do not match",
                     Toast.LENGTH_SHORT).show();
             userPass.setText(null);
@@ -64,7 +65,7 @@ public class RegistrationActivity extends AppCompatActivity {
         }
 
         // Minimum password length for firebase is 6. Thus we are checking for that.
-        if(password.length()<6){
+        if (password.length()<6){
             userPass.setError("Password must be at least 6 characters");
             userPass.requestFocus();
             return;
@@ -81,7 +82,6 @@ public class RegistrationActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Toast.makeText(getApplicationContext(),
                                     "User registration: successful", Toast.LENGTH_SHORT).show();
-                            FirebaseUser user = mAuth.getCurrentUser();
                             postUserData();
                             Intent intent = new Intent(RegistrationActivity.this, HomeActivity.class);
                             startActivity(intent); // Change back to Home Screen
@@ -94,8 +94,6 @@ public class RegistrationActivity extends AppCompatActivity {
 
                     }
                 });
-
-
     }
 
     public void goBack2Login (View view) {
@@ -106,30 +104,27 @@ public class RegistrationActivity extends AppCompatActivity {
     private void postUserData(){
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        User user = new User(userEmail.getText().toString(), userPass.getText().toString(), 1, 0, 0);
+        User user = new User(1, 0, 0);
 
         mDatabase.child("Users").child(mAuth.getUid()).setValue(user);
     }
 
     private boolean validatePasswords(String password, String confirmPassword){
-        if(!password.equals(confirmPassword)){
-            return true;
-        }
-        return false;
+        return !password.equals(confirmPassword);
     }
 
     private boolean checkForEmptyString(String email, String password, String conPassword) {
-        if(validateEmptyString(email)){
+        if (validateEmptyString(email)){
             userEmail.setError("Email is required");
             userEmail.requestFocus();
             return true;
         }
-        if(validateEmptyString(password)){
+        if (validateEmptyString(password)){
             userPass.setError("Password is required");
             userPass.requestFocus();
             return true;
         }
-        if(validateEmptyString(conPassword)){
+        if (validateEmptyString(conPassword)){
             userConPass.setError("Confirmation password is required");
             userConPass.requestFocus();
             return true;
@@ -139,8 +134,6 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     private boolean validateEmptyString(String curr) {
-        if(curr == null || curr.isEmpty())
-            return true;
-        return false;
+        return (curr == null) || curr.isEmpty();
     }
 }

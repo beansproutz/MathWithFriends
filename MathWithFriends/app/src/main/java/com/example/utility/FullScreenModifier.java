@@ -1,12 +1,12 @@
-package com.example.mathwithfriends;
+package com.example.utility;
 
 import android.view.View;
 
 // Simple modifier class used to set screen to immersive fullscreen mode
-final class FullScreenModifier {
+public final class FullScreenModifier {
 
     // Sets screen to immersive fullscreen mode - hiding the system bars.
-    static void setFullscreen(View view) {
+    public static void setFullscreen(View view) {
         view.setSystemUiVisibility(
                   View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
