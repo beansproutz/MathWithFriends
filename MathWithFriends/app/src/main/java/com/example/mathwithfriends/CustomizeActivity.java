@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.server.User;
@@ -25,6 +27,7 @@ public class CustomizeActivity extends AppCompatActivity {
     private String userID = FirebaseAuth.getInstance().getUid();
     private DatabaseReference mDatabase; // To write to avatarID field
     private Integer currAvatar;          // Currently chosen avatar, updated as user presses buttons
+    private Integer achievementLvl;      // User's current achievement level (0-3)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +39,12 @@ public class CustomizeActivity extends AppCompatActivity {
         // Initialize Firebase stuffs to use later.
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        // Access Firebase and get the user's current avatar.
+        // Access Firebase and get the user's current avatar and
+        // achievement level.
         getCurrAvatar();
+
+        // Check user's achievement level and lock avatars accordingly.
+        //checkUserAchievements();
     }
 
     public void getCurrAvatar() {
@@ -64,47 +71,92 @@ public class CustomizeActivity extends AppCompatActivity {
         });
     }
 
+    public void checkUserAchievements() {
+        if (achievementLvl == 0) {
+            ImageButton lockSquare = (ImageButton)findViewById(R.id.squareLvl2);
+            lockSquare.setVisibility(View.INVISIBLE);
+            ImageButton lockCloud = (ImageButton)findViewById(R.id.cloudLvl2);
+            lockCloud.setVisibility(View.INVISIBLE);
+            ImageButton lockTriangle = (ImageButton)findViewById(R.id.triangleLvl2);
+            lockTriangle.setVisibility(View.INVISIBLE);
+            ImageButton lockLump = (ImageButton)findViewById(R.id.lumpLvl2);
+            lockLump.setVisibility(View.INVISIBLE);
+        }
+        else if (achievementLvl == 1) {
+            ImageView unlockSquare = findViewById(R.id.lockedSquare);
+            unlockSquare.setVisibility(View.GONE);
+
+            ImageButton lockCloud = (ImageButton)findViewById(R.id.cloudLvl2);
+            lockCloud.setVisibility(View.INVISIBLE);
+            ImageButton lockTriangle = (ImageButton)findViewById(R.id.triangleLvl2);
+            lockTriangle.setVisibility(View.INVISIBLE);
+            ImageButton lockLump = (ImageButton)findViewById(R.id.lumpLvl2);
+            lockLump.setVisibility(View.INVISIBLE);
+        }
+        else if (achievementLvl == 2) {
+            ImageView unlockSquare = findViewById(R.id.lockedSquare);
+            unlockSquare.setVisibility(View.GONE);
+            ImageView unlockTriangle = findViewById(R.id.lockedTriangle);
+            unlockTriangle.setVisibility(View.GONE);
+
+            ImageButton lockCloud = (ImageButton)findViewById(R.id.cloudLvl2);
+            lockCloud.setVisibility(View.INVISIBLE);
+            ImageButton lockLump = (ImageButton)findViewById(R.id.lumpLvl2);
+            lockLump.setVisibility(View.INVISIBLE);
+        }
+        else if (achievementLvl == 3) {
+            ImageView unlockSquare = findViewById(R.id.lockedSquare);
+            unlockSquare.setVisibility(View.GONE);
+            ImageView unlockTriangle = findViewById(R.id.lockedTriangle);
+            unlockTriangle.setVisibility(View.GONE);
+            ImageView unlockCloud = findViewById(R.id.lockedCloud);
+            unlockCloud.setVisibility(View.GONE);
+            ImageView unlockLump = findViewById(R.id.lockedLump);
+            unlockLump.setVisibility(View.GONE);
+        }
+    }
+
     // This method is called whenever the user presses any of the avatar
     // icons. Depending on which icon is chosen, update currAvatar with
     // the corresponding icon number and inform the user.
     public void chooseAvatar(View view) {
         switch(view.getId()) {
-            case R.id.userIcon1:
+            case R.id.cloud:
                 currAvatar = 1;
                 Toast.makeText(CustomizeActivity.this,
                         "Icon 1 chosen!", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.userIcon2:
+            case R.id.square:
                 currAvatar = 2;
                 Toast.makeText(CustomizeActivity.this,
                         "Icon 2 chosen!", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.userIcon3:
+            case R.id.triangle:
                 currAvatar = 3;
                 Toast.makeText(CustomizeActivity.this,
                         "Icon 3 chosen!", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.userIcon4:
+            case R.id.lump:
                 currAvatar = 4;
                 Toast.makeText(CustomizeActivity.this,
                         "Icon 4 chosen!", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.userIcon5:
+            case R.id.cloudLvl2:
                 currAvatar = 5;
                 Toast.makeText(CustomizeActivity.this,
                         "Icon 5 chosen!", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.userIcon6:
+            case R.id.squareLvl2:
                 currAvatar = 6;
                 Toast.makeText(CustomizeActivity.this,
                         "Icon 6 chosen!", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.userIcon7:
+            case R.id.triangleLvl2:
                 currAvatar = 7;
                 Toast.makeText(CustomizeActivity.this,
                         "Icon 7 chosen!", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.userIcon8:
+            case R.id.lumpLvl2:
                 currAvatar = 8;
                 Toast.makeText(CustomizeActivity.this,
                         "Icon 8 chosen!", Toast.LENGTH_SHORT).show();
