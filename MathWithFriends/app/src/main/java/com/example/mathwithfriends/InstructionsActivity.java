@@ -34,7 +34,6 @@ public class InstructionsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_instructions);
         FullScreenModifier.setFullscreen(getWindow().getDecorView());
-        ((Button)findViewById(R.id.queueButton)).setText("Queue");
     }
 
     // Invoked when the queue button is clicked.
@@ -54,6 +53,7 @@ public class InstructionsActivity extends Activity {
 
                     if (room.joinable(userID)) {
                         enterRoom(roomID);
+                        return;
                     }
                 }
 
@@ -99,7 +99,7 @@ public class InstructionsActivity extends Activity {
                 Room room = roomData.child(roomID).getValue(Room.class);
 
                 if (room == null || !room.joinable(userID)) {
-                    return Transaction.abort();
+                    return Transaction.success(roomData);
                 }
 
                 room.addUser(userID);

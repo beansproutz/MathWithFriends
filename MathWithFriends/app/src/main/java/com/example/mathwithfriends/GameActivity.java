@@ -16,22 +16,20 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
-import java.util.Hashtable;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GameActivity extends Activity {
-
     private Button operandButtons[];
     private Button operationButtons[];
     private Button selectedButton = null;
-    private Hashtable<Integer, String> operationMap = new Hashtable<>();
 
+    private String roomID;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference roomsRef = database.getReference("Rooms");
-    private String roomID = getIntent().getStringExtra("ROOM_ID");
     private String userID = FirebaseAuth.getInstance().getUid();
 
     @Override
@@ -40,35 +38,42 @@ public class GameActivity extends Activity {
         setContentView(R.layout.activity_game);
         FullScreenModifier.setFullscreen(getWindow().getDecorView());
         assignButtons();
-        assignOperationButtonValues();
+        generateGame();
+
+        roomID = getIntent().getStringExtra("ROOM_ID");
     }
 
     // Invoked when the send button is clicked.
     // Computes equation, then sends results out to the server.
     public void clickSend(View view) {
         String[] equation = convertToEquation();
-        final long result = EquationSolver.solve(equation);
-        final long goalNumber = Long.parseLong(((Button)findViewById(R.id.sendButton)).getText().toString());
+        EquationSolver solver = new EquationSolver(this.getApplicationContext());
+
+        final long result = solver.solve(equation);
+        final long goalNumber = Long.parseLong(((TextView)findViewById(R.id.goalNumberText)).getText().toString());
 
         roomsRef.child(roomID).runTransaction(new Transaction.Handler() {
             @NonNull
             @Override
             public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                // No need to update questions solved if the answer is incorrect
+                if (result != goalNumber) {
+                    return Transaction.success(mutableData);
+                }
+
                 Room room = mutableData.getValue(Room.class);
 
                 if (room == null) {
-                    return Transaction.abort();
+                    return Transaction.success(mutableData);
                 }
 
-                if (result == goalNumber) {
-                    if (userID.equals(room.getFirstUserID())) {
-                        Long questionsSolved = room.getFirstUserQuestionsSolved();
-                        room.setFirstUserQuestionsSolved(questionsSolved + 1);
-                    }
-                    if (userID.equals(room.getSecondUserID())) {
-                        Long questionsSolved = room.getSecondUserQuestionsSolved();
-                        room.setSecondUserQuestionsSolved(questionsSolved + 1);
-                    }
+                if (userID.equals(room.getFirstUserID())) {
+                    Long questionsSolved = room.getFirstUserQuestionsSolved();
+                    room.setFirstUserQuestionsSolved(questionsSolved + 1);
+                }
+                else if (userID.equals(room.getSecondUserID())) {
+                    Long questionsSolved = room.getSecondUserQuestionsSolved();
+                    room.setSecondUserQuestionsSolved(questionsSolved + 1);
                 }
 
                 mutableData.setValue(room);
@@ -77,19 +82,23 @@ public class GameActivity extends Activity {
 
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
-
+                // User made their attempt, so create a new set of numbers to play with
+                generateGame();
             }
         });
     }
 
+    // Converts the operands and operators into a string array
     private String[] convertToEquation() {
-        String[] equation = new String[9];
+        String[] equation = new String[operandButtons.length + operationButtons.length];
 
+        // Place the first operand into the equation
         equation[0] = operandButtons[0].getText().toString();
 
-        for (int i = 0; i < 4; i++) {
-            equation[i + 1] = operationButtons[i].getText().toString();
-            equation[i + 2] = operandButtons[i + 1].getText().toString();
+        // Place the remaining operations and operands
+        for (int i = 0; i < operationButtons.length; i++) {
+            equation[i * 2 + 1] = operationButtons[i].getText().toString();
+            equation[i * 2 + 2] = operandButtons[i + 1].getText().toString();
         }
 
         return equation;
@@ -114,18 +123,9 @@ public class GameActivity extends Activity {
     // Iterates through operators for the clicked button.
     public void toggleOperation(View view) {
         Button clickedButton = (Button)view;
-        int clickedButtonID = clickedButton.getId();
-
-        String currentOperation = operationMap.get(clickedButtonID);
-
-        if (currentOperation == null) {
-            Log.e("GAME", "Operation not found in mapping!");
-            return;
-        }
-
+        String currentOperation = clickedButton.getText().toString();
         String updatedOperation = updateOperation(currentOperation);
 
-        operationMap.put(clickedButtonID, updatedOperation);
         clickedButton.setText(updatedOperation);
     }
 
@@ -145,12 +145,20 @@ public class GameActivity extends Activity {
         operationButtons[3] = findViewById(R.id.operationButton4);
     }
 
-    // Maps each button to the plus operation
-    private void assignOperationButtonValues() {
-        operationMap.put(R.id.operationButton1, "+");
-        operationMap.put(R.id.operationButton2, "+");
-        operationMap.put(R.id.operationButton3, "+");
-        operationMap.put(R.id.operationButton4, "+");
+    // Resets operations, and randomly assigns operands and goal number
+    private void generateGame() {
+        for (Button operation : operationButtons) {
+            operation.setText("+");
+        }
+
+        for (Button operand : operandButtons) {
+            Long randOperand = ThreadLocalRandom.current().nextLong(1, 10);
+            operand.setText(String.valueOf(randOperand));
+        }
+
+        TextView goalNumberView = findViewById(R.id.goalNumberText);
+        Long randomGoal = ThreadLocalRandom.current().nextLong(1, 10);
+        goalNumberView.setText(String.valueOf(randomGoal));
     }
 
     // Swaps the values of two operandButtons.
@@ -177,13 +185,5 @@ public class GameActivity extends Activity {
             return "/";
 
         return "+";
-    }
-
-    private long getOperand(Button operandButton) {
-        return Long.parseLong(operandButton.getText().toString());
-    }
-
-    private char getOperation(Button operationButton) {
-        return operationButton.getText().charAt(0);
     }
 }
