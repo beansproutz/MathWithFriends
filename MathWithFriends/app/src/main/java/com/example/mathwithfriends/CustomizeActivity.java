@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.server.User;
@@ -22,9 +24,12 @@ import com.google.firebase.database.ValueEventListener;
 
 public class CustomizeActivity extends AppCompatActivity {
 
-    private String userID = FirebaseAuth.getInstance().getUid();
+    private String userID;               // To access information of this user
     private DatabaseReference mDatabase; // To write to avatarID field
     private Integer currAvatar;          // Currently chosen avatar, updated as user presses buttons
+    private Integer achievementLvl;      // User's current achievement level (0-3)
+    private Integer gamesPlayed;
+    private Integer gamesWon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +39,15 @@ public class CustomizeActivity extends AppCompatActivity {
         FullScreenModifier.setFullscreen(getWindow().getDecorView());
 
         // Initialize Firebase stuffs to use later.
+        userID = FirebaseAuth.getInstance().getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        // Access Firebase and get the user's current avatar.
+        // Access Firebase and get the user's current avatar and
+        // achievement level.
         getCurrAvatar();
+
+        // Check user's achievement level and lock avatars accordingly.
+        updateUserAchievements();
     }
 
     public void getCurrAvatar() {
@@ -64,47 +74,138 @@ public class CustomizeActivity extends AppCompatActivity {
         });
     }
 
+    private void updateUserAchievements() {
+        DatabaseReference userRef = mDatabase.child("Users").child(userID);
+
+        userRef.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                // No need to update user - just making sure the info is received from the database before doing stuff
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+                if (dataSnapshot == null) {
+                    Log.e("CustomizeActivity", "Error: Can't retrieve user data");
+                    return;
+                }
+
+                // Get the user, and update the info we need to determine what achievements have been unlocked
+                User user = dataSnapshot.getValue(User.class);
+
+                if (user == null) {
+                    Log.e("CustomizeActivity", "Error: User not found");
+                    return;
+                }
+
+                gamesPlayed = user.getGamesPlayed();
+                gamesWon = user.getGamesWon();
+
+                Log.d("CustomizeActivity", "played | won: " + String.valueOf(gamesPlayed) + " | " + String.valueOf(gamesWon));
+
+                // Update buttons now that user statistics have been successfully accessed
+                checkUserAchievements();
+            }
+        });
+    }
+
+    public void checkUserAchievements() {
+        // TODO For Leslie, talk to Sabrina about this
+        // TODO Guessing we'll just need
+        // TODO (1) if (gamesWon < 5)         [corresponds to your achievementLvl == 0]
+        // TODO (2) else if (gamesWon < 10)   [             . . .                 == 1]
+        // TODO (3) else if (gamesWon < 15)
+        // TODO (4) else
+
+        achievementLvl = 1; // TODO Debug before we replace with gamesWon
+
+        if (achievementLvl == 0) {
+            ImageButton lockSquare = (ImageButton)findViewById(R.id.squareLvl2);
+            lockSquare.setVisibility(View.INVISIBLE);
+            ImageButton lockCloud = (ImageButton)findViewById(R.id.cloudLvl2);
+            lockCloud.setVisibility(View.INVISIBLE);
+            ImageButton lockTriangle = (ImageButton)findViewById(R.id.triangleLvl2);
+            lockTriangle.setVisibility(View.INVISIBLE);
+            ImageButton lockLump = (ImageButton)findViewById(R.id.lumpLvl2);
+            lockLump.setVisibility(View.INVISIBLE);
+        }
+        else if (achievementLvl == 1) {
+            ImageView unlockSquare = findViewById(R.id.lockedSquare);
+            unlockSquare.setVisibility(View.GONE);
+
+            ImageButton lockCloud = (ImageButton)findViewById(R.id.cloudLvl2);
+            lockCloud.setVisibility(View.INVISIBLE);
+            ImageButton lockTriangle = (ImageButton)findViewById(R.id.triangleLvl2);
+            lockTriangle.setVisibility(View.INVISIBLE);
+            ImageButton lockLump = (ImageButton)findViewById(R.id.lumpLvl2);
+            lockLump.setVisibility(View.INVISIBLE);
+        }
+        else if (achievementLvl == 2) {
+            ImageView unlockSquare = findViewById(R.id.lockedSquare);
+            unlockSquare.setVisibility(View.GONE);
+            ImageView unlockTriangle = findViewById(R.id.lockedTriangle);
+            unlockTriangle.setVisibility(View.GONE);
+
+            ImageButton lockCloud = (ImageButton)findViewById(R.id.cloudLvl2);
+            lockCloud.setVisibility(View.INVISIBLE);
+            ImageButton lockLump = (ImageButton)findViewById(R.id.lumpLvl2);
+            lockLump.setVisibility(View.INVISIBLE);
+        }
+        else if (achievementLvl == 3) {
+            ImageView unlockSquare = findViewById(R.id.lockedSquare);
+            unlockSquare.setVisibility(View.GONE);
+            ImageView unlockTriangle = findViewById(R.id.lockedTriangle);
+            unlockTriangle.setVisibility(View.GONE);
+            ImageView unlockCloud = findViewById(R.id.lockedCloud);
+            unlockCloud.setVisibility(View.GONE);
+            ImageView unlockLump = findViewById(R.id.lockedLump);
+            unlockLump.setVisibility(View.GONE);
+        }
+    }
+
     // This method is called whenever the user presses any of the avatar
     // icons. Depending on which icon is chosen, update currAvatar with
     // the corresponding icon number and inform the user.
     public void chooseAvatar(View view) {
         switch(view.getId()) {
-            case R.id.userIcon1:
+            case R.id.cloud:
                 currAvatar = 1;
                 Toast.makeText(CustomizeActivity.this,
                         "Icon 1 chosen!", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.userIcon2:
+            case R.id.square:
                 currAvatar = 2;
                 Toast.makeText(CustomizeActivity.this,
                         "Icon 2 chosen!", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.userIcon3:
+            case R.id.triangle:
                 currAvatar = 3;
                 Toast.makeText(CustomizeActivity.this,
                         "Icon 3 chosen!", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.userIcon4:
+            case R.id.lump:
                 currAvatar = 4;
                 Toast.makeText(CustomizeActivity.this,
                         "Icon 4 chosen!", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.userIcon5:
+            case R.id.cloudLvl2:
                 currAvatar = 5;
                 Toast.makeText(CustomizeActivity.this,
                         "Icon 5 chosen!", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.userIcon6:
+            case R.id.squareLvl2:
                 currAvatar = 6;
                 Toast.makeText(CustomizeActivity.this,
                         "Icon 6 chosen!", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.userIcon7:
+            case R.id.triangleLvl2:
                 currAvatar = 7;
                 Toast.makeText(CustomizeActivity.this,
                         "Icon 7 chosen!", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.userIcon8:
+            case R.id.lumpLvl2:
                 currAvatar = 8;
                 Toast.makeText(CustomizeActivity.this,
                         "Icon 8 chosen!", Toast.LENGTH_SHORT).show();

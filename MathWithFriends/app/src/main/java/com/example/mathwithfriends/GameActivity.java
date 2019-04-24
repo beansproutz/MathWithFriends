@@ -12,10 +12,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -23,6 +26,8 @@ import android.widget.TextView;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GameActivity extends Activity {
+    private final String TAG = "GameActivity";
+
     private Button operandButtons[];
     private Button operationButtons[];
     private Button selectedButton = null;
@@ -41,6 +46,22 @@ public class GameActivity extends Activity {
         generateGame();
 
         roomID = getIntent().getStringExtra("ROOM_ID");
+
+        new CountDownTimer(90000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                Log.d(TAG, String.valueOf(millisUntilFinished / 1000) + " seconds remaining");
+            }
+
+            @Override
+            public void onFinish() {
+                Log.d(TAG, "Done!");
+                Intent intent = new Intent(GameActivity.this, ResultsActivity.class);
+                intent.putExtra("ROOM_ID", roomID);
+                startActivity(intent);
+                finish();
+            }
+        }.start();
     }
 
     // Invoked when the send button is clicked.
@@ -51,6 +72,7 @@ public class GameActivity extends Activity {
 
         final long result = solver.solve(equation);
         final long goalNumber = Long.parseLong(((TextView)findViewById(R.id.goalNumberText)).getText().toString());
+        Log.d(TAG, "Result and goal are " + String.valueOf(result) + " " + String.valueOf(goalNumber));
 
         roomsRef.child(roomID).runTransaction(new Transaction.Handler() {
             @NonNull
@@ -88,22 +110,6 @@ public class GameActivity extends Activity {
         });
     }
 
-    // Converts the operands and operators into a string array
-    private String[] convertToEquation() {
-        String[] equation = new String[operandButtons.length + operationButtons.length];
-
-        // Place the first operand into the equation
-        equation[0] = operandButtons[0].getText().toString();
-
-        // Place the remaining operations and operands
-        for (int i = 0; i < operationButtons.length; i++) {
-            equation[i * 2 + 1] = operationButtons[i].getText().toString();
-            equation[i * 2 + 2] = operandButtons[i + 1].getText().toString();
-        }
-
-        return equation;
-    }
-
     // Invoked when an operand button is clicked.
     // If there is no selected operand button at the moment, select this.
     // Otherwise, swap values with the selected operand button and deselect.
@@ -129,6 +135,22 @@ public class GameActivity extends Activity {
         clickedButton.setText(updatedOperation);
     }
 
+    // Converts the operands and operators into a string array
+    private String[] convertToEquation() {
+        String[] equation = new String[operandButtons.length + operationButtons.length];
+
+        // Place the first operand into the equation
+        equation[0] = operandButtons[0].getText().toString();
+
+        // Place the remaining operations and operands
+        for (int i = 0; i < operationButtons.length; i++) {
+            equation[i * 2 + 1] = operationButtons[i].getText().toString();
+            equation[i * 2 + 2] = operandButtons[i + 1].getText().toString();
+        }
+
+        return equation;
+    }
+
     // Collects operandButtons into an array for easier access
     private void assignButtons() {
         operandButtons = new Button[5];
@@ -148,7 +170,7 @@ public class GameActivity extends Activity {
     // Resets operations, and randomly assigns operands and goal number
     private void generateGame() {
         for (Button operation : operationButtons) {
-            operation.setText("+");
+            operation.setText(getApplicationContext().getString(R.string.addition));
         }
 
         for (Button operand : operandButtons) {
@@ -172,18 +194,21 @@ public class GameActivity extends Activity {
 
     // Tasty, hardcoded goodness
     // Iterates through operators as: +, -, *, /, then back to +
-    private String updateOperation(String currentOperation) {
-        char operation = currentOperation.charAt(0);
+    private String updateOperation(String operation) {
+        String addition = getApplicationContext().getString(R.string.addition);
+        String subtraction = getApplicationContext().getString(R.string.subtraction);
+        String multiplication = getApplicationContext().getString(R.string.multiplication);
+        String division = getApplicationContext().getString(R.string.division);
 
-        if (operation == '+')
-            return "-";
+        if (operation.equals(addition))
+            return subtraction;
 
-        if (operation == '-')
-            return "*";
+        if (operation.equals(subtraction))
+            return multiplication;
 
-        if (operation == '*')
-            return "/";
+        if (operation.equals(multiplication))
+            return division;
 
-        return "+";
+        return addition;
     }
 }

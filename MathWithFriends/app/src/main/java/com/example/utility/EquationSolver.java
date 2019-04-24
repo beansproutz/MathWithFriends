@@ -2,21 +2,20 @@ package com.example.utility;
 
 import com.example.mathwithfriends.R;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.util.Log;
 
 public class EquationSolver {
-    private Context context;          // Required for accessing application resources
-    private Stack<Long> operands;     // Holds numbers in the equation to be solved
-    private Stack<String> operations; // Holds operators in the equation to be solved
+    private Context context;               // Required for accessing application resources
+    private ArrayDeque<Long> operands;     // Holds numbers in the equation to be solved
+    private ArrayDeque<String> operations; // Holds operators in the equation to be solved
 
     public EquationSolver(Context context) {
         this.context = context;
-        this.operands = new Stack<>();
-        this.operations = new Stack<>();
+        this.operands = new ArrayDeque<>();
+        this.operations = new ArrayDeque<>();
     }
 
     // Computes the equation formed by the buttons
@@ -24,22 +23,26 @@ public class EquationSolver {
     public Long solve(String[] equation) {
         Log.d("EquationSolver", "Strings are:");
 
+        // Basically, evaluate multiplication and division
         for (String token : equation) {
             // Token is an operand
             if (Character.isDigit(token.charAt(0))) {
                 operands.push(Long.parseLong(token));
             }
             // Token is an operation
-            else if (operations.empty()) {
+            else if (operations.isEmpty()) {
                 operations.push(token);
             }
             else {
                 String previousOperation = operations.peek();
 
                 while (hasHigherPrecedence(previousOperation)) {
-                    computeOperation(previousOperation);
+                    long rightOperand = operands.pop();
+                    long leftOperand = operands.pop();
+                    operands.push(computeOperation(leftOperand, rightOperand, previousOperation));
+                    operations.pop();
 
-                    if (operations.empty()) {
+                    if (operations.isEmpty()) {
                         break;
                     }
 
@@ -50,8 +53,18 @@ public class EquationSolver {
             }
         }
 
-        while (!operations.empty()) {
-            computeOperation(operations.peek());
+        if (!operations.isEmpty() && hasHigherPrecedence(operations.peek())) {
+            long rightOperand = operands.pop();
+            long leftOperand = operands.pop();
+            operands.push(computeOperation(leftOperand, rightOperand, operations.peek()));
+            operations.pop();
+        }
+
+        // Only addition/subtraction, so read equation from left-to-right
+        while (!operations.isEmpty()) {
+            long leftOperand = operands.removeLast();
+            long rightOperand = operands.removeLast();
+            operands.addLast(computeOperation(leftOperand, rightOperand, operations.removeLast()));
         }
 
         return operands.peek();
@@ -59,9 +72,7 @@ public class EquationSolver {
 
     // Computes based on the top two operands and top operation
     // Result gets pushed as an operand
-    private void computeOperation(String operation) {
-        long rightOperand = operands.pop();
-        long leftOperand = operands.pop();
+    private long computeOperation(long leftOperand, long rightOperand, String operation) {
         long result = 0L;
 
         if (operation.equals(context.getString(R.string.addition))) {
@@ -80,8 +91,7 @@ public class EquationSolver {
             Log.e("EquationSolver", "Improper operation found: " + operation);
         }
 
-        operations.pop();
-        operands.push(result);
+        return result;
     }
 
     // Checks if the previous operation has precedence over the current operation
