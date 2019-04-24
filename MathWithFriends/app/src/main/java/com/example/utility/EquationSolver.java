@@ -39,8 +39,8 @@ public class EquationSolver {
                 while (hasHigherPrecedence(previousOperation)) {
                     long rightOperand = operands.pop();
                     long leftOperand = operands.pop();
-                    computeOperation(leftOperand, rightOperand, previousOperation);
-                    operands.pop();
+                    operands.push(computeOperation(leftOperand, rightOperand, previousOperation));
+                    operations.pop();
 
                     if (operations.isEmpty()) {
                         break;
