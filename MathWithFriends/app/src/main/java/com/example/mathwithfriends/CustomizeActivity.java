@@ -24,10 +24,12 @@ import com.google.firebase.database.ValueEventListener;
 
 public class CustomizeActivity extends AppCompatActivity {
 
-    private String userID = FirebaseAuth.getInstance().getUid();
+    private String userID;               // To access information of this user
     private DatabaseReference mDatabase; // To write to avatarID field
     private Integer currAvatar;          // Currently chosen avatar, updated as user presses buttons
     private Integer achievementLvl;      // User's current achievement level (0-3)
+    private Integer gamesPlayed;
+    private Integer gamesWon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public class CustomizeActivity extends AppCompatActivity {
         FullScreenModifier.setFullscreen(getWindow().getDecorView());
 
         // Initialize Firebase stuffs to use later.
+        userID = FirebaseAuth.getInstance().getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         // Access Firebase and get the user's current avatar and
@@ -44,7 +47,7 @@ public class CustomizeActivity extends AppCompatActivity {
         getCurrAvatar();
 
         // Check user's achievement level and lock avatars accordingly.
-        //checkUserAchievements();
+        updateUserAchievements();
     }
 
     public void getCurrAvatar() {
@@ -71,7 +74,53 @@ public class CustomizeActivity extends AppCompatActivity {
         });
     }
 
+    private void updateUserAchievements() {
+        DatabaseReference userRef = mDatabase.child("Users").child(userID);
+
+        userRef.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                // No need to update user - just making sure the info is received from the database before doing stuff
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+                if (dataSnapshot == null) {
+                    Log.e("CustomizeActivity", "Error: Can't retrieve user data");
+                    return;
+                }
+
+                // Get the user, and update the info we need to determine what achievements have been unlocked
+                User user = dataSnapshot.getValue(User.class);
+
+                if (user == null) {
+                    Log.e("CustomizeActivity", "Error: User not found");
+                    return;
+                }
+
+                gamesPlayed = user.getGamesPlayed();
+                gamesWon = user.getGamesWon();
+
+                Log.d("CustomizeActivity", "played | won: " + String.valueOf(gamesPlayed) + " | " + String.valueOf(gamesWon));
+
+                // Update buttons now that user statistics have been successfully accessed
+                checkUserAchievements();
+            }
+        });
+    }
+
     public void checkUserAchievements() {
+        // TODO For Leslie, talk to Sabrina about this
+        // TODO Guessing we'll just need
+        // TODO (1) if (gamesWon < 5)         [corresponds to your achievementLvl == 0]
+        // TODO (2) else if (gamesWon < 10)   [             . . .                 == 1]
+        // TODO (3) else if (gamesWon < 15)
+        // TODO (4) else
+
+        achievementLvl = 1; // TODO Debug before we replace with gamesWon
+
         if (achievementLvl == 0) {
             ImageButton lockSquare = (ImageButton)findViewById(R.id.squareLvl2);
             lockSquare.setVisibility(View.INVISIBLE);
