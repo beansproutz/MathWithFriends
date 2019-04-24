@@ -40,6 +40,7 @@ public class HomeActivity extends AppCompatActivity {
 
         ImageView avatar = (ImageView) findViewById(R.id.imageView2);                       //used to display avatar on Homescreen
         Button goToCustomize = (Button) findViewById(R.id.customizeButton);
+        Button goToAchievement = (Button) findViewById(R.id.gotoAchievement);
         ToggleButton sfxToggle = (ToggleButton) findViewById(R.id.sfxButton);
         ToggleButton musicToggle = (ToggleButton) findViewById(R.id.musicButton);
 
@@ -159,6 +160,12 @@ public class HomeActivity extends AppCompatActivity {
     // Invoked when the Customize button is clicked.
     public void onHomepageCustomizeClick(View view) {
         Intent intent = new Intent(HomeActivity.this, CustomizeActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    public void onHomepageAchievementClick(View view) {
+        Intent intent = new Intent(HomeActivity.this, AchievementsActivity.class);
         startActivity(intent);
         finish();
     }

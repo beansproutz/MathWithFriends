@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context=".MainActivity">
+
+    <!-- Background Views and Formatting -->
+    <View
+        android:id="@+id/gameBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/game_bg"
+        android:elevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <View
+        android:id="@+id/gameButtonsBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
+        android:background="@drawable/game_button_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Achievements General Layout -->
+    <View
+        android:id="@+id/achievement5wins"
+        android:layout_width="640dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="16dp"
+        android:background="#7F96FF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/gameBackground" />
+
+    <View
+        android:id="@+id/achievement5winsLocked"
+        android:layout_width="640dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="16dp"
+        android:background="#80000000"
+        android:elevation="2dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/gameBackground" />
+
+    <View
+        android:id="@+id/achievement10wins"
+        android:layout_width="640dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="115dp"
+        android:background="#7F96FF"
+        app:layout_constraintBottom_toTopOf="@id/achievement15wins"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/achievement5wins"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <View
+        android:id="@+id/achievement10winsLocked"
+        android:layout_width="640dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="115dp"
+        android:background="#80000000"
+        android:elevation="2dp"
+        app:layout_constraintBottom_toTopOf="@id/achievement15wins"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/achievement5wins"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <View
+        android:id="@+id/achievement15wins"
+        android:layout_width="640dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="15dp"
+        android:background="#7F96FF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/achievement10wins" />
+
+    <View
+        android:id="@+id/achievement15winsLocked"
+        android:layout_width="640dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="15dp"
+        android:background="#80000000"
+        android:elevation="2dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/achievement10wins" />
+
+    <!-- Achievements Texts -->
+    <TextView
+        android:id="@+id/achievement5winsText"
+        android:layout_width="352dp"
+        android:layout_height="71dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:text="Win 5 Rounds!"
+        android:textColor="@android:color/white"
+        android:textSize="50dp"
+        app:layout_constraintBottom_toBottomOf="@id/achievement5wins"
+        app:layout_constraintBottom_toTopOf="@+id/achievement5winIcon"
+        app:layout_constraintEnd_toEndOf="@id/achievement5wins"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@id/achievement5winIcon"
+        app:layout_constraintTop_toBottomOf="@+id/achievement5wins"
+        app:layout_constraintVertical_bias="0.564" />
+
+    <TextView
+        android:id="@+id/achievement10winsText"
+        android:layout_width="352dp"
+        android:layout_height="71dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:text="Win 10 Rounds!"
+        android:textColor="@android:color/white"
+        android:textSize="50dp"
+        app:layout_constraintBottom_toBottomOf="@id/achievement10wins"
+        app:layout_constraintBottom_toTopOf="@+id/achievement10winIcon"
+        app:layout_constraintEnd_toEndOf="@id/achievement10wins"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@id/achievement10winIcon"
+        app:layout_constraintTop_toBottomOf="@+id/achievement10wins"
+        app:layout_constraintVertical_bias="0.564" />
+
+    <TextView
+        android:id="@+id/achievement15winsText"
+        android:layout_width="352dp"
+        android:layout_height="71dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:text="Win 15 Rounds!"
+        android:textColor="@android:color/white"
+        android:textSize="50dp"
+        app:layout_constraintBottom_toBottomOf="@id/achievement15wins"
+        app:layout_constraintBottom_toTopOf="@+id/achievement15winIcon2"
+        app:layout_constraintEnd_toEndOf="@id/achievement15wins"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@id/achievement15winIcon2"
+        app:layout_constraintTop_toBottomOf="@+id/achievement15wins"
+        app:layout_constraintVertical_bias="0.564" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <!-- Achievements Icons Unlockable -->
+    <ImageView
+        android:id="@+id/achievement5winIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/achievement5wins"
+        app:layout_constraintLeft_toLeftOf="@+id/achievement5wins"
+        app:layout_constraintTop_toTopOf="@+id/achievement5wins"
+        app:srcCompat="@drawable/square_special" />
+
+    <ImageView
+        android:id="@+id/achievement10winIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/achievement10wins"
+        app:layout_constraintLeft_toLeftOf="@+id/achievement10wins"
+        app:layout_constraintTop_toTopOf="@+id/achievement10wins"
+        app:srcCompat="@drawable/circle_special" />
+
+    <ImageView
+        android:id="@+id/achievement15winIcon1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/achievement15wins"
+        app:layout_constraintLeft_toLeftOf="@+id/achievement15wins"
+        app:layout_constraintTop_toTopOf="@+id/achievement15wins"
+        app:srcCompat="@drawable/cloud_special" />
+
+    <ImageView
+        android:id="@+id/achievement15winIcon2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintLeft_toLeftOf="@+id/achievement15wins"
+        app:layout_constraintStart_toEndOf="@+id/achievement15winIcon1"
+        app:layout_constraintTop_toTopOf="@+id/achievement15wins"
+        app:srcCompat="@drawable/triangle_special" />
+
+    <!-- Home Button -->
+    <Button
+        android:id="@+id/achievements2home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="357dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="7dp"
+        android:text="Home"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/gameBackground"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</android.support.constraint.ConstraintLayout>
