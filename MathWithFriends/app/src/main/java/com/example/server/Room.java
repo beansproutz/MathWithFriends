@@ -1,5 +1,7 @@
 package com.example.server;
 
+import android.util.Log;
+
 import com.google.firebase.database.IgnoreExtraProperties;
 
 @IgnoreExtraProperties
@@ -27,10 +29,10 @@ public class Room {
         this.secondUserID = "";
     }
 
-    public Room(Long playerCount, String firstUserID, String secondUserID) {
+    public Room(Long playerCount, Long firstUserQuestionsSolved, Long secondUserQuestionsSolved, String firstUserID, String secondUserID) {
         this.playerCount = playerCount;
-        this.firstUserQuestionsSolved = 0L;
-        this.secondUserQuestionsSolved = 0L;
+        this.firstUserQuestionsSolved = firstUserQuestionsSolved;
+        this.secondUserQuestionsSolved = secondUserQuestionsSolved;
         this.firstUserID = firstUserID;
         this.secondUserID = secondUserID;
     }
@@ -49,7 +51,13 @@ public class Room {
     }
 
     public boolean joinable(String userID) {
-        return !full() && !userExists(userID);
+        if (full()) {
+            Log.d("Room", "Failed to enter room because it is full");
+        }
+        if (userExists(userID)) {
+            Log.d("Room", "Failed to enter room because user exists in it");
+        }
+        return !(full() || userExists(userID));
     }
 
     public void addUser(String userID) {

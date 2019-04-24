@@ -3,16 +3,27 @@ package com.example.utility;
 import com.example.mathwithfriends.R;
 
 import java.util.Stack;
+
+import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
 
 public class EquationSolver {
-    private static Stack<Long> operands = new Stack<>();
-    private static Stack<String> operations = new Stack<>();
+    private Context context;          // Required for accessing application resources
+    private Stack<Long> operands;     // Holds numbers in the equation to be solved
+    private Stack<String> operations; // Holds operators in the equation to be solved
+
+    public EquationSolver(Context context) {
+        this.context = context;
+        this.operands = new Stack<>();
+        this.operations = new Stack<>();
+    }
 
     // Computes the equation formed by the buttons
     // Uses the Shunting Yard algorithm for computation
-    public static Long solve(String[] equation) {
+    public Long solve(String[] equation) {
+        Log.d("EquationSolver", "Strings are:");
+
         for (String token : equation) {
             // Token is an operand
             if (Character.isDigit(token.charAt(0))) {
@@ -25,14 +36,14 @@ public class EquationSolver {
             else {
                 String previousOperation = operations.peek();
 
-                while (hasHigherPrecedence(previousOperation, token)) {
+                while (hasHigherPrecedence(previousOperation)) {
                     computeOperation(previousOperation);
 
                     if (operations.empty()) {
                         break;
                     }
 
-                    previousOperation = operations.pop();
+                    previousOperation = operations.peek();
                 }
 
                 operations.push(token);
@@ -40,48 +51,46 @@ public class EquationSolver {
         }
 
         while (!operations.empty()) {
-            computeOperation(operations.pop());
+            computeOperation(operations.peek());
         }
 
         return operands.peek();
     }
 
-    static private void computeOperation(String operation) {
+    // Computes based on the top two operands and top operation
+    // Result gets pushed as an operand
+    private void computeOperation(String operation) {
         long rightOperand = operands.pop();
         long leftOperand = operands.pop();
         long result = 0L;
 
-        Resources resources = Resources.getSystem();
-
-        if (operation.equals(resources.getString(R.string.addition))) {
+        if (operation.equals(context.getString(R.string.addition))) {
             result = leftOperand + rightOperand;
         }
-        else if (operation.equals(resources.getString(R.string.subtraction))) {
+        else if (operation.equals(context.getString(R.string.subtraction))) {
             result = leftOperand - rightOperand;
         }
-        else if (operation.equals(resources.getString(R.string.multiplication))) {
+        else if (operation.equals(context.getString(R.string.multiplication))) {
             result = leftOperand * rightOperand;
         }
-        else if (operation.equals(resources.getString(R.string.division))) {
+        else if (operation.equals(context.getString(R.string.division))) {
             result = leftOperand / rightOperand;
         }
         else {
             Log.e("EquationSolver", "Improper operation found: " + operation);
         }
 
+        operations.pop();
         operands.push(result);
     }
 
-    // Multiplication, Division > Addition, Subtraction
-    // Example 1: 3 * 4 * 5 + 1 = 12 * 5 + 1 = 60 + 1 = 61
-    // Example 2: 6 / 3 / 2 * 4 = 2 / 2 * 4 = 1 * 4 = 4
-    // Example 3: 1 + 2 * 3 - 4 = 1 + 6 - 4 = 7 - 4 = 3
-    static private Boolean hasHigherPrecedence(String leftOperation, String rightOperation) {
-        Resources resources = Resources.getSystem();
+    // Checks if the previous operation has precedence over the current operation
+    // Because equations are so simple, only the previous operation needs to be checked
+    // For simple equations, multiplication and division have the highest precedence
+    private Boolean hasHigherPrecedence(String previousOperation) {
+        String multiplication = context.getString(R.string.multiplication);
+        String division = context.getString(R.string.division);
 
-        String multiplication = resources.getString(R.string.multiplication);
-        String division = resources.getString(R.string.division);
-
-        return leftOperation.equals(multiplication) || leftOperation.equals(division);
+        return previousOperation.equals(multiplication) || previousOperation.equals(division);
     }
 }

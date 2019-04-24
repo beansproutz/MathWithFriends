@@ -242,11 +242,11 @@
         android:layout_marginBottom="8dp"
         android:text="Goal Number!"
         app:layout_constraintBottom_toBottomOf="@+id/goalNumberBackground"
-        app:layout_constraintEnd_toEndOf="@+id/textView5"
-        app:layout_constraintStart_toStartOf="@+id/textView5" />
+        app:layout_constraintEnd_toEndOf="@+id/goalNumberText"
+        app:layout_constraintStart_toStartOf="@+id/goalNumberText" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/goalNumberText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"

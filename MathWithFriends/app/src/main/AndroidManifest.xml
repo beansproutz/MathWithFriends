@@ -18,6 +18,9 @@
             android:screenOrientation="landscape">
         </activity>
 
+        <activity android:name=".AchievementsActivity"
+            android:screenOrientation="landscape">
+        </activity>
 
         <activity android:name=".RegistrationActivity"
             android:screenOrientation="landscape">
