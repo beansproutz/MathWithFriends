@@ -21,20 +21,24 @@ public class Room {
         this.secondUserID = "";
     }
 
-    public Room(Long playerCount, String firstUserID) {
-        this.playerCount = playerCount;
-        this.firstUserQuestionsSolved = 0L;
-        this.secondUserQuestionsSolved = 0L;
-        this.firstUserID = firstUserID;
-        this.secondUserID = "";
-    }
-
     public Room(Long playerCount, Long firstUserQuestionsSolved, Long secondUserQuestionsSolved, String firstUserID, String secondUserID) {
         this.playerCount = playerCount;
         this.firstUserQuestionsSolved = firstUserQuestionsSolved;
         this.secondUserQuestionsSolved = secondUserQuestionsSolved;
         this.firstUserID = firstUserID;
         this.secondUserID = secondUserID;
+    }
+
+    public boolean playerWon(String userID) {
+        if (firstUserID.equals(userID)) {
+            return firstUserQuestionsSolved > secondUserQuestionsSolved;
+        }
+
+        if (secondUserID.equals(userID)) {
+            return secondUserQuestionsSolved > firstUserQuestionsSolved;
+        }
+
+        return false;
     }
 
     public boolean userExists(String userID) {
