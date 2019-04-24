@@ -33,7 +33,6 @@ public class AchievementsActivity extends AppCompatActivity {
 
         // Check if achievements are locked
         checkAchievements();
-        addListenerOnButton();
     }
 
 
@@ -43,23 +42,21 @@ public class AchievementsActivity extends AppCompatActivity {
 //        myImage.setVisibility();
     }
 
-    public void addListenerOnButton() {
-        Button homeButton = findViewById(R.id.achievements2home);
 
-        // Go back to home screen
-        homeButton.setOnClickListener(new View.OnClickListener() {
+    // Sends User back to Home Screen when "Home" button is pressed
+    public void onAchievementHomeClick(View view) {
+        Intent intent = new Intent(AchievementsActivity.this, HomeActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
-            @Override
-            public void onClick(View arg0) {
-//                Intent intent = new Intent(AchievementsActivity.this, HomeActivity.class);
-//                startActivity(intent);
+    // Test button to "unlock" achievements
+    public void testUnlockClick(View view) {
 
-                // For testing: when clicked should "unlock" achievement of 5 wins
-                View fiveWins = findViewById(R.id.achievement5winsLocked);
-                fiveWins.setVisibility(View.INVISIBLE);
-            }
-
-        });
+        // For testing: when clicked should "unlock" achievement of 5 wins
+        View fiveWins = findViewById(R.id.achievement5winsLocked);
+        fiveWins.setVisibility(View.INVISIBLE);
 
     }
+
 }
