@@ -82,6 +82,16 @@ public class HomeActivity extends AppCompatActivity {
 */
     }
 
+    private void stopMusic(){
+        stopService(new Intent(HomeActivity.this, MusicPlayer.class));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopMusic();
+    }
+
     public void getAvatarID() {
         if (userID == null) {
             Log.e(TAG, "User ID not found!");
@@ -161,13 +171,11 @@ public class HomeActivity extends AppCompatActivity {
     public void onHomepageCustomizeClick(View view) {
         Intent intent = new Intent(HomeActivity.this, CustomizeActivity.class);
         startActivity(intent);
-        finish();
     }
 
     public void onHomepageAchievementClick(View view) {
         Intent intent = new Intent(HomeActivity.this, AchievementsActivity.class);
         startActivity(intent);
-        finish();
     }
 
     // Invoked when the play button is clicked.
@@ -175,7 +183,6 @@ public class HomeActivity extends AppCompatActivity {
     public void onHomepagePlayClick(View view) {
         Intent intent = new Intent(HomeActivity.this, InstructionsActivity.class);
         startActivity(intent);
-        finish();
     }
 
 }
