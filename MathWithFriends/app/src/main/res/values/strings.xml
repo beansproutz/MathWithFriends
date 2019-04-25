@@ -18,7 +18,7 @@
     <string name="homeButton">Home</string>
 
     <!-- Used in instructions page -->
-    <string name="instructionsLoading">Loading...</string>
+    <string name="instructionsLoading">Waiting for other players...</string>
 
     <!-- Strings used in game page -->
     <string name="game_button_send">Send</string>

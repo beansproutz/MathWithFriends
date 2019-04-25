@@ -77,26 +77,28 @@
         android:textOn="SFX on"
         android:textSize="27dp" />
 
+
     <View
         android:id="@+id/gameButtonsBackground"
         android:layout_width="736dp"
         android:layout_height="91dp"
         android:background="@drawable/game_button_bg"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"/>
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="736dp"
-        android:layout_height="72dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/gotoAchievement"
+        android:layout_margin="10dp"
         android:background="#8fc938"
         android:fontFamily="sans-serif-thin"
         android:text="MATH WITH FRIENDS"
         android:textAlignment="center"
         android:textColor="#ffffff"
-        android:textSize="36dp"
-        android:layout_alignParentBottom="true"/>
+        android:layout_centerHorizontal="true"
+        android:textSize="36dp" />
 
     <Button
         android:id="@+id/gotoAchievement"
