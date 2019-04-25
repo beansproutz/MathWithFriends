@@ -100,6 +100,18 @@ public class HomeActivity extends AppCompatActivity {
         stopMusic();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopMusic();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startMusic();
+    }
+
     public void getAvatarID() {
         if (userID == null) {
             Log.e(TAG, "User ID not found!");
