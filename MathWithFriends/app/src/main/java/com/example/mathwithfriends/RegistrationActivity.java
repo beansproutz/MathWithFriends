@@ -48,6 +48,9 @@ public class RegistrationActivity extends AppCompatActivity {
         if (checkForEmptyString(user, password, confirmPassword))
             return;
 
+        // If there are leading or trailing whitespces, then this will remove it.
+        user = user.trim();
+
         // Check to see if it's a valid email.
         if (!Patterns.EMAIL_ADDRESS.matcher(user).matches()) {
             userEmail.setError("Please enter a valid email");

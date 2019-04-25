@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -26,10 +26,9 @@
         android:textAllCaps="true"
         android:textColor="#000000"
         android:textSize="27dp"
-        app:layout_constraintEnd_toEndOf="@+id/customizeButton"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/customizeButton"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+         />
 
     <Button
         android:id="@+id/customizeButton"
@@ -42,9 +41,9 @@
         android:textAllCaps="true"
         android:textColor="#000000"
         android:textSize="27dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/playButton" />
+        android:layout_below="@+id/playButton"
+        android:layout_centerHorizontal="true"
+        />
 
     <ToggleButton
         android:id="@+id/musicButton"
@@ -58,34 +57,32 @@
         android:textOff="Music off"
         android:textOn="Music on"
         android:textSize="27dp"
-        app:layout_constraintEnd_toEndOf="@+id/customizeButton"
-        app:layout_constraintTop_toBottomOf="@+id/customizeButton" />
+        android:layout_below="@+id/customizeButton"
+        android:layout_alignRight="@id/customizeButton"
+        />
 
 
     <ToggleButton
         android:id="@+id/sfxButton"
         android:layout_width="160dp"
         android:layout_height="69dp"
+        android:layout_below="@+id/customizeButton"
+        android:layout_alignLeft="@id/customizeButton"
+        android:layout_marginTop="12dp"
         android:background="#F7D54C"
         android:checked="true"
         android:textAllCaps="true"
         android:textColor="#000000"
         android:textOff="SFX off"
         android:textOn="SFX on"
-        android:textSize="27dp"
-        app:layout_constraintBottom_toBottomOf="@+id/musicButton"
-        app:layout_constraintStart_toStartOf="@+id/customizeButton"
-        app:layout_constraintTop_toTopOf="@+id/musicButton" />
+        android:textSize="27dp" />
 
     <View
         android:id="@+id/gameButtonsBackground"
-        android:layout_width="wrap_content"
+        android:layout_width="736dp"
         android:layout_height="91dp"
         android:background="@drawable/game_button_bg"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.333"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_alignParentBottom="true"/>
 
     <TextView
         android:id="@+id/textView"
@@ -99,22 +96,14 @@
         android:textAlignment="center"
         android:textColor="#ffffff"
         android:textSize="36dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_alignParentBottom="true"/>
 
     <Button
         android:id="@+id/gotoAchievement"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="547dp"
-        android:layout_marginTop="259dp"
-        android:layout_marginEnd="14dp"
-        android:layout_marginBottom="102dp"
-        android:text="gotoAchievements"
+        android:layout_width="200dp"
+        android:layout_height="43dp"
         android:onClick="onHomepageAchievementClick"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</android.support.constraint.ConstraintLayout>
+        android:text="gotoAchievements"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/sfxButton"/>
+</RelativeLayout>

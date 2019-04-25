@@ -105,6 +105,8 @@ public class LoginActivity extends Activity {
     public void login(View view) {
         String email = userEmail.getText().toString();
         String password = userPass.getText().toString();
+        // If there are leading or trailing whitespces, then this will remove it.
+        email = email.trim();
 
         if (checkForEmptyString(email, password)) {
             mAuth.signInWithEmailAndPassword(email, password)
