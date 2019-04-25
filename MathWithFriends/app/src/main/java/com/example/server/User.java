@@ -1,5 +1,7 @@
 package com.example.server;
 
+import android.text.BoringLayout;
+
 import com.google.firebase.database.IgnoreExtraProperties;
 import java.io.Serializable;
 
@@ -8,24 +10,24 @@ public class User implements Serializable {
     private Integer avatarID;
     private Integer gamesWon;
     private Integer gamesPlayed;
-    private Integer musicSetting;
-    private Integer sfxSetting;
+    private Boolean musicSetting;
+    private Boolean sfxSetting;
 
     public User() {
         // Default constructor
         this.avatarID = 1;
         this.gamesWon = 0;
         this.gamesPlayed = 0;
-        this.musicSetting = 1;
-        this.sfxSetting = 1;
+        this.musicSetting = true;
+        this.sfxSetting = true;
     }
 
-    public User(Integer avatarID, Integer gamesWon, Integer gamesPlayed, Integer musicSetting, Integer sfxSetting) {
+    public User(Integer avatarID, Integer gamesWon, Integer gamesPlayed, Boolean musicSetting, Boolean sfxSetting) {
         this.avatarID = avatarID;       // Initialize to default avatar. Users can change later.
         this.gamesWon = gamesWon;       // Initialize to 0. Increments every time user wins a game.
         this.gamesPlayed = gamesPlayed; // Initialize to 0. Increments every time user finishes a game.
-        this.musicSetting = musicSetting; //Initialized to 1. Changes to 0 when user presses toggle button.
-        this.sfxSetting = sfxSetting; //Initialized to 1. Changes to 0 when user presses toggle button.
+        this.musicSetting = musicSetting; //Initialized to true. Changes to false when user presses toggle button.
+        this.sfxSetting = sfxSetting; //Initialized to true. Changes to false when user presses toggle button.
     }
 
     public Integer getAvatarID() {
@@ -52,11 +54,11 @@ public class User implements Serializable {
         this.gamesPlayed = gamesPlayed;
     }
 
-    public Integer getMusicSetting() { return this.musicSetting; }
+    public Boolean getMusicSetting() { return this.musicSetting; }
 
-    public void setMusicSetting(Integer musicSetting) { this.musicSetting = musicSetting; }
+    public void setMusicSetting(Boolean musicSetting) { this.musicSetting = musicSetting; }
 
-    public Integer getSfxSetting() { return this.sfxSetting; }
+    public Boolean getSfxSetting() { return this.sfxSetting; }
 
-    public void setSfxSetting(Integer sfxSetting) { this.sfxSetting = sfxSetting; }
+    public void setSfxSetting(Boolean sfxSetting) { this.sfxSetting = sfxSetting; }
 }

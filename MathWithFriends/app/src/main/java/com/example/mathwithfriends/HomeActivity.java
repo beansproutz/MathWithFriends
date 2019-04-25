@@ -58,7 +58,7 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    public void updateMusicSetting(final Integer musicVal) {
+    public void updateMusicSetting(final Boolean musicVal) {
         DatabaseReference userRef = mDatabase.child("Users").child(userID);
 
         userRef.runTransaction(new Transaction.Handler() {
@@ -135,7 +135,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 // Ensure this user has an avatar setting if they somehow did not already
                 if (user.getMusicSetting() == null) {
-                    user.setMusicSetting(1);
+                    user.setMusicSetting(true);
                 }
 
                 mutableData.setValue(user);
@@ -149,7 +149,7 @@ public class HomeActivity extends AppCompatActivity {
                     return;
                 }
 
-                Integer currMusicSetting = dataSnapshot.child("musicSetting").getValue(Integer.class);
+                Boolean currMusicSetting = dataSnapshot.child("musicSetting").getValue(Boolean.class);
                 ToggleButton musicToggle = (ToggleButton) findViewById(R.id.musicButton);
 
 
@@ -158,7 +158,7 @@ public class HomeActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (currMusicSetting == 1) {
+                if (currMusicSetting.booleanValue() == true) {
                     musicToggle.setChecked(true);
                     startMusic();
                 }
@@ -249,15 +249,15 @@ public class HomeActivity extends AppCompatActivity {
 
     public void onMusicToggleClick(View view) {
         ToggleButton musicToggle = (ToggleButton) findViewById(R.id.musicButton);
-        final Integer currMusicSetting;
+        final Boolean currMusicSetting;
 
         if (musicToggle.isChecked()) {
             startMusic();
-            currMusicSetting = 1;
+            currMusicSetting = true;
         }
         else {
             stopMusic();
-            currMusicSetting = 0;
+            currMusicSetting = false;
         }
 
         updateMusicSetting(currMusicSetting);
