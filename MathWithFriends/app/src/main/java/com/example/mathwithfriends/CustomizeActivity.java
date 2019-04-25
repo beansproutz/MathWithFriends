@@ -24,10 +24,9 @@ import com.google.firebase.database.ValueEventListener;
 
 public class CustomizeActivity extends AppCompatActivity {
 
-    private String userID;               // To access information of this user
-    private DatabaseReference mDatabase; // To write to avatarID field
+    private String userID;               // User's ID on Firebase
+    private DatabaseReference mDatabase; // To access Firebase
     private Integer currAvatar;          // Currently chosen avatar, updated as user presses buttons
-    private Integer achievementLvl;      // User's current achievement level (0-3)
     private Integer gamesPlayed;
     private Integer gamesWon;
 
@@ -112,16 +111,7 @@ public class CustomizeActivity extends AppCompatActivity {
     }
 
     public void checkUserAchievements() {
-        // TODO For Leslie, talk to Sabrina about this
-        // TODO Guessing we'll just need
-        // TODO (1) if (gamesWon < 5)         [corresponds to your achievementLvl == 0]
-        // TODO (2) else if (gamesWon < 10)   [             . . .                 == 1]
-        // TODO (3) else if (gamesWon < 15)
-        // TODO (4) else
-
-        achievementLvl = 1; // TODO Debug before we replace with gamesWon
-
-        if (achievementLvl == 0) {
+        if (gamesWon < 5) {
             ImageButton lockSquare = (ImageButton)findViewById(R.id.squareLvl2);
             lockSquare.setVisibility(View.INVISIBLE);
             ImageButton lockCloud = (ImageButton)findViewById(R.id.cloudLvl2);
@@ -131,7 +121,7 @@ public class CustomizeActivity extends AppCompatActivity {
             ImageButton lockLump = (ImageButton)findViewById(R.id.lumpLvl2);
             lockLump.setVisibility(View.INVISIBLE);
         }
-        else if (achievementLvl == 1) {
+        else if (gamesWon >= 5 && gamesWon < 10) {
             ImageView unlockSquare = findViewById(R.id.lockedSquare);
             unlockSquare.setVisibility(View.GONE);
 
@@ -142,7 +132,7 @@ public class CustomizeActivity extends AppCompatActivity {
             ImageButton lockLump = (ImageButton)findViewById(R.id.lumpLvl2);
             lockLump.setVisibility(View.INVISIBLE);
         }
-        else if (achievementLvl == 2) {
+        else if (gamesWon >= 10 && gamesWon < 15) {
             ImageView unlockSquare = findViewById(R.id.lockedSquare);
             unlockSquare.setVisibility(View.GONE);
             ImageView unlockTriangle = findViewById(R.id.lockedTriangle);
@@ -153,7 +143,7 @@ public class CustomizeActivity extends AppCompatActivity {
             ImageButton lockLump = (ImageButton)findViewById(R.id.lumpLvl2);
             lockLump.setVisibility(View.INVISIBLE);
         }
-        else if (achievementLvl == 3) {
+        else if (gamesWon > 15) {
             ImageView unlockSquare = findViewById(R.id.lockedSquare);
             unlockSquare.setVisibility(View.GONE);
             ImageView unlockTriangle = findViewById(R.id.lockedTriangle);
