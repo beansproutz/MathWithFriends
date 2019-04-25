@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ToggleButton;
 
@@ -38,14 +39,12 @@ public class HomeActivity extends AppCompatActivity {
             finish();
         }
 
-        ImageView avatar = (ImageView) findViewById(R.id.imageView2);                       //used to display avatar on Homescreen
+        ImageView avatar = (ImageView) findViewById(R.id.imageView2);  //used to display avatar on Homescreen
         Button goToCustomize = (Button) findViewById(R.id.customizeButton);
         Button goToAchievement = (Button) findViewById(R.id.gotoAchievement);
         ToggleButton sfxToggle = (ToggleButton) findViewById(R.id.sfxButton);
         ToggleButton musicToggle = (ToggleButton) findViewById(R.id.musicButton);
 
-        Intent svc = new Intent(this, MusicPlayer.class);
-        startService(svc); //starts MusicPlayer Service
 
         // Access Firebase and get the user's current avatar.
         getAvatarID();
@@ -67,23 +66,32 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+*/
+        if(musicToggle.isChecked()) {
+            startMusic();
+        }
 
         musicToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    // The toggle is enabled
+                if (isChecked) {  // The toggle is enabled
+                    // Starting the music for the game.
+                    startMusic();
 
-                } else {
-                    // The toggle is disabled
-
+                } else { // The toggle is disabled
+                    // Stop the music for the game.
+                    stopMusic();
                 }
             }
         });
-*/
+
+    }
+
+    private void startMusic() {
+        startService(new Intent(this, MusicPlayer.class)); //starts MusicPlayer Service
     }
 
     private void stopMusic(){
-        stopService(new Intent(HomeActivity.this, MusicPlayer.class));
+        stopService(new Intent(this, MusicPlayer.class));
     }
 
     @Override
