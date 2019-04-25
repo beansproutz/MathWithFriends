@@ -8,20 +8,24 @@ public class User implements Serializable {
     private Integer avatarID;
     private Integer gamesWon;
     private Integer gamesPlayed;
-    private boolean musicSetting;
-    private boolean sfxSetting;
+    private Integer musicSetting;
+    private Integer sfxSetting;
 
     public User() {
         // Default constructor
         this.avatarID = 1;
         this.gamesWon = 0;
         this.gamesPlayed = 0;
+        this.musicSetting = 1;
+        this.sfxSetting = 1;
     }
 
-    public User(Integer avatarID, Integer gamesWon, Integer gamesPlayed) {
+    public User(Integer avatarID, Integer gamesWon, Integer gamesPlayed, Integer musicSetting, Integer sfxSetting) {
         this.avatarID = avatarID;       // Initialize to default avatar. Users can change later.
         this.gamesWon = gamesWon;       // Initialize to 0. Increments every time user wins a game.
         this.gamesPlayed = gamesPlayed; // Initialize to 0. Increments every time user finishes a game.
+        this.musicSetting = musicSetting; //Initialized to 1. Changes to 0 when user presses toggle button.
+        this.sfxSetting = sfxSetting; //Initialized to 1. Changes to 0 when user presses toggle button.
     }
 
     public Integer getAvatarID() {
@@ -48,7 +52,11 @@ public class User implements Serializable {
         this.gamesPlayed = gamesPlayed;
     }
 
-    public boolean getMusicSetting() { return this.musicSetting; }
+    public Integer getMusicSetting() { return this.musicSetting; }
 
-    public boolean getSfxSetting() { return this.sfxSetting; }
+    public void setMusicSetting(Integer musicSetting) { this.musicSetting = musicSetting; }
+
+    public Integer getSfxSetting() { return this.sfxSetting; }
+
+    public void setSfxSetting(Integer sfxSetting) { this.sfxSetting = sfxSetting; }
 }

@@ -27,12 +27,15 @@ public class HomeActivity extends AppCompatActivity {
     private final String TAG = "HomeActivity";
     private String userID = FirebaseAuth.getInstance().getUid();
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference mDatabase; //Used to Write to MusicSetting in Database
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         FullScreenModifier.setFullscreen(getWindow().getDecorView());
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         if (userID == null) {
             Log.e("HomeActivity", "Entered home page without authentication");
@@ -49,41 +52,38 @@ public class HomeActivity extends AppCompatActivity {
         // Access Firebase and get the user's current avatar.
         getAvatarID();
 
-        /*Commented code may be used later for checking status of a toggle button*/
-
-/*
-        sfxToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    // The toggle is enabled
+        //Access Firebase and get the user's Music Settings
+        getMusicSetting();
 
 
-                } else {
-                    // The toggle is disabled
+    }
 
+    public void updateMusicSetting(final Integer musicVal) {
+        DatabaseReference userRef = mDatabase.child("Users").child(userID);
 
+        userRef.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                User user = mutableData.getValue(User.class);
+
+                // Ignore when Firebase Transactions optimistically uses
+                // null before actually reading in from the database
+                if (user == null) {
+                    return Transaction.success(mutableData);
                 }
+
+                // Update avatar ID on the database from what the user selected
+                user.setMusicSetting(musicVal);
+                mutableData.setValue(user);
+
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
             }
         });
-
-*/
-        if(musicToggle.isChecked()) {
-            startMusic();
-        }
-
-        musicToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {  // The toggle is enabled
-                    // Starting the music for the game.
-                    startMusic();
-
-                } else { // The toggle is disabled
-                    // Stop the music for the game.
-                    stopMusic();
-                }
-            }
-        });
-
     }
 
     private void startMusic() {
@@ -110,6 +110,66 @@ public class HomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         startMusic();
+    }
+
+
+    public void getMusicSetting() {
+        if (userID == null) {
+            Log.e(TAG, "User ID not found!");
+            return;
+        }
+
+        DatabaseReference userRef = database.getReference("Users").child(userID);
+
+        userRef.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                User user = mutableData.getValue(User.class);
+
+                // Ignore when Firebase Transactions optimistically uses
+                // null before actually reading in from the database
+                if (user == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                // Ensure this user has an avatar setting if they somehow did not already
+                if (user.getMusicSetting() == null) {
+                    user.setMusicSetting(1);
+                }
+
+                mutableData.setValue(user);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+                if (dataSnapshot == null) {
+                    Log.e(TAG, "Data Snapshot of user data was null. Could not update musicSetting.");
+                    return;
+                }
+
+                Integer currMusicSetting = dataSnapshot.child("musicSetting").getValue(Integer.class);
+                ToggleButton musicToggle = (ToggleButton) findViewById(R.id.musicButton);
+
+
+                if (currMusicSetting == null) {
+                    Log.e(TAG, "Data Snapshot of musicSetting was null. Could not update musicSetting.");
+                    return;
+                }
+
+                if (currMusicSetting == 1) {
+                    musicToggle.setChecked(true);
+                    startMusic();
+                }
+
+                else {
+                    musicToggle.setChecked(false);
+                    stopMusic();
+
+                }
+            }
+        });
     }
 
     public void getAvatarID() {
@@ -185,6 +245,23 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void onMusicToggleClick(View view) {
+        ToggleButton musicToggle = (ToggleButton) findViewById(R.id.musicButton);
+        final Integer currMusicSetting;
+
+        if (musicToggle.isChecked()) {
+            startMusic();
+            currMusicSetting = 1;
+        }
+        else {
+            stopMusic();
+            currMusicSetting = 0;
+        }
+
+        updateMusicSetting(currMusicSetting);
+
     }
 
     // Invoked when the Customize button is clicked.

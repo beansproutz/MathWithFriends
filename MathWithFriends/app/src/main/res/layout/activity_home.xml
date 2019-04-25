@@ -54,6 +54,7 @@
         android:checked="true"
         android:textAllCaps="true"
         android:textColor="#000000"
+        android:onClick="onMusicToggleClick"
         android:textOff="Music off"
         android:textOn="Music on"
         android:textSize="27dp"
