@@ -55,6 +55,8 @@ public class HomeActivity extends AppCompatActivity {
         //Access Firebase and get the user's Music Settings
         getMusicSetting();
 
+        //Access Firebase and get the user's SFX Settings
+        getSFXSetting();
 
     }
 
@@ -73,7 +75,7 @@ public class HomeActivity extends AppCompatActivity {
                     return Transaction.success(mutableData);
                 }
 
-                // Update avatar ID on the database from what the user selected
+                // Update musicSetting based on the what the User toggles
                 user.setMusicSetting(musicVal);
                 mutableData.setValue(user);
 
@@ -133,7 +135,7 @@ public class HomeActivity extends AppCompatActivity {
                     return Transaction.success(mutableData);
                 }
 
-                // Ensure this user has an avatar setting if they somehow did not already
+                // Ensure this user has MusicSetting
                 if (user.getMusicSetting() == null) {
                     user.setMusicSetting(true);
                 }
@@ -167,6 +169,62 @@ public class HomeActivity extends AppCompatActivity {
                     musicToggle.setChecked(false);
                     stopMusic();
 
+                }
+            }
+        });
+    }
+
+    public void getSFXSetting() {
+        if (userID == null) {
+            Log.e(TAG, "User ID not found!");
+            return;
+        }
+
+        DatabaseReference userRef = database.getReference("Users").child(userID);
+
+        userRef.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                User user = mutableData.getValue(User.class);
+
+                // Ignore when Firebase Transactions optimistically uses
+                // null before actually reading in from the database
+                if (user == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                // Ensure SFX Setting is set
+                if (user.getSfxSetting() == null) {
+                    user.setSfxSetting(true);
+                }
+
+                mutableData.setValue(user);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+                if (dataSnapshot == null) {
+                    Log.e(TAG, "Data Snapshot of user data was null. Could not update musicSetting.");
+                    return;
+                }
+
+                Boolean currSFXSetting = dataSnapshot.child("sfxSetting").getValue(Boolean.class);
+                ToggleButton sfxToggle = (ToggleButton) findViewById(R.id.sfxButton);
+
+
+                if (currSFXSetting == null) {
+                    Log.e(TAG, "Data Snapshot of sfxSetting was null. Could not update sfxSetting.");
+                    return;
+                }
+
+                if (currSFXSetting.booleanValue() == true) {
+                    sfxToggle.setChecked(true);
+                }
+
+                else {
+                    sfxToggle.setChecked(false);
                 }
             }
         });
@@ -263,6 +321,52 @@ public class HomeActivity extends AppCompatActivity {
         updateMusicSetting(currMusicSetting);
 
     }
+
+    public void onSFXToggleClick(View view) {
+        ToggleButton sfxToggle = (ToggleButton) findViewById(R.id.sfxButton);
+        final Boolean currSFXSetting;
+
+        if (sfxToggle.isChecked()) {
+            startMusic();
+            currSFXSetting = true;
+        }
+        else {
+            stopMusic();
+            currSFXSetting = false;
+        }
+
+        updateSFXSetting(currSFXSetting);
+
+    }
+
+    public void updateSFXSetting(final Boolean sfxVal) {
+        DatabaseReference userRef = mDatabase.child("Users").child(userID);
+
+        userRef.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                User user = mutableData.getValue(User.class);
+
+                // Ignore when Firebase Transactions optimistically uses
+                // null before actually reading in from the database
+                if (user == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                // Update sfxSetting the database based on toggle
+                user.setSfxSetting(sfxVal);
+                mutableData.setValue(user);
+
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+            }
+        });
+    }
+
 
     // Invoked when the Customize button is clicked.
     public void onHomepageCustomizeClick(View view) {
