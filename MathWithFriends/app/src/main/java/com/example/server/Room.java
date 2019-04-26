@@ -58,7 +58,7 @@ public class Room {
         if (full()) {
             Log.d("Room", "Failed to enter room because it is full");
         }
-        if (userExists(userID)) {
+        else if (userExists(userID)) {
             Log.d("Room", "Failed to enter room because user exists in it");
         }
         return !(full() || userExists(userID));

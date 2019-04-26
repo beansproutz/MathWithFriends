@@ -21,6 +21,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -35,6 +36,7 @@ public class GameActivity extends Activity {
     private String roomID;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference roomsRef = database.getReference("Rooms");
+    private DatabaseReference usersRef = database.getReference("Users");
     private String userID = FirebaseAuth.getInstance().getUid();
 
     @Override
@@ -42,10 +44,11 @@ public class GameActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         FullScreenModifier.setFullscreen(getWindow().getDecorView());
-        assignButtons();
-        generateGame();
 
         roomID = getIntent().getStringExtra("ROOM_ID");
+
+        assignButtons();
+        startGame();
 
         new CountDownTimer(90000, 1000) {
             @Override
@@ -167,19 +170,156 @@ public class GameActivity extends Activity {
         operationButtons[3] = findViewById(R.id.operationButton4);
     }
 
+    private void startGame() {
+        DatabaseReference roomRef = roomsRef.child(roomID);
+
+        roomRef.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                // Just accessing room data
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+                if (dataSnapshot == null) {
+                    return;
+                }
+
+                Room room = dataSnapshot.getValue(Room.class);
+
+                if (room == null) {
+                    Log.e(TAG, "Game room not found for user " + userID);
+                    return;
+                }
+
+                boolean isFirstUser = userID.equals(room.getFirstUserID());
+                getAvatars(isFirstUser);
+            }
+        });
+    }
+
+    private void getAvatars(final boolean isFirstUser) {
+        DatabaseReference roomRef = roomsRef.child(roomID);
+
+        roomRef.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+                if (dataSnapshot == null) {
+                    return;
+                }
+
+                Room room = dataSnapshot.getValue(Room.class);
+
+                if (room == null) {
+                    return;
+                }
+
+                String playerID;
+                String opponentID;
+
+                if (isFirstUser) {
+                    playerID = room.getFirstUserID();
+                    opponentID = room.getSecondUserID();
+                }
+                else {
+                    playerID = room.getSecondUserID();
+                    opponentID = room.getFirstUserID();
+                }
+
+                setAvatars(playerID, opponentID);
+            }
+        });
+    }
+
+    private void setAvatars(final String playerID, final String opponentID) {
+        usersRef.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+                if (dataSnapshot == null) {
+                    return;
+                }
+
+                Integer playerAvatarID = dataSnapshot.child(playerID).child("avatarID").getValue(Integer.class);
+                Integer opponentAvatarID = dataSnapshot.child(opponentID).child("avatarID").getValue(Integer.class);
+
+                if (playerAvatarID == null || opponentAvatarID == null) {
+                    return;
+                }
+
+                ImageView playerAvatar = findViewById(R.id.player1Avatar);
+                ImageView opponentAvatar = findViewById(R.id.player2Avatar);
+
+                playerAvatar.setImageResource(getAvatar(playerAvatarID));
+                opponentAvatar.setImageResource(getAvatar(opponentAvatarID));
+            }
+        });
+    }
+
+    public int getAvatar(Integer avatarID) {
+        int avatarSource = 0;
+
+        switch(avatarID) {
+            case 1:
+                avatarSource = R.drawable.cloud_regular;
+                break;
+            case 2:
+                avatarSource = R.drawable.square_regular;
+                break;
+            case 3:
+                avatarSource = R.drawable.triangle_regular;
+                break;
+            case 4:
+                avatarSource = R.drawable.circle_regular;
+                break;
+            case 5:
+                avatarSource = R.drawable.cloud_special;
+                break;
+            case 6:
+                avatarSource = R.drawable.square_special;
+                break;
+            case 7:
+                avatarSource = R.drawable.triangle_special;
+                break;
+            case 8:
+                avatarSource = R.drawable.circle_special;
+                break;
+            default:
+                /* EMPTY */
+        }
+
+        return avatarSource;
+    }
+
     // Resets operations, and randomly assigns operands and goal number
     private void generateGame() {
         for (Button operation : operationButtons) {
             operation.setText(getApplicationContext().getString(R.string.addition));
         }
 
+        final int LOWER_GAME_NUMBER_BOUND = 1;
+        final int UPPER_GAME_NUMBER_BOUND = 10;
+
         for (Button operand : operandButtons) {
-            Long randOperand = ThreadLocalRandom.current().nextLong(1, 10);
+            Long randOperand = ThreadLocalRandom.current().nextLong(LOWER_GAME_NUMBER_BOUND, UPPER_GAME_NUMBER_BOUND);
             operand.setText(String.valueOf(randOperand));
         }
 
         TextView goalNumberView = findViewById(R.id.goalNumberText);
-        Long randomGoal = ThreadLocalRandom.current().nextLong(1, 10);
+        Long randomGoal = ThreadLocalRandom.current().nextLong(LOWER_GAME_NUMBER_BOUND, UPPER_GAME_NUMBER_BOUND);
         goalNumberView.setText(String.valueOf(randomGoal));
     }
 
