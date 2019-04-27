@@ -10,6 +10,7 @@ import android.widget.Button;
 
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.TextView;
 
 import com.example.server.Room;
 import com.example.server.User;
@@ -101,6 +102,11 @@ public class ResultsActivity extends AppCompatActivity {
             @Override
             public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
                 User user = mutableData.getValue(User.class);
+                TextView winMsg = findViewById(R.id.playerWin);
+                winMsg.setVisibility(View.INVISIBLE);
+
+                TextView loseMsg = findViewById(R.id.playerLose);
+                loseMsg.setVisibility(View.INVISIBLE);
 
                 if (user == null) {
                     return Transaction.success(mutableData);
@@ -110,6 +116,10 @@ public class ResultsActivity extends AppCompatActivity {
 
                 if (hasWonGame) {
                     user.setGamesWon(user.getGamesWon() + 1);
+                    winMsg.setVisibility(View.VISIBLE);
+                }
+                else {
+                    loseMsg.setVisibility(View.VISIBLE);
                 }
 
                 mutableData.setValue(user);

@@ -29,7 +29,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/playerStatus"
+        android:id="@+id/playerLose"
         android:layout_width="253dp"
         android:layout_height="62dp"
         android:layout_marginStart="80dp"
@@ -37,6 +37,24 @@
         android:layout_marginEnd="1dp"
         android:layout_marginRight="1dp"
         android:text="YOU LOSE"
+        android:textColor="#000000"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/playAgainButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.87" />
+
+    <TextView
+        android:id="@+id/playerWin"
+        android:layout_width="253dp"
+        android:layout_height="62dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginRight="1dp"
+        android:text="YOU WIN"
         android:textColor="#000000"
         android:textSize="36sp"
         android:textStyle="bold"
