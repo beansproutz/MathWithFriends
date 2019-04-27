@@ -42,15 +42,14 @@ public class HomeActivity extends AppCompatActivity {
             finish();
         }
 
-        ImageView avatar = (ImageView) findViewById(R.id.imageView2);  //used to display avatar on Homescreen
         Button goToCustomize = (Button) findViewById(R.id.customizeButton);
         Button goToAchievement = (Button) findViewById(R.id.gotoAchievement);
         ToggleButton sfxToggle = (ToggleButton) findViewById(R.id.sfxButton);
         ToggleButton musicToggle = (ToggleButton) findViewById(R.id.musicButton);
 
 
-        // Access Firebase and get the user's current avatar.
-        getAvatarID();
+        // Access Firebase and display user's Avatar
+        setAvatar();
 
         //Access Firebase and get the user's Music Settings
         getMusicSetting();
@@ -230,79 +229,69 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    public void getAvatarID() {
-        if (userID == null) {
-            Log.e(TAG, "User ID not found!");
-            return;
-        }
 
+//Used to display Avatar on Home Screen
+    private void setAvatar() {
         DatabaseReference userRef = database.getReference("Users").child(userID);
 
         userRef.runTransaction(new Transaction.Handler() {
             @NonNull
             @Override
             public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
-                User user = mutableData.getValue(User.class);
-
-                // Ignore when Firebase Transactions optimistically uses
-                // null before actually reading in from the database
-                if (user == null) {
-                    return Transaction.success(mutableData);
-                }
-
-                // Ensure this user has an avatar setting if they somehow did not already
-                if (user.getAvatarID() == null) {
-                    user.setAvatarID(1);
-                }
-
-                mutableData.setValue(user);
                 return Transaction.success(mutableData);
             }
 
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
                 if (dataSnapshot == null) {
-                    Log.e(TAG, "Data Snapshot of user data was null. Could not update avatar.");
                     return;
                 }
 
-                Integer currAvatar = dataSnapshot.child("avatarID").getValue(Integer.class);
+                Integer playerAvatarID = dataSnapshot.child("avatarID").getValue(Integer.class);
 
-                if (currAvatar == null) {
-                    Log.e(TAG, "Data Snapshot of avatar ID was null. Could not update avatar.");
+                if (playerAvatarID == null) {
                     return;
                 }
 
-                // TODO for Zack
-                // TODO guessing we will update the image on the screen?
-                switch (currAvatar) {
-                    case 1:
-                        Log.d(TAG, "This user has avatar ID 1 active!");
-                        break;
-                    case 2:
-                        Log.d(TAG, "This user has avatar ID 2 active!");
-                        break;
-                    case 3:
-                        Log.d(TAG, "This user has avatar ID 3 active!");
-                        break;
-                    case 4:
-                        Log.d(TAG, "This user has avatar ID 4 active!");
-                        break;
-                    case 5:
-                        Log.d(TAG, "This user has avatar ID 5 active!");
-                        break;
-                    case 6:
-                        Log.d(TAG, "This user has avatar ID 6 active!");
-                        break;
-                    case 7:
-                        Log.d(TAG, "This user has avatar ID 7 active!");
-                        break;
-                    case 8:
-                        Log.d(TAG, "This user has avatar ID 8 active!");
-                        break;
-                }
+                ImageView playerAvatar = findViewById(R.id.playerAvatar);
+                playerAvatar.setImageResource(getAvatar(playerAvatarID)); //Sets the image to current avatar selected
             }
         });
+    }
+
+    public int getAvatar(Integer avatarID) {
+        int avatarSource = 0;
+
+        switch(avatarID) {
+            case 1:
+                avatarSource = R.drawable.cloud_regular;
+                break;
+            case 2:
+                avatarSource = R.drawable.square_regular;
+                break;
+            case 3:
+                avatarSource = R.drawable.triangle_regular;
+                break;
+            case 4:
+                avatarSource = R.drawable.circle_regular;
+                break;
+            case 5:
+                avatarSource = R.drawable.cloud_special;
+                break;
+            case 6:
+                avatarSource = R.drawable.square_special;
+                break;
+            case 7:
+                avatarSource = R.drawable.triangle_special;
+                break;
+            case 8:
+                avatarSource = R.drawable.circle_special;
+                break;
+            default:
+                /* EMPTY */
+        }
+
+        return avatarSource;
     }
 
     public void onMusicToggleClick(View view) {
