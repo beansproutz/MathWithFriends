@@ -48,14 +48,14 @@ public class HomeActivity extends AppCompatActivity {
         ToggleButton musicToggle = (ToggleButton) findViewById(R.id.musicButton);
 
 
-        // Access Firebase and display user's Avatar
-        setAvatar();
-
         //Access Firebase and get the user's Music Settings
         getMusicSetting();
 
         //Access Firebase and get the user's SFX Settings
         getSFXSetting();
+
+        // Access Firebase and display user's Avatar
+        setAvatar();
 
     }
 
