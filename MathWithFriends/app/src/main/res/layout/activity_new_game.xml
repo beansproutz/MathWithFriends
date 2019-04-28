@@ -97,7 +97,7 @@
     </RelativeLayout>
 
     <RelativeLayout
-
+        android:id="@+id/operandBoxId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/player1Avatar"
@@ -149,7 +149,100 @@
             android:layout_centerVertical="true"
             android:background="#FFFFFFCC"
             />
+    </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/player2Avatar">
+
+        <EditText
+            android:id="@+id/generatedNumber1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:layout_margin="40dp"
+            android:textSize="25sp"
+            android:inputType="number"
+            style="@style/Widget.AppCompat.EditText"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:background="#FFFFFFCC"
+            />
+
+        <EditText
+            android:id="@+id/generatedNumber2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="140dp"
+            android:background="#FFFFFFCC"
+            android:inputType="number"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:textSize="25sp"
+            style="@style/Widget.AppCompat.EditText"/>
+
+        <EditText
+            android:id="@+id/generatedNumber3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="240dp"
+            android:background="#FFFFFFCC"
+            android:inputType="number"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:textSize="25sp"
+            style="@style/Widget.AppCompat.EditText"/>
+
+        <EditText
+            android:id="@+id/generatedNumber4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="340dp"
+            android:background="#FFFFFFCC"
+            android:inputType="number"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:textSize="25sp"
+            style="@style/Widget.AppCompat.EditText"/>
+
+        <EditText
+            android:id="@+id/generatedNumber5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="440dp"
+            android:background="#FFFFFFCC"
+            android:inputType="number"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:textSize="25sp"
+            style="@style/Widget.AppCompat.EditText"/>
+
+        <Button
+            android:id="@+id/sendButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="50dp"
+            android:layout_marginBottom="15dp"
+            android:text="SKIP"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/sendButton"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="50dp"
+            android:text="RESET" />
     </RelativeLayout>
 
 </RelativeLayout>
