@@ -316,14 +316,11 @@ public class HomeActivity extends AppCompatActivity {
         final Boolean currSFXSetting;
 
         if (sfxToggle.isChecked()) {
-            startMusic();
             currSFXSetting = true;
         }
         else {
-            stopMusic();
             currSFXSetting = false;
         }
-
         updateSFXSetting(currSFXSetting);
 
     }
