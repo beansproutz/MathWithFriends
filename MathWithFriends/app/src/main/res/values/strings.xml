@@ -19,6 +19,9 @@
 
     <!-- Used in instructions page -->
     <string name="instructionsLoading">Waiting for other players...</string>
+    <string name="instructionManuel">For this mini-game, you will have a set of numbers and
+        operators to modify so that it computes to a given goal number. Tap two numbers to swap
+        them. Tap on an operator to change it. Submit your answer with the Send button.</string>
 
     <!-- Strings used in game page -->
     <string name="game_button_send">Send</string>

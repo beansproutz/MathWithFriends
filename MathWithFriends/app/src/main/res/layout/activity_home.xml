@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,10 +11,10 @@
         android:id="@+id/playerAvatar"
         android:layout_width="99dp"
         android:layout_height="99dp"
-        android:layout_marginTop="16dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="25dp"
         android:contentDescription="@string/player_1_avatar"
         android:translationZ="3dp"
-        app:layout_constraintHorizontal_bias="0.472"
         tools:srcCompat="@tools:sample/avatars[2]" />
 
     <Button
@@ -26,10 +27,9 @@
         android:text="Play"
         android:textAllCaps="true"
         android:textColor="#000000"
-        android:textSize="27dp"
+        android:textSize="27sp"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-         />
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:id="@+id/customizeButton"
@@ -41,10 +41,9 @@
         android:text="Customize"
         android:textAllCaps="true"
         android:textColor="#000000"
-        android:textSize="27dp"
+        android:textSize="27sp"
         android:layout_below="@+id/playButton"
-        android:layout_centerHorizontal="true"
-        />
+        android:layout_centerHorizontal="true" />
 
     <ToggleButton
         android:id="@+id/musicButton"
@@ -58,10 +57,9 @@
         android:onClick="onMusicToggleClick"
         android:textOff="Music off"
         android:textOn="Music on"
-        android:textSize="27dp"
+        android:textSize="27sp"
         android:layout_below="@+id/customizeButton"
-        android:layout_alignRight="@id/customizeButton"
-        />
+        android:layout_alignEnd="@id/customizeButton" />
 
 
     <ToggleButton
@@ -69,7 +67,7 @@
         android:layout_width="160dp"
         android:layout_height="69dp"
         android:layout_below="@+id/customizeButton"
-        android:layout_alignLeft="@id/customizeButton"
+        android:layout_alignStart="@id/customizeButton"
         android:layout_marginTop="12dp"
         android:onClick="onSFXToggleClick"
         android:background="#F7D54C"
@@ -78,7 +76,7 @@
         android:textColor="#000000"
         android:textOff="SFX off"
         android:textOn="SFX on"
-        android:textSize="27dp" />
+        android:textSize="27sp" />
 
 
     <View
@@ -101,7 +99,7 @@
         android:textAlignment="center"
         android:textColor="#ffffff"
         android:layout_centerHorizontal="true"
-        android:textSize="36dp" />
+        android:textSize="36sp" />
 
     <Button
         android:id="@+id/gotoAchievement"

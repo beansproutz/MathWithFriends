@@ -1,75 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#A6CFD5">
 
     <Button
         android:id="@+id/queueButton"
-        android:layout_width="114dp"
-        android:layout_height="61dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
         android:background="@drawable/loading_button_bg"
         android:onClick="onQueueClick"
+        android:textSize="15sp"
         android:text="QUEUE"
-        app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="@+id/constraintLayout"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+        android:layout_below="@+id/constraintLayout"
+        android:layout_centerHorizontal="true"/>
 
-    <android.support.constraint.ConstraintLayout
+    <RelativeLayout
         android:id="@+id/constraintLayout"
-        android:layout_width="521dp"
-        android:layout_height="202dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="72dp"
-        android:layout_marginEnd="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="@drawable/instructions_bg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_below="@id/backButton"
+        android:layout_centerHorizontal="true">
 
         <TextView
             android:id="@+id/textView2"
-            android:layout_width="485dp"
-            android:layout_height="126dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="16dp"
-            android:text="For this mini-game, you will have a set of numbers and operators to modify so that it computes to a given goal number. Tap two numbers to swap them. Tap on an operator to change it. Submit your answer with the 'Send' button."
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:text="@string/instructionManuel"
             android:textAlignment="textStart"
             android:textColorLink="@color/common_google_signin_btn_text_dark_focused"
-            android:textSize="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:textSize="20sp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/textView"/>
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:text="Math With Friends"
             android:textAlignment="center"
             android:textColorLink="@color/common_google_signin_btn_text_dark_focused"
-            android:textSize="32dp"
-            app:layout_constraintBottom_toTopOf="@+id/textView2"
-            app:layout_constraintEnd_toEndOf="@+id/textView2"
-            app:layout_constraintStart_toStartOf="@+id/textView2" />
+            android:textSize="32sp"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"/>
 
-    </android.support.constraint.ConstraintLayout>
+    </RelativeLayout>
 
     <ImageButton
         android:id="@+id/backButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginBottom="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_revert"
-        android:onClick="onBackClick" />
-</android.support.constraint.ConstraintLayout>
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginBottom="20dp"
+        android:onClick="onBackClick"
+        android:src="@android:drawable/ic_menu_revert"
+        android:layout_alignParentTop="true" />
+</RelativeLayout>
