@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -67,7 +66,7 @@
         android:layout_width="160dp"
         android:layout_height="69dp"
         android:layout_below="@+id/customizeButton"
-        android:layout_alignStart="@id/customizeButton"
+        android:layout_alignLeft="@id/customizeButton"
         android:layout_marginTop="12dp"
         android:onClick="onSFXToggleClick"
         android:background="#F7D54C"
@@ -79,24 +78,18 @@
         android:textSize="27sp" />
 
 
-    <View
-        android:id="@+id/gameButtonsBackground"
-        android:layout_width="736dp"
-        android:layout_height="91dp"
-        android:background="@drawable/game_button_bg"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"/>
+
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_below="@id/gotoAchievement"
-        android:layout_margin="10dp"
+        android:layout_marginTop="10dp"
         android:background="#8fc938"
         android:fontFamily="sans-serif-thin"
         android:text="MATH WITH FRIENDS"
-        android:textAlignment="center"
+        android:gravity="center"
         android:textColor="#ffffff"
         android:layout_centerHorizontal="true"
         android:textSize="36sp" />
