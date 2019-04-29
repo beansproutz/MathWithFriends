@@ -325,9 +325,11 @@ public class HomeActivity extends AppCompatActivity {
 
         if (sfxToggle.isChecked()) {
             currSFXSetting = true;
+            sfxToggle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_sound_on, 0, 0);
         }
         else {
             currSFXSetting = false;
+            sfxToggle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_sound_off, 0, 0);
         }
         updateSFXSetting(currSFXSetting);
 
