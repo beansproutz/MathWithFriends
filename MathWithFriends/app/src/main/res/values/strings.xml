@@ -5,20 +5,29 @@
     <string name="password_confirmation_hint">Password Confirmation</string>
     <string name="button_login">login</string>
 
+    <!-- Used for game display -->
+    <string name="goalNumberDisplay">Goal Number is</string>
+    <string name="player1Display">You</string>
+    <string name="player2Display">Opponent</string>
+
+    <!-- Used for game buttons -->
+    <string name="gameReset">RESET</string>
+    <string name="gameSkip">SKIP</string>
+
     <!-- Used for game equations -->
     <string name="addition">+</string>
     <string name="subtraction">-</string>
-    <string name="multiplication">*</string>
-    <string name="division">/</string>
+    <string name="multiplication">×</string>
+    <string name="division">÷</string>
 
     <!-- Used in results page -->
     <string name="resultWin">You Won!</string>
-    <string name="resultLose">You Lost...</string>
+    <string name="resultLose">You Lost…</string>
     <string name="playAgainButton">Play Again?</string>
     <string name="homeButton">Home</string>
 
     <!-- Used in instructions page -->
-    <string name="instructionsLoading">Waiting for other players...</string>
+    <string name="instructionsLoading">Waiting for other players…</string>
     <string name="instructionManuel">For this mini-game, you will have a set of numbers and
         operators to modify so that it computes to a given goal number. Tap two numbers to swap
         them. Tap on an operator to change it. Submit your answer with the Send button.</string>
