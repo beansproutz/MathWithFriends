@@ -1,6 +1,7 @@
 package com.example.mathwithfriends;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -163,11 +164,13 @@ public class HomeActivity extends AppCompatActivity {
 
                 if (currMusicSetting.booleanValue() == true) {
                     musicToggle.setChecked(true);
+                    musicToggle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_musicimg, 0, 0);
                     startMusic();
                 }
 
                 else {
                     musicToggle.setChecked(false);
+                    musicToggle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_musicoff, 0, 0);
                     stopMusic();
 
                 }
@@ -303,10 +306,13 @@ public class HomeActivity extends AppCompatActivity {
         if (musicToggle.isChecked()) {
             startMusic();
             currMusicSetting = true;
+            musicToggle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_musicimg, 0, 0);
+
         }
         else {
             stopMusic();
             currMusicSetting = false;
+            musicToggle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_musicoff, 0, 0);
         }
 
         updateMusicSetting(currMusicSetting);
