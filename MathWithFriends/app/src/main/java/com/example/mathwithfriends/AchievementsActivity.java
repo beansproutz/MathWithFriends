@@ -38,6 +38,7 @@ public class AchievementsActivity extends AppCompatActivity {
         // Initialize Firebase stuffs.
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        userID = mAuth.getUid();
 
         // Check if achievements are locked
         checkUserAchievements();
