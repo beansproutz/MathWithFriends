@@ -64,23 +64,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.87" />
 
-    <Button
+    <ImageButton
         android:id="@+id/homeButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="321dp"
-        android:layout_marginLeft="321dp"
-        android:layout_marginTop="228dp"
-        android:layout_marginEnd="322dp"
-        android:layout_marginRight="322dp"
-        android:layout_marginBottom="135dp"
-        android:text="Home"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        android:layout_width="300dp"
+        android:layout_height="69dp"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/home"
+        android:text=""
+        app:layout_constraintEnd_toStartOf="@+id/gameButtonsBackground"
+        app:layout_constraintStart_toEndOf="@+id/gameButtonsBackground"
+        app:layout_constraintTop_toBottomOf="@+id/playAgainButton" />
 
     <Button
         android:id="@+id/playAgainButton"
