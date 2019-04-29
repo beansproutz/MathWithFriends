@@ -4,55 +4,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/game_bg">
+    android:background="@drawable/home_background">
 
     <ImageView
         android:id="@+id/playerAvatar"
         android:layout_width="99dp"
         android:layout_height="99dp"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="25dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"
         android:contentDescription="@string/player_1_avatar"
         android:translationZ="3dp"
         tools:srcCompat="@tools:sample/avatars[2]" />
 
-    <Button
+    <ImageButton
         android:id="@+id/playButton"
         android:layout_width="359dp"
         android:layout_height="69dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
-        android:background="#F7D54C"
+        android:layout_marginTop="310dp"
+        android:background="@drawable/play"
         android:onClick="onHomepagePlayClick"
         android:text="Play"
         android:textAllCaps="true"
         android:textColor="#000000"
         android:textSize="27sp" />
 
-    <Button
-        android:id="@+id/customizeButton"
-        android:layout_width="359dp"
-        android:layout_height="69dp"
-        android:layout_marginTop="12dp"
-        android:background="#F7D54C"
-        android:onClick="onHomepageCustomizeClick"
-        android:text="Customize"
-        android:textAllCaps="true"
-        android:textColor="#000000"
-        android:textSize="27sp"
-        android:layout_below="@+id/playButton"
-        android:layout_centerHorizontal="true" />
-
-
     <ToggleButton
         android:id="@+id/musicButton"
         android:layout_width="46dp"
         android:layout_height="46dp"
-        android:layout_below="@+id/customizeButton"
-        android:layout_alignEnd="@id/customizeButton"
-        android:layout_marginTop="135dp"
-        android:layout_marginEnd="-127dp"
+        android:layout_marginTop="310dp"
+        android:layout_alignParentRight="true"
         android:background="@drawable/home_musictglbtn"
         android:checked="true"
         android:onClick="onMusicToggleClick"
@@ -66,39 +50,37 @@
         android:id="@+id/sfxButton"
         android:layout_width="46dp"
         android:layout_height="46dp"
-        android:layout_below="@+id/customizeButton"
-        android:layout_alignLeft="@id/customizeButton"
-        android:layout_marginTop="12dp"
-        android:onClick="onSFXToggleClick"
+        android:layout_below="@+id/musicButton"
+        android:layout_marginTop="5dp"
+        android:layout_alignParentRight="true"
         android:background="@drawable/home_musictglbtn"
         android:checked="true"
+        android:onClick="onSFXToggleClick"
         android:textAllCaps="true"
         android:textColor="#000000"
         android:textOff=""
         android:textOn=""
         android:textSize="27sp" />
 
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_below="@id/gotoAchievement"
-        android:layout_marginTop="10dp"
-        android:background="#8fc938"
-        android:fontFamily="sans-serif-thin"
-        android:text="MATH WITH FRIENDS"
-        android:gravity="center"
-        android:textColor="#ffffff"
-        android:layout_centerHorizontal="true"
-        android:textSize="36sp" />
+    <Button
+        android:id="@+id/customizeButton"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="310dp"
+        android:background="@drawable/ic_profile"
+        android:onClick="onHomepageCustomizeClick"
+        android:text=""
+        android:textAllCaps="true"
+        android:textColor="#000000"
+        android:textSize="27sp" />
 
     <Button
         android:id="@+id/gotoAchievement"
-        android:layout_width="200dp"
-        android:layout_height="43dp"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_below="@+id/customizeButton"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/ic_trophy"
         android:onClick="onHomepageAchievementClick"
-        android:text="gotoAchievements"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/sfxButton"/>
+        android:text="" />
 </RelativeLayout>
