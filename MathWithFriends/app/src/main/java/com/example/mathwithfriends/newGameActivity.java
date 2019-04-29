@@ -34,7 +34,9 @@ public class newGameActivity extends AppCompatActivity {
         generateValues();
     }
 
-
+    public void clickReset(View view) {
+        generateValues();
+    }
 
     public void clickOperation(View view) {
         Button clickedButton = (Button)view;
