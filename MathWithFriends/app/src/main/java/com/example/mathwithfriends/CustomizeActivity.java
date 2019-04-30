@@ -1,6 +1,7 @@
 package com.example.mathwithfriends;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.core.Tag;
 
 public class CustomizeActivity extends AppCompatActivity {
 
@@ -30,6 +32,8 @@ public class CustomizeActivity extends AppCompatActivity {
     private Integer currAvatar;          // Currently chosen avatar, updated as user presses buttons
     private Integer gamesPlayed;
     private Integer gamesWon;
+    public Boolean soundSetting;        // User's current Sound Setting
+    private Boolean musSetting;          // User's current Music Setting
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +107,8 @@ public class CustomizeActivity extends AppCompatActivity {
 
                 gamesPlayed = user.getGamesPlayed();
                 gamesWon = user.getGamesWon();
+                soundSetting = user.getSfxSetting();
+                musSetting = user.getMusicSetting();
 
                 Log.d("CustomizeActivity", "played | won: " + String.valueOf(gamesPlayed) + " | " + String.valueOf(gamesWon));
 
@@ -203,6 +209,23 @@ public class CustomizeActivity extends AppCompatActivity {
                         "Icon 8 chosen!", Toast.LENGTH_SHORT).show();
                 break;
         }
+
+        //PLAY SOUND EFFECT
+        if (soundSetting) {
+            MediaPlayer mp;
+            mp = MediaPlayer.create(this, R.raw.sword_collide);
+            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    // TODO Auto-generated method stub
+                    mp.reset();
+                    mp.release();
+                    mp = null;
+                }
+            });
+            mp.start();
+        }
+
     }
 
     // This method is called when the user presses the home button. Before
