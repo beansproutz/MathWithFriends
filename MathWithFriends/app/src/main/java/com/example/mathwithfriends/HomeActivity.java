@@ -2,6 +2,7 @@ package com.example.mathwithfriends;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -328,6 +329,22 @@ public class HomeActivity extends AppCompatActivity {
         if (sfxToggle.isChecked()) {
             currSFXSetting = true;
             sfxToggle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.sound_on, 0, 0);
+
+            //PLAY SOUND EFFECT
+            MediaPlayer mp;
+            mp = MediaPlayer.create(this, R.raw.sword_collide);
+            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    // TODO Auto-generated method stub
+                    mp.reset();
+                    mp.release();
+                    mp=null;
+                }
+            });
+            mp.start();
+
+
         }
         else {
             currSFXSetting = false;
