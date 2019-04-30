@@ -11,7 +11,7 @@
         android:id="@+id/gameBackground"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/game_bg"
+        android:background="@drawable/inside_dojo"
         android:elevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,76 +20,50 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-    <View
-        android:id="@+id/gameButtonsBackground"
-        android:layout_width="wrap_content"
-        android:layout_height="120dp"
-        android:background="@drawable/game_button_bg"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
+    <ImageButton
         android:id="@+id/playerLose"
-        android:layout_width="253dp"
-        android:layout_height="62dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginLeft="80dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginRight="1dp"
-        android:text="YOU LOSE"
-        android:textColor="#000000"
-        android:textSize="36sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/playAgainButton"
+        android:layout_width="400dp"
+        android:layout_height="130dp"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/you_lose"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/gameBackground"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.87" />
+        app:layout_constraintTop_toTopOf="@+id/gameBackground" />
 
-    <TextView
+    <ImageButton
         android:id="@+id/playerWin"
-        android:layout_width="253dp"
-        android:layout_height="62dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginLeft="80dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginRight="1dp"
-        android:text="YOU WIN"
-        android:textColor="#000000"
-        android:textSize="36sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/playAgainButton"
+        android:layout_width="320dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/you_win"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.87" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/homeButton"
         android:layout_width="300dp"
         android:layout_height="69dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/home"
         android:text=""
-        app:layout_constraintEnd_toStartOf="@+id/gameButtonsBackground"
-        app:layout_constraintStart_toEndOf="@+id/gameButtonsBackground"
+        app:layout_constraintEnd_toStartOf="@+id/gameBackground"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/gameBackground"
         app:layout_constraintTop_toBottomOf="@+id/playAgainButton" />
 
     <ImageButton
         android:id="@+id/playAgainButton"
-        android:background="@drawable/play_again"
         android:layout_width="400dp"
         android:layout_height="85dp"
         android:layout_marginStart="215dp"
-        android:layout_marginLeft="215dp"
-        android:layout_marginTop="130dp"
         android:layout_marginEnd="215dp"
-        android:layout_marginRight="215dp"
-        android:layout_marginBottom="192dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/play_again"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/playerWin" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
