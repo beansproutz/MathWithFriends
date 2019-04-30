@@ -1,6 +1,7 @@
 package com.example.mathwithfriends;
 
 import android.content.Intent;
+import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.widget.Button;
 
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.server.Room;
@@ -48,8 +50,8 @@ public class ResultsActivity extends AppCompatActivity {
     }
 
     public void addListenerOnButton() {
-        Button playAgain = findViewById(R.id.playAgainButton);
-        Button homeButton = findViewById(R.id.homeButton);
+        ImageButton playAgain = findViewById(R.id.playAgainButton);
+        ImageButton homeButton = findViewById(R.id.homeButton);
 
         // Go back to instructions page
         playAgain.setOnClickListener(new OnClickListener() {
@@ -104,10 +106,10 @@ public class ResultsActivity extends AppCompatActivity {
             @Override
             public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
                 User user = mutableData.getValue(User.class);
-                TextView winMsg = findViewById(R.id.playerWin);
+                ImageButton winMsg = (ImageButton)findViewById(R.id.playerWin);
                 winMsg.setVisibility(View.INVISIBLE);
 
-                TextView loseMsg = findViewById(R.id.playerLose);
+                ImageButton loseMsg = (ImageButton)findViewById(R.id.playerLose);
                 loseMsg.setVisibility(View.INVISIBLE);
 
                 if (user == null) {

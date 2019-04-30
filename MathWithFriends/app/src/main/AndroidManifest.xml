@@ -44,6 +44,10 @@
             android:screenOrientation="landscape">
         </activity>
 
+        <activity android:name=".newGameActivity"
+            android:screenOrientation="landscape">
+        </activity>
+
         <activity android:name=".InstructionsActivity"
             android:screenOrientation="landscape">
         </activity>
