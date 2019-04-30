@@ -2,6 +2,7 @@ package com.example.mathwithfriends;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -10,8 +11,6 @@ import com.example.utility.FullScreenModifier;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import org.w3c.dom.Text;
 
 import java.util.Random;
 
@@ -25,10 +24,10 @@ public class newGameActivity extends AppCompatActivity {
     // private String userID = FirebaseAuth.getInstance().getUid();
 
     private String roomID;
-    private int[] initialValues;
+    private int[] initialValues = new int[VALUE_COUNT];
     private TextView[] operands;
-    private int goalValue;
-    private TextView currentView;
+    private long goalValue;
+    private TextView currentView = null;
     private int previousPosition;
 
     @Override
@@ -39,8 +38,8 @@ public class newGameActivity extends AppCompatActivity {
 
         // roomID = getIntent().getStringExtra("ROOM_ID");
 
-        generateNewGame();
         operands = getOperands();
+        generateNewGame();
     }
 
     public void clickSkip(View view) {
@@ -54,16 +53,32 @@ public class newGameActivity extends AppCompatActivity {
     public void clickOperand(View view) {
         TextView clickedView = (TextView)view;
 
-        // Set back to initial position if we clicked current button
-        if (clickedOperationPosition(view)) {
-            if (viewSelected()) {
-                clickedView.setText("");
-                operands[previousPosition].setText(clickedView.getText());
-                operands[previousPosition].setVisibility(View.VISIBLE);
+        // If swapping to operand of operation position
+        // Make the current view invisible and give the clicked view its value
+        if (isOperationPosition(view)) {
+            if (currentView == null) {
+                return;
             }
+            // Swap text if clicking between operation positions
+            if (isOperationPosition(currentView)) {
+                CharSequence temp = currentView.getText();
+                currentView.setText(clickedView.getText());
+                clickedView.setText(temp);
+            }
+            else {
+                clickedView.setText(currentView.getText());
+                operands[previousPosition].setVisibility(View.INVISIBLE);
+                attemptOperation();
+            }
+            currentView = null;
         }
+        // Otherwise, a different operand was clicked
+        // Make that operand the current view
         else {
-
+            currentView = clickedView;
+            // TODO Unhighlight operands[previousPosition] to indicate there is a new view
+            previousPosition = getPosition(clickedView);
+            // TODO Highlight operands[previousPosition] to indicate it is current view
         }
     }
 
@@ -75,12 +90,67 @@ public class newGameActivity extends AppCompatActivity {
         clickedButton.setText(updatedOperation);
     }
 
-    private boolean clickedOperationPosition(View view) {
-        return (view == findViewById(R.id.firstNumber)) || (view == findViewById(R.id.secondNumber));
+    private void attemptOperation() {
+        TextView leftOp = findViewById(R.id.firstNumber);
+        TextView rightOp = findViewById(R.id.secondNumber);
+
+        // Do not go through with operation if at least one operand is missing
+        if (leftOp.getText().length() == 0 || rightOp.getText().length() == 0) {
+            return;
+        }
+
+        long leftVal = Long.valueOf(leftOp.getText().toString());
+        long rightVal = Long.valueOf(rightOp.getText().toString());
+        long result = performOperation(leftVal, rightVal);
+
+        for (int i = VALUE_COUNT - 1; i >= 0; i--) {
+            if (operands[i].getVisibility() == View.INVISIBLE) {
+                operands[i].setText(String.valueOf(result));
+                operands[i].setVisibility(View.VISIBLE);
+                break;
+            }
+        }
+
+        leftOp.setText("");
+        rightOp.setText("");
     }
 
-    private boolean viewSelected() {
-        return currentView != null;
+    private long performOperation(long leftVal, long rightVal) {
+        String addition = getApplicationContext().getString(R.string.addition);
+        String subtraction = getApplicationContext().getString(R.string.subtraction);
+        String multiplication = getApplicationContext().getString(R.string.multiplication);
+        String division = getApplicationContext().getString(R.string.division);
+        String operation = ((TextView)findViewById(R.id.operation)).getText().toString();
+
+        long result = 0;
+
+        if (operation.equals(addition)) {
+            result = leftVal + rightVal;
+        }
+        else if (operation.equals(subtraction)) {
+            result = leftVal - rightVal;
+        }
+        else if (operation.equals(multiplication)) {
+            result = leftVal * rightVal;
+        }
+        else if (operation.equals(division)) {
+            result = leftVal / rightVal;
+        }
+
+        return result;
+    }
+
+    private int getPosition(TextView view) {
+        for (int i = 0; i < VALUE_COUNT; i++) {
+            if (view == operands[i]) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private boolean isOperationPosition(View view) {
+        return (view == findViewById(R.id.firstNumber)) || (view == findViewById(R.id.secondNumber));
     }
 
     private String getNextOperation(String operation) {
@@ -118,7 +188,6 @@ public class newGameActivity extends AppCompatActivity {
         final int MIN_VALUE = 1;
         final int MAX_VALUE = 9;
 
-        initialValues = new int[VALUE_COUNT];
         Random rand = new Random();
 
         for (int i = 0; i < VALUE_COUNT; i++) {
@@ -133,6 +202,7 @@ public class newGameActivity extends AppCompatActivity {
         for (int i = 0; i < VALUE_COUNT; i++) {
             String valueString = String.valueOf(initialValues[i]);
             operands[i].setText(valueString);
+            operands[i].setVisibility(View.VISIBLE);
         }
     }
 
