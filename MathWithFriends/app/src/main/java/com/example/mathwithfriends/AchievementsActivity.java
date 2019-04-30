@@ -33,18 +33,17 @@ public class AchievementsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_achievements);
         FullScreenModifier.setFullscreen(getWindow().getDecorView());
 
-        // Initialize activities (buttons).
-
         // Initialize Firebase stuffs.
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        userID = mAuth.getUid();
+        userID = FirebaseAuth.getInstance().getUid();
 
-        // Check if achievements are locked
-        checkUserAchievements();
+        // Check if achievements are locked and update availability accordingly
+        updateUserAchievements();
     }
 
-    private void checkUserAchievements() {
+    // Check and update the status of achievements for user
+    private void updateUserAchievements() {
         DatabaseReference userRef = mDatabase.child("Users").child(userID);
 
         userRef.runTransaction(new Transaction.Handler() {
@@ -57,6 +56,8 @@ public class AchievementsActivity extends AppCompatActivity {
 
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+
+                // Check for DB fetch and existence of users, output errors accordingly
                 if (dataSnapshot == null) {
                     Log.e("AchievementsActivity", "Error: Can't retrieve user data");
                     return;
@@ -70,7 +71,13 @@ public class AchievementsActivity extends AppCompatActivity {
                     return;
                 }
 
-                // Check which achievements were unlocked if there were any
+                // Get user game stats to calculate achievements
+                Integer gamesPlayed = user.getGamesPlayed();
+                Integer gamesWon = user.getGamesWon();
+
+                Log.d("AchievementsActivity", "played | won: " + String.valueOf(gamesPlayed) + " | " + String.valueOf(gamesWon));
+
+                // Unlock achievements gained accordingly
                 View fiveWinLock = findViewById(R.id.achievement5winsLocked);
                 fiveWinLock.setVisibility(View.VISIBLE);
 
@@ -80,17 +87,15 @@ public class AchievementsActivity extends AppCompatActivity {
                 View fifteenWinLock = findViewById(R.id.achievement15winsLocked);
                 fiveWinLock.setVisibility(View.VISIBLE);
 
-                // Check if
-                if (user.getGamesWon() == 5) {
+                if (user.getGamesWon() >= 5) {
                     fiveWinLock.setVisibility(View.INVISIBLE);
                 }
-                if (user.getGamesWon() == 10) {
+                if (user.getGamesWon() >= 10) {
                     tenWinLock.setVisibility(View.INVISIBLE);
                 }
-                if (user.getGamesWon() == 15) {
+                if (user.getGamesWon() >= 15) {
                     fifteenWinLock.setVisibility(View.INVISIBLE);
                 }
-
             }
         });
     }
@@ -101,14 +106,4 @@ public class AchievementsActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
-    // Test button to "unlock" achievements
-    public void testUnlockClick(View view) {
-
-        // For testing: when clicked should "unlock" achievement of 5 wins
-        View fiveWins = findViewById(R.id.achievement5winsLocked);
-        fiveWins.setVisibility(View.INVISIBLE);
-
-    }
-
 }
