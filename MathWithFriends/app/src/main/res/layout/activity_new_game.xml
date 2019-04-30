@@ -4,15 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/clouds">
+    android:background="@drawable/inside_dojo">
 
     <RelativeLayout
         android:id="@+id/player1Layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_margin="20dp"
-        android:background="#7F96FF"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="#66008577"
+        android:minWidth="100dp"
+        android:minHeight="200dp"
         android:paddingBottom="35sp">
 
         <ImageView
@@ -21,10 +26,14 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_margin="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/game_avatar_outline"
             android:contentDescription="@string/player_1_avatar"
-            android:translationZ="3dp"
-            tools:srcCompat="@tools:sample/avatars[2]" />
+            android:src="@drawable/cloud_special"
+            android:translationZ="3dp" />
 
         <TextView
             android:id="@+id/player1Name"
@@ -46,7 +55,9 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
-        android:background="#F4675D"
+        android:background="#66000000"
+        android:minWidth="100dp"
+        android:minHeight="200dp"
         android:paddingBottom="35sp">
 
         <ImageView
@@ -55,10 +66,14 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_margin="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/game_avatar_outline"
             android:contentDescription="@string/player_1_avatar"
-            android:translationZ="3dp"
-            tools:srcCompat="@tools:sample/avatars[3]" />
+            android:src="@drawable/triangle_special"
+            android:translationZ="3dp" />
 
         <TextView
             android:id="@+id/player2Name"
@@ -80,21 +95,22 @@
         android:layout_marginBottom="20dp"
         android:layout_toStartOf="@+id/player2Layout"
         android:layout_toEndOf="@id/player1Layout"
-        android:background="#F7D54C">
+        android:background="#FFF7D54C">
 
         <TextView
-            android:id="@+id/GoalNumberTextView"
+            android:id="@+id/goalTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="@string/goalNumberDisplay"
+            android:textColor="#111111"
             android:textSize="30sp" />
 
         <TextView
-            android:id="@+id/goalNumberText"
+            android:id="@+id/goal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/GoalNumberTextView"
+            android:layout_below="@+id/goalTextView"
             android:layout_centerHorizontal="true"
             android:textSize="40sp" />
     </RelativeLayout>
@@ -104,8 +120,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/goalLayout"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginEnd="80dp"
         android:layout_toStartOf="@+id/player2Layout"
         android:layout_toEndOf="@id/player1Layout"
         android:background="#F7D54C">
@@ -120,7 +136,6 @@
 
         <EditText
             android:id="@+id/firstNumber"
-            style="@style/Widget.AppCompat.EditText"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_alignParentStart="true"
@@ -130,14 +145,12 @@
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
             android:background="#FFFFFFCC"
-            android:inputType="number"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:textSize="25sp" />
 
         <EditText
             android:id="@+id/secondNumber"
-            style="@style/Widget.AppCompat.EditText"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_alignParentEnd="true"
@@ -147,7 +160,6 @@
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
             android:background="#FFFFFFCC"
-            android:inputType="number"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:textSize="25sp" />
@@ -159,16 +171,18 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/player2Layout"
         android:layout_alignEnd="@+id/player2Layout"
-        android:layout_marginTop="20dp"
-        android:background="@color/colorPrimary">
+        android:layout_marginTop="40dp"
+        android:background="#66008577">
 
         <Button
             android:id="@+id/sendButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="50dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="5dp"
+            android:onClick="clickSkip"
             android:text="@string/gameSkip" />
 
         <Button
@@ -177,6 +191,7 @@
             android:layout_below="@id/sendButton"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="50dp"
+            android:layout_marginBottom="10dp"
             android:onClick="clickReset"
             android:text="@string/gameReset" />
     </RelativeLayout>
@@ -190,7 +205,7 @@
         android:layout_alignBottom="@+id/functionalityLayout"
         android:layout_marginEnd="30dp"
         android:layout_toStartOf="@+id/functionalityLayout"
-        android:background="@color/colorPrimary"
+        android:background="#66008577"
         android:gravity="center_horizontal|center_vertical"
         android:orientation="horizontal">
 

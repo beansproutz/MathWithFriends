@@ -76,7 +76,7 @@ public class GameActivity extends Activity {
         EquationSolver solver = new EquationSolver(this.getApplicationContext());
 
         final long result = solver.solve(equation);
-        final long goalNumber = Long.parseLong(((TextView)findViewById(R.id.goalNumberText)).getText().toString());
+        final long goalNumber = Long.parseLong(((TextView)findViewById(R.id.goal)).getText().toString());
         Log.d(TAG, "Result and goal are " + String.valueOf(result) + " " + String.valueOf(goalNumber));
 
         roomsRef.child(roomID).runTransaction(new Transaction.Handler() {
@@ -320,7 +320,7 @@ public class GameActivity extends Activity {
             operand.setText(String.valueOf(randOperand));
         }
 
-        TextView goalNumberView = findViewById(R.id.goalNumberText);
+        TextView goalNumberView = findViewById(R.id.goal);
         Long randomGoal = ThreadLocalRandom.current().nextLong(LOWER_GAME_NUMBER_BOUND, UPPER_GAME_NUMBER_BOUND);
         goalNumberView.setText(String.valueOf(randomGoal));
     }
