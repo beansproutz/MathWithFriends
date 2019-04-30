@@ -236,23 +236,23 @@
         app:layout_constraintTop_toBottomOf="@+id/player2Avatar" />
 
     <TextView
-        android:id="@+id/GoalNumberTextView"
+        android:id="@+id/goalTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="Goal Number"
         app:layout_constraintBottom_toBottomOf="@+id/goalNumberBackground"
-        app:layout_constraintEnd_toEndOf="@+id/goalNumberText"
-        app:layout_constraintStart_toStartOf="@+id/goalNumberText" />
+        app:layout_constraintEnd_toEndOf="@+id/goal"
+        app:layout_constraintStart_toStartOf="@+id/goal" />
 
     <TextView
-        android:id="@+id/goalNumberText"
+        android:id="@+id/goal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:text="5"
-        app:layout_constraintBottom_toTopOf="@+id/GoalNumberTextView"
+        app:layout_constraintBottom_toTopOf="@+id/goalTextView"
         app:layout_constraintEnd_toEndOf="@+id/goalNumberBackground"
         app:layout_constraintStart_toStartOf="@+id/goalNumberBackground"
         app:layout_constraintTop_toTopOf="@+id/goalNumberBackground" />
