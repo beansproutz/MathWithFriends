@@ -1,5 +1,7 @@
 package com.example.mathwithfriends;
 
+import android.content.Intent;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -27,15 +29,13 @@ public class newGameActivity extends AppCompatActivity {
     final int VALUE_COUNT = 5;
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference roomsRef = database.getReference("Rooms");
-    private DatabaseReference usersRef = database.getReference("Users");
     private String userID = FirebaseAuth.getInstance().getUid();
 
     private String roomID;
-    private int[] initialValues = new int[VALUE_COUNT];
+    private int[] initialValues;
     private TextView[] operands;
     private long goalValue;
-    private TextView currentView = null;
+    private TextView currentView;
     private int previousPosition;
 
     @Override
@@ -45,22 +45,48 @@ public class newGameActivity extends AppCompatActivity {
         FullScreenModifier.setFullscreen(getWindow().getDecorView());
 
         roomID = getIntent().getStringExtra("ROOM_ID");
-        operands = getOperands();
+        operands = new TextView[] {
+                findViewById(R.id.operand1),
+                findViewById(R.id.operand2),
+                findViewById(R.id.operand3),
+                findViewById(R.id.operand4),
+                findViewById(R.id.operand5)
+        };
+        initialValues = new int[VALUE_COUNT];
+
         generateNewGame();
         startGame();
+
+        new CountDownTimer(60000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+            }
+
+            @Override
+            public void onFinish() {
+                Intent intent = new Intent(newGameActivity.this, ResultsActivity.class);
+                intent.putExtra("ROOM_ID", roomID);
+                startActivity(intent);
+                finish();
+            }
+        }.start();
     }
 
+    // Invoked when the SKIP button is clicked
+    // Generates a new game
     public void clickSkip(View view) {
         generateNewGame();
     }
 
+    // Invoked when the RESET button is clicked
+    // Resets this game to its initial state
     public void clickReset(View view) {
         resetGame();
     }
 
-    // If operation position clicked
-    // - If current view does not exist, RETURN
-    // - If current view is clicked view, place it back into original position
+    // Invoked when any possible operand position is clicked
+    // Places a selected operand into a position
+    // If that position was taken, swap it out
     public void clickOperand(View view) {
         TextView clickedView = (TextView)view;
 
@@ -108,6 +134,8 @@ public class newGameActivity extends AppCompatActivity {
         }
     }
 
+    // Invoked when the operation button is clicked
+    // Cycles through operations (+ > - > × > ÷ > + > …)
     public void clickOperation(View view) {
         Button clickedButton = (Button)view;
         String currentOperation = clickedButton.getText().toString();
@@ -155,7 +183,6 @@ public class newGameActivity extends AppCompatActivity {
             // TODO Update game server information
             generateNewGame();
         }
-
     }
 
     private boolean hasSucceeded() {
@@ -228,16 +255,11 @@ public class newGameActivity extends AppCompatActivity {
 
     private void generateNewGame() {
         generateValues();
-        updateOperands();
-        updateOperation();
-        updateGoal();
+        setupViews();
     }
 
     private void resetGame() {
-        updateOperands();
-        updateOperation();
-        ((TextView)findViewById(R.id.firstNumber)).setText("");
-        ((TextView)findViewById(R.id.secondNumber)).setText("");
+        setupViews();
     }
 
     // Random generates values and updates the operand text views
@@ -254,49 +276,35 @@ public class newGameActivity extends AppCompatActivity {
         goalValue = rand.nextInt(MAX_VALUE) + MIN_VALUE;
     }
 
-    // Updates the operand text views to initial operand values
-    private void updateOperands() {
+    private void setupViews() {
+        // Update operands
         for (int i = 0; i < VALUE_COUNT; i++) {
             String valueString = String.valueOf(initialValues[i]);
             operands[i].setText(valueString);
             operands[i].setVisibility(View.VISIBLE);
         }
-    }
 
-    // Returns array of operands
-    private TextView[] getOperands() {
-        TextView[] operands = new TextView[VALUE_COUNT];
-
-        operands[0] = findViewById(R.id.operand1);
-        operands[1] = findViewById(R.id.operand2);
-        operands[2] = findViewById(R.id.operand3);
-        operands[3] = findViewById(R.id.operand4);
-        operands[4] = findViewById(R.id.operand5);
-
-        return operands;
-    }
-
-    // Resets operation to the default - addition
-    private void updateOperation() {
+        // Reset operation to addition by default
         TextView operation = findViewById(R.id.operation);
         operation.setText(R.string.addition);
-    }
 
-    // Updates the goal text to initial goal
-    private void updateGoal() {
+        // Update goal
         String goalString = String.valueOf(goalValue);
         TextView goal = findViewById(R.id.goal);
         goal.setText(goalString);
+
+        // Reset operation positions
+        ((TextView)findViewById(R.id.firstNumber)).setText("");
+        ((TextView)findViewById(R.id.secondNumber)).setText("");
     }
 
     private void startGame() {
-        DatabaseReference roomRef = roomsRef.child(roomID);
+        DatabaseReference roomRef = database.getReference("Rooms").child(roomID);
 
         roomRef.runTransaction(new Transaction.Handler() {
             @NonNull
             @Override
             public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
-                // Just accessing room data
                 return Transaction.success(mutableData);
             }
 
@@ -320,7 +328,7 @@ public class newGameActivity extends AppCompatActivity {
     }
 
     private void getAvatars(final boolean isFirstUser) {
-        DatabaseReference roomRef = roomsRef.child(roomID);
+        DatabaseReference roomRef = database.getReference("Rooms").child(roomID);
 
         roomRef.runTransaction(new Transaction.Handler() {
             @NonNull
@@ -359,7 +367,7 @@ public class newGameActivity extends AppCompatActivity {
     }
 
     private void setAvatars(final String playerID, final String opponentID) {
-        usersRef.runTransaction(new Transaction.Handler() {
+        database.getReference("Users").runTransaction(new Transaction.Handler() {
             @NonNull
             @Override
             public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
@@ -382,13 +390,13 @@ public class newGameActivity extends AppCompatActivity {
                 ImageView playerAvatar = findViewById(R.id.player1ImageView);
                 ImageView opponentAvatar = findViewById(R.id.player2ImageView);
 
-                playerAvatar.setImageResource(getAvatar(playerAvatarID));
-                opponentAvatar.setImageResource(getAvatar(opponentAvatarID));
+                playerAvatar.setImageResource(findAvatarFromID(playerAvatarID));
+                opponentAvatar.setImageResource(findAvatarFromID(opponentAvatarID));
             }
         });
     }
 
-    public int getAvatar(Integer avatarID) {
+    public int findAvatarFromID(int avatarID) {
         int avatarSource = 0;
 
         switch(avatarID) {

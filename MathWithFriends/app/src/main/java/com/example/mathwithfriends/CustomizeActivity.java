@@ -129,10 +129,9 @@ public class CustomizeActivity extends AppCompatActivity {
             ImageButton lockLump = (ImageButton)findViewById(R.id.lumpLvl2);
             lockLump.setVisibility(View.INVISIBLE);
         }
-        else if (gamesWon >= 5 && gamesWon < 10) {
+        else if (gamesWon < 10) {
             ImageView unlockSquare = findViewById(R.id.lockedSquare);
             unlockSquare.setVisibility(View.GONE);
-
             ImageButton lockCloud = (ImageButton)findViewById(R.id.cloudLvl2);
             lockCloud.setVisibility(View.INVISIBLE);
             ImageButton lockTriangle = (ImageButton)findViewById(R.id.triangleLvl2);
@@ -140,7 +139,7 @@ public class CustomizeActivity extends AppCompatActivity {
             ImageButton lockLump = (ImageButton)findViewById(R.id.lumpLvl2);
             lockLump.setVisibility(View.INVISIBLE);
         }
-        else if (gamesWon >= 10 && gamesWon < 15) {
+        else if (gamesWon < 15) {
             ImageView unlockSquare = findViewById(R.id.lockedSquare);
             unlockSquare.setVisibility(View.GONE);
             ImageView unlockTriangle = findViewById(R.id.lockedTriangle);
@@ -151,7 +150,7 @@ public class CustomizeActivity extends AppCompatActivity {
             ImageButton lockLump = (ImageButton)findViewById(R.id.lumpLvl2);
             lockLump.setVisibility(View.INVISIBLE);
         }
-        else if (gamesWon > 15) {
+        else {
             ImageView unlockSquare = findViewById(R.id.lockedSquare);
             unlockSquare.setVisibility(View.GONE);
             ImageView unlockTriangle = findViewById(R.id.lockedTriangle);
