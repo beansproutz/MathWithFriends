@@ -7,38 +7,26 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class Room {
     private Long playerCount;
-    private Long firstUserQuestionsSolved;
-    private Long secondUserQuestionsSolved;
+    private Long firstUserLife;
+    private Long secondUserLife;
     private String firstUserID;
     private String secondUserID;
 
     public Room() {
         // Needed for Room.class access in Firebase
         this.playerCount = 0L;
-        this.firstUserQuestionsSolved = 0L;
-        this.secondUserQuestionsSolved = 0L;
+        this.firstUserLife = 3L;
+        this.secondUserLife = 3L;
         this.firstUserID = "";
         this.secondUserID = "";
     }
 
-    public Room(Long playerCount, Long firstUserQuestionsSolved, Long secondUserQuestionsSolved, String firstUserID, String secondUserID) {
+    public Room(Long playerCount, Long firstUserLife, Long secondUserLife, String firstUserID, String secondUserID) {
         this.playerCount = playerCount;
-        this.firstUserQuestionsSolved = firstUserQuestionsSolved;
-        this.secondUserQuestionsSolved = secondUserQuestionsSolved;
+        this.firstUserLife = firstUserLife;
+        this.secondUserLife = secondUserLife;
         this.firstUserID = firstUserID;
         this.secondUserID = secondUserID;
-    }
-
-    public boolean playerWon(String userID) {
-        if (firstUserID.equals(userID)) {
-            return firstUserQuestionsSolved > secondUserQuestionsSolved;
-        }
-
-        if (secondUserID.equals(userID)) {
-            return secondUserQuestionsSolved > firstUserQuestionsSolved;
-        }
-
-        return false;
     }
 
     public boolean userExists(String userID) {
@@ -83,20 +71,20 @@ public class Room {
         this.playerCount = playerCount;
     }
 
-    public Long getFirstUserQuestionsSolved() {
-        return firstUserQuestionsSolved;
+    public Long getFirstUserLife() {
+        return firstUserLife;
     }
 
-    public void setFirstUserQuestionsSolved(Long firstUserQuestionsSolved) {
-        this.firstUserQuestionsSolved = firstUserQuestionsSolved;
+    public void setFirstUserLife(Long firstUserLife) {
+        this.firstUserLife = firstUserLife;
     }
 
-    public Long getSecondUserQuestionsSolved() {
-        return secondUserQuestionsSolved;
+    public Long getSecondUserLife() {
+        return secondUserLife;
     }
 
-    public void setSecondUserQuestionsSolved(Long secondUserQuestionsSolved) {
-        this.secondUserQuestionsSolved = secondUserQuestionsSolved;
+    public void setSecondUserLife(Long secondUserLife) {
+        this.secondUserLife = secondUserLife;
     }
 
     public String getFirstUserID() {

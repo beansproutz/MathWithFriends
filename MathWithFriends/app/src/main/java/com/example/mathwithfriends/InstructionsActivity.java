@@ -129,8 +129,7 @@ public class InstructionsActivity extends Activity {
 
                 // All players have joined! Start up the game and finish off queueing.
                 if (room.full()) {
-                    // TODO Change back to GameActivity
-                    Intent intent = new Intent(InstructionsActivity.this, newGameActivity.class);
+                    Intent intent = new Intent(InstructionsActivity.this, GameActivity.class);
                     intent.putExtra("ROOM_ID", roomID);
                     startActivity(intent);
                     finish();

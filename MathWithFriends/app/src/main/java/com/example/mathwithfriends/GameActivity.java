@@ -1,8 +1,17 @@
 package com.example.mathwithfriends;
 
-import com.example.server.Room;
-import com.example.utility.EquationSolver;
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.example.server.Room;
 import com.example.utility.FullScreenModifier;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -11,175 +20,370 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.app.Activity;
-import android.os.CountDownTimer;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.Log;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
+import java.util.Random;
 
-import java.util.concurrent.ThreadLocalRandom;
-
-public class GameActivity extends Activity {
+public class GameActivity extends AppCompatActivity {
     private final String TAG = "GameActivity";
+    final int VALUE_COUNT = 5;
 
-    private Button operandButtons[];
-    private Button operationButtons[];
-    private Button selectedButton = null;
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private String userID = FirebaseAuth.getInstance().getUid();
 
     private String roomID;
-    private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference roomsRef = database.getReference("Rooms");
-    private DatabaseReference usersRef = database.getReference("Users");
-    private String userID = FirebaseAuth.getInstance().getUid();
+    private int[] initialValues;
+    private TextView[] operands;
+    private long goalValue;
+    private TextView currentView;
+    private int previousPosition;
+    private boolean isFirstUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_game);
         FullScreenModifier.setFullscreen(getWindow().getDecorView());
 
         roomID = getIntent().getStringExtra("ROOM_ID");
+        operands = new TextView[] {
+                findViewById(R.id.operand1),
+                findViewById(R.id.operand2),
+                findViewById(R.id.operand3),
+                findViewById(R.id.operand4),
+                findViewById(R.id.operand5)
+        };
+        initialValues = new int[VALUE_COUNT];
 
-        assignButtons();
+        generateNewGame();
         startGame();
 
-        new CountDownTimer(90000, 1000) {
+        // Set up listener for changes in life points
+        database.getReference("Rooms").child(roomID).addValueEventListener(new ValueEventListener() {
             @Override
-            public void onTick(long millisUntilFinished) {
-                Log.d(TAG, String.valueOf(millisUntilFinished / 1000) + " seconds remaining");
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Integer life;
+
+                if (isFirstUser) {
+                    life = dataSnapshot.child("firstUserLife").getValue(Integer.class);
+                }
+                else {
+                    life = dataSnapshot.child("secondUserLife").getValue(Integer.class);
+                }
+
+                if (life == null) {
+                    Log.e(TAG, "Failed to obtain life points of player");
+                    return;
+                }
+
+                if (life == 0) {
+                    Intent intent = new Intent(GameActivity.this, ResultsActivity.class);
+                    intent.putExtra("RESULT", false);
+                    intent.putExtra("ROOM_ID", roomID);
+                    startActivity(intent);
+                    finish();
+                }
             }
 
             @Override
-            public void onFinish() {
-                Log.d(TAG, "Done!");
-                Intent intent = new Intent(GameActivity.this, ResultsActivity.class);
-                intent.putExtra("ROOM_ID", roomID);
-                startActivity(intent);
-                finish();
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
-        }.start();
+        });
     }
 
-    // Invoked when the send button is clicked.
-    // Computes equation, then sends results out to the server.
-    public void clickSend(View view) {
-        String[] equation = convertToEquation();
-        EquationSolver solver = new EquationSolver(this.getApplicationContext());
+    // Invoked when the SKIP button is clicked
+    // Generates a new game
+    public void clickSkip(View view) {
+        generateNewGame();
+    }
 
-        final long result = solver.solve(equation);
-        final long goalNumber = Long.parseLong(((TextView)findViewById(R.id.goal)).getText().toString());
-        Log.d(TAG, "Result and goal are " + String.valueOf(result) + " " + String.valueOf(goalNumber));
+    // Invoked when the RESET button is clicked
+    // Resets this game to its initial state
+    public void clickReset(View view) {
+        resetGame();
+    }
 
-        roomsRef.child(roomID).runTransaction(new Transaction.Handler() {
+    // Invoked when any possible operand position is clicked
+    // Places a selected operand into a position
+    // If that position was taken, swap it out
+    public void clickOperand(View view) {
+        TextView clickedView = (TextView)view;
+
+        // If swapping to operand of operation position
+        // Make the current view invisible and give the clicked view its value
+        if (isOperationPosition(view)) {
+            if (currentView == null) {
+                return;
+            }
+
+            if (currentView == clickedView) {
+                resetOperand(clickedView);
+            }
+            else if (isOperationPosition(currentView)) {
+                CharSequence temp = currentView.getText();
+                currentView.setText(clickedView.getText());
+                clickedView.setText(temp);
+            }
+            else if (clickedView.getText().length() == 0) {
+                clickedView.setText(currentView.getText());
+                operands[previousPosition].setVisibility(View.INVISIBLE);
+                attemptOperation();
+            }
+            else {
+                resetOperand(clickedView);
+                clickedView.setText(currentView.getText());
+                currentView.setVisibility(View.INVISIBLE);
+            }
+
+            currentView = null;
+        }
+
+        if (currentView == null) {
+            currentView = clickedView;
+            previousPosition = getPosition(clickedView);
+            // TODO Highlight operands[previousPosition] to indicate it is current view
+        }
+        // Otherwise, a different operand was clicked
+        // Make that operand the current view
+        else {
+            currentView = clickedView;
+            // TODO Unhighlight operands[previousPosition] to indicate there is a new view
+            previousPosition = getPosition(clickedView);
+            // TODO Highlight operands[previousPosition] to indicate it is current view
+        }
+    }
+
+    // Invoked when the operation button is clicked
+    // Cycles through operations (+ > - > × > ÷ > + > …)
+    public void clickOperation(View view) {
+        Button clickedButton = (Button)view;
+        String currentOperation = clickedButton.getText().toString();
+        String updatedOperation = getNextOperation(currentOperation);
+
+        clickedButton.setText(updatedOperation);
+    }
+
+    private void resetOperand(TextView view) {
+        for (int i = VALUE_COUNT - 1; i >= 0; i--) {
+            if (operands[i].getVisibility() == View.INVISIBLE) {
+                operands[i].setText(view.getText());
+                operands[i].setVisibility(View.VISIBLE);
+                view.setText("");
+                break;
+            }
+        }
+    }
+
+    private void attemptOperation() {
+        TextView leftOp = findViewById(R.id.firstNumber);
+        TextView rightOp = findViewById(R.id.secondNumber);
+
+        // Do not go through with operation if at least one operand is missing
+        if (leftOp.getText().length() == 0 || rightOp.getText().length() == 0) {
+            return;
+        }
+
+        long leftVal = Long.valueOf(leftOp.getText().toString());
+        long rightVal = Long.valueOf(rightOp.getText().toString());
+        long result = performOperation(leftVal, rightVal);
+
+        for (int i = VALUE_COUNT - 1; i >= 0; i--) {
+            if (operands[i].getVisibility() == View.INVISIBLE) {
+                operands[i].setText(String.valueOf(result));
+                operands[i].setVisibility(View.VISIBLE);
+                break;
+            }
+        }
+
+        leftOp.setText("");
+        rightOp.setText("");
+
+        if (hasSucceeded()) {
+            updateOpponentLife();
+            generateNewGame();
+        }
+    }
+
+    private void updateOpponentLife() {
+        database.getReference("Rooms").child(roomID).runTransaction(new Transaction.Handler() {
             @NonNull
             @Override
             public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
-                // No need to update questions solved if the answer is incorrect
-                if (result != goalNumber) {
+                Long newLife;
+
+                if (isFirstUser) {
+                    newLife = mutableData.child("secondUserLife").getValue(Long.class);
+                }
+                else {
+                    newLife = mutableData.child("firstUserLife").getValue(Long.class);
+                }
+
+                if (newLife == null) {
                     return Transaction.success(mutableData);
                 }
 
-                Room room = mutableData.getValue(Room.class);
-
-                if (room == null) {
-                    return Transaction.success(mutableData);
+                if (isFirstUser) {
+                    mutableData.child("secondUserLife").setValue(newLife - 1);
+                }
+                else {
+                    mutableData.child("firstUserLife").setValue(newLife - 1);
                 }
 
-                if (userID.equals(room.getFirstUserID())) {
-                    Long questionsSolved = room.getFirstUserQuestionsSolved();
-                    room.setFirstUserQuestionsSolved(questionsSolved + 1);
-                }
-                else if (userID.equals(room.getSecondUserID())) {
-                    Long questionsSolved = room.getSecondUserQuestionsSolved();
-                    room.setSecondUserQuestionsSolved(questionsSolved + 1);
-                }
-
-                mutableData.setValue(room);
                 return Transaction.success(mutableData);
             }
 
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
-                // User made their attempt, so create a new set of numbers to play with
-                generateGame();
+                if (dataSnapshot == null) {
+                    return;
+                }
+
+                Long opponentLife;
+
+                if (isFirstUser) {
+                    opponentLife = dataSnapshot.child("secondUserLife").getValue(Long.class);
+                }
+                else {
+                    opponentLife = dataSnapshot.child("firstUserLife").getValue(Long.class);
+                }
+
+                if (opponentLife == null) {
+                    Log.e(TAG, "Opponent life was null");
+                    return;
+                }
+
+                if (opponentLife == 0) {
+                    Intent intent = new Intent(GameActivity.this, ResultsActivity.class);
+                    intent.putExtra("RESULT", true);
+                    intent.putExtra("ROOM_ID", roomID);
+                    startActivity(intent);
+                    finish();
+                }
             }
         });
     }
 
-    // Invoked when an operand button is clicked.
-    // If there is no selected operand button at the moment, select this.
-    // Otherwise, swap values with the selected operand button and deselect.
-    public void toggleOperand(View view) {
-        Button clickedButton = (Button)view;
+    private boolean hasSucceeded() {
+        boolean singleOperandVisible = false;
+        long answer = 0;
 
-        if (selectedButton == null) {
-            selectedButton = clickedButton;
-        }
-        else {
-            swapButtonValues(clickedButton, selectedButton);
-            selectedButton = null;
-        }
-    }
-
-    // Invoked when an operation button is clicked.
-    // Iterates through operators for the clicked button.
-    public void toggleOperation(View view) {
-        Button clickedButton = (Button)view;
-        String currentOperation = clickedButton.getText().toString();
-        String updatedOperation = updateOperation(currentOperation);
-
-        clickedButton.setText(updatedOperation);
-    }
-
-    // Converts the operands and operators into a string array
-    private String[] convertToEquation() {
-        String[] equation = new String[operandButtons.length + operationButtons.length];
-
-        // Place the first operand into the equation
-        equation[0] = operandButtons[0].getText().toString();
-
-        // Place the remaining operations and operands
-        for (int i = 0; i < operationButtons.length; i++) {
-            equation[i * 2 + 1] = operationButtons[i].getText().toString();
-            equation[i * 2 + 2] = operandButtons[i + 1].getText().toString();
+        for (TextView operand : operands) {
+            if (operand.getVisibility() == View.VISIBLE) {
+                if (singleOperandVisible) {
+                    return false;
+                }
+                singleOperandVisible = true;
+                answer = Long.valueOf(operand.getText().toString());
+            }
         }
 
-        return equation;
+        return answer == goalValue;
     }
 
-    // Collects operandButtons into an array for easier access
-    private void assignButtons() {
-        operandButtons = new Button[5];
-        operandButtons[0] = findViewById(R.id.operandButton1);
-        operandButtons[1] = findViewById(R.id.operandButton2);
-        operandButtons[2] = findViewById(R.id.operandButton3);
-        operandButtons[3] = findViewById(R.id.operandButton4);
-        operandButtons[4] = findViewById(R.id.operandButton5);
+    private long performOperation(long leftVal, long rightVal) {
+        String operation = ((TextView)findViewById(R.id.operation)).getText().toString();
+        long result = 0;
 
-        operationButtons = new Button[4];
-        operationButtons[0] = findViewById(R.id.operationButton1);
-        operationButtons[1] = findViewById(R.id.operationButton2);
-        operationButtons[2] = findViewById(R.id.operationButton3);
-        operationButtons[3] = findViewById(R.id.operationButton4);
+        if (operation.equals(getApplicationContext().getString(R.string.addition))) {
+            result = leftVal + rightVal;
+        }
+        else if (operation.equals(getApplicationContext().getString(R.string.subtraction))) {
+            result = leftVal - rightVal;
+        }
+        else if (operation.equals(getApplicationContext().getString(R.string.multiplication))) {
+            result = leftVal * rightVal;
+        }
+        else if (operation.equals(getApplicationContext().getString(R.string.division))) {
+            result = leftVal / rightVal;
+        }
+
+        return result;
+    }
+
+    private int getPosition(TextView view) {
+        for (int i = 0; i < VALUE_COUNT; i++) {
+            if (view == operands[i]) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private boolean isOperationPosition(View view) {
+        return (view == findViewById(R.id.firstNumber)) || (view == findViewById(R.id.secondNumber));
+    }
+
+    private String getNextOperation(String operation) {
+        String addition = getApplicationContext().getString(R.string.addition);
+        String subtraction = getApplicationContext().getString(R.string.subtraction);
+        String multiplication = getApplicationContext().getString(R.string.multiplication);
+        String division = getApplicationContext().getString(R.string.division);
+
+        if (operation.equals(addition))
+            return subtraction;
+
+        if (operation.equals(subtraction))
+            return multiplication;
+
+        if (operation.equals(multiplication))
+            return division;
+
+        return addition;
+    }
+
+    private void generateNewGame() {
+        generateValues();
+        setupViews();
+    }
+
+    private void resetGame() {
+        setupViews();
+    }
+
+    // Random generates values and updates the operand text views
+    private void generateValues() {
+        final int MIN_VALUE = 1;
+        final int MAX_VALUE = 9;
+
+        Random rand = new Random();
+
+        for (int i = 0; i < VALUE_COUNT; i++) {
+            initialValues[i] = rand.nextInt(MAX_VALUE) + MIN_VALUE;
+        }
+
+        goalValue = rand.nextInt(MAX_VALUE) + MIN_VALUE;
+    }
+
+    private void setupViews() {
+        // Update operands
+        for (int i = 0; i < VALUE_COUNT; i++) {
+            String valueString = String.valueOf(initialValues[i]);
+            operands[i].setText(valueString);
+            operands[i].setVisibility(View.VISIBLE);
+        }
+
+        // Reset operation to addition by default
+        TextView operation = findViewById(R.id.operation);
+        operation.setText(R.string.addition);
+
+        // Update goal
+        String goalString = String.valueOf(goalValue);
+        TextView goal = findViewById(R.id.goal);
+        goal.setText(goalString);
+
+        // Reset operation positions
+        ((TextView)findViewById(R.id.firstNumber)).setText("");
+        ((TextView)findViewById(R.id.secondNumber)).setText("");
     }
 
     private void startGame() {
-        DatabaseReference roomRef = roomsRef.child(roomID);
+        DatabaseReference roomRef = database.getReference("Rooms").child(roomID);
 
         roomRef.runTransaction(new Transaction.Handler() {
             @NonNull
             @Override
             public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
-                // Just accessing room data
                 return Transaction.success(mutableData);
             }
 
@@ -196,14 +400,14 @@ public class GameActivity extends Activity {
                     return;
                 }
 
-                boolean isFirstUser = userID.equals(room.getFirstUserID());
-                getAvatars(isFirstUser);
+                isFirstUser = userID.equals(room.getFirstUserID());
+                getAvatars();
             }
         });
     }
 
-    private void getAvatars(final boolean isFirstUser) {
-        DatabaseReference roomRef = roomsRef.child(roomID);
+    private void getAvatars() {
+        DatabaseReference roomRef = database.getReference("Rooms").child(roomID);
 
         roomRef.runTransaction(new Transaction.Handler() {
             @NonNull
@@ -242,7 +446,7 @@ public class GameActivity extends Activity {
     }
 
     private void setAvatars(final String playerID, final String opponentID) {
-        usersRef.runTransaction(new Transaction.Handler() {
+        database.getReference("Users").runTransaction(new Transaction.Handler() {
             @NonNull
             @Override
             public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
@@ -262,16 +466,16 @@ public class GameActivity extends Activity {
                     return;
                 }
 
-                ImageView playerAvatar = findViewById(R.id.player1Avatar);
-                ImageView opponentAvatar = findViewById(R.id.player2Avatar);
+                ImageView playerAvatar = findViewById(R.id.player1ImageView);
+                ImageView opponentAvatar = findViewById(R.id.player2ImageView);
 
-                playerAvatar.setImageResource(getAvatar(playerAvatarID));
-                opponentAvatar.setImageResource(getAvatar(opponentAvatarID));
+                playerAvatar.setImageResource(findAvatarFromID(playerAvatarID));
+                opponentAvatar.setImageResource(findAvatarFromID(opponentAvatarID));
             }
         });
     }
 
-    public int getAvatar(Integer avatarID) {
+    private int findAvatarFromID(int avatarID) {
         int avatarSource = 0;
 
         switch(avatarID) {
@@ -304,53 +508,5 @@ public class GameActivity extends Activity {
         }
 
         return avatarSource;
-    }
-
-    // Resets operations, and randomly assigns operands and goal number
-    private void generateGame() {
-        for (Button operation : operationButtons) {
-            operation.setText(getApplicationContext().getString(R.string.addition));
-        }
-
-        final int LOWER_GAME_NUMBER_BOUND = 1;
-        final int UPPER_GAME_NUMBER_BOUND = 10;
-
-        for (Button operand : operandButtons) {
-            Long randOperand = ThreadLocalRandom.current().nextLong(LOWER_GAME_NUMBER_BOUND, UPPER_GAME_NUMBER_BOUND);
-            operand.setText(String.valueOf(randOperand));
-        }
-
-        TextView goalNumberView = findViewById(R.id.goal);
-        Long randomGoal = ThreadLocalRandom.current().nextLong(LOWER_GAME_NUMBER_BOUND, UPPER_GAME_NUMBER_BOUND);
-        goalNumberView.setText(String.valueOf(randomGoal));
-    }
-
-    // Swaps the values of two operandButtons.
-    private void swapButtonValues(Button firstButton, Button secondButton) {
-        CharSequence firstButtonText = firstButton.getText();
-        CharSequence secondButtonText = secondButton.getText();
-
-        firstButton.setText(secondButtonText);
-        secondButton.setText(firstButtonText);
-    }
-
-    // Tasty, hardcoded goodness
-    // Iterates through operators as: +, -, *, /, then back to +
-    private String updateOperation(String operation) {
-        String addition = getApplicationContext().getString(R.string.addition);
-        String subtraction = getApplicationContext().getString(R.string.subtraction);
-        String multiplication = getApplicationContext().getString(R.string.multiplication);
-        String division = getApplicationContext().getString(R.string.division);
-
-        if (operation.equals(addition))
-            return subtraction;
-
-        if (operation.equals(subtraction))
-            return multiplication;
-
-        if (operation.equals(multiplication))
-            return division;
-
-        return addition;
     }
 }

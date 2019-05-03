@@ -1,19 +1,16 @@
 package com.example.mathwithfriends;
 
 import android.content.Intent;
-import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
-import android.widget.Button;
 
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import com.example.server.Room;
 import com.example.server.User;
@@ -88,7 +85,8 @@ public class ResultsActivity extends AppCompatActivity {
                 }
 
                 // Update user based on whether they won this game or not
-                updateUserStatistics(room.playerWon(userID));
+                boolean hasWonGame = getIntent().getBooleanExtra("RESULT", false);
+                updateUserStatistics(hasWonGame);
             }
 
             @Override
@@ -106,11 +104,6 @@ public class ResultsActivity extends AppCompatActivity {
             @Override
             public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
                 User user = mutableData.getValue(User.class);
-                ImageButton winMsg = (ImageButton)findViewById(R.id.playerWin);
-                winMsg.setVisibility(View.INVISIBLE);
-
-                ImageButton loseMsg = (ImageButton)findViewById(R.id.playerLose);
-                loseMsg.setVisibility(View.INVISIBLE);
 
                 if (user == null) {
                     return Transaction.success(mutableData);
@@ -120,10 +113,6 @@ public class ResultsActivity extends AppCompatActivity {
 
                 if (hasWonGame) {
                     user.setGamesWon(user.getGamesWon() + 1);
-                    winMsg.setVisibility(View.VISIBLE);
-                }
-                else {
-                    loseMsg.setVisibility(View.VISIBLE);
                 }
 
                 mutableData.setValue(user);
@@ -132,9 +121,23 @@ public class ResultsActivity extends AppCompatActivity {
 
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
-
+                setResultsBanner(hasWonGame);
             }
         });
+    }
+
+    private void setResultsBanner(final boolean hasWonGame) {
+        ImageButton winMsg = findViewById(R.id.playerWin);
+        ImageButton loseMsg = findViewById(R.id.playerLose);
+
+        if (hasWonGame) {
+            winMsg.setVisibility(View.VISIBLE);
+            loseMsg.setVisibility(View.INVISIBLE);
+        }
+        else {
+            loseMsg.setVisibility(View.VISIBLE);
+            winMsg.setVisibility(View.INVISIBLE);
+        }
     }
 }
 
