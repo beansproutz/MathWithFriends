@@ -41,6 +41,7 @@ public class AchievementsActivity extends AppCompatActivity {
         // Check if achievements are locked and update availability accordingly
         updateUserAchievements();
 
+        // Check User's Music Setting and Play music if setting is true
         getMusicSetting();
     }
 
@@ -111,7 +112,7 @@ public class AchievementsActivity extends AppCompatActivity {
 
     public void getMusicSetting() {
         if (userID == null) {
-            Log.e("CustomizeActivity", "User ID not found!");
+            Log.e("AchievementsActivity", "User ID not found!");
             return;
         }
 
@@ -141,7 +142,7 @@ public class AchievementsActivity extends AppCompatActivity {
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
                 if (dataSnapshot == null) {
-                    Log.e("CustomizeActivity", "Data Snapshot of user data was null. Could not update musicSetting.");
+                    Log.e("AchievementsActivity", "Data Snapshot of user data was null. Could not update musicSetting.");
                     return;
                 }
 
@@ -149,7 +150,7 @@ public class AchievementsActivity extends AppCompatActivity {
 
 
                 if (currMusicSetting == null) {
-                    Log.e("CustomizeActivity", "Data Snapshot of musicSetting was null. Could not update musicSetting.");
+                    Log.e("AchievementsActivity", "Data Snapshot of musicSetting was null. Could not update musicSetting.");
                     return;
                 }
 
