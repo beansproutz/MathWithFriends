@@ -471,6 +471,7 @@ public class GameActivity extends AppCompatActivity {
 
                 playerAvatar.setImageResource(findAvatarFromID(playerAvatarID));
                 opponentAvatar.setImageResource(findAvatarFromID(opponentAvatarID));
+                setPlayerBackground(playerAvatarID, playerAvatar);
             }
         });
     }
@@ -508,5 +509,20 @@ public class GameActivity extends AppCompatActivity {
         }
 
         return avatarSource;
+    }
+
+    private void setPlayerBackground(int avatarID, ImageView player) {
+        if (avatarID == 1 || avatarID == 5)
+            player.setImageResource(R.drawable.player_cloud_outline);
+
+        else if (avatarID == 2 || avatarID == 6)
+            player.setImageResource(R.drawable.player_square_outline);
+
+        else if (avatarID == 3 || avatarID == 7)
+            player.setImageResource(R.drawable.player_triangle_outline);
+
+        else if (avatarID == 4 || avatarID == 8)
+            player.setImageResource(R.drawable.player_circle_outline);
+
     }
 }

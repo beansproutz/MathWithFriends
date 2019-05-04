@@ -15,7 +15,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
-        android:background="#66008577"
+        android:background="@drawable/player_cloud_outline"
         android:minWidth="100dp"
         android:minHeight="200dp"
         android:paddingBottom="35sp">
@@ -55,7 +55,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
-        android:background="#66000000"
+        android:background="@drawable/player_triangle_outline"
         android:minWidth="100dp"
         android:minHeight="200dp"
         android:paddingBottom="35sp">
@@ -95,7 +95,7 @@
         android:layout_marginBottom="20dp"
         android:layout_toStartOf="@+id/player2Layout"
         android:layout_toEndOf="@id/player1Layout"
-        android:background="#FFF7D54C">
+        android:background="@drawable/goal_number_temp">
 
         <TextView
             android:id="@+id/goalTextView"
@@ -124,7 +124,7 @@
         android:layout_marginEnd="80dp"
         android:layout_toStartOf="@+id/player2Layout"
         android:layout_toEndOf="@id/player1Layout"
-        android:background="#F7D54C">
+        android:background="@drawable/goal_number_temp">
 
         <Button
             android:id="@+id/operation"
