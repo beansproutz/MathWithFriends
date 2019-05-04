@@ -32,7 +32,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:soundEffectsEnabled="false"/>
 
     <ImageButton
         android:id="@+id/cloud"
@@ -49,7 +50,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/cloud_regular"
-        android:onClick="chooseAvatar"/>
+        android:onClick="chooseAvatar"
+        android:soundEffectsEnabled="false"/>
 
 
     <ImageButton
@@ -65,7 +67,8 @@
         app:layout_constraintStart_toEndOf="@+id/cloud"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/square_regular"
-        android:onClick="chooseAvatar"/>
+        android:onClick="chooseAvatar"
+        android:soundEffectsEnabled="false"/>
 
     <ImageButton
         android:id="@+id/lump"
@@ -80,7 +83,8 @@
         app:layout_constraintStart_toEndOf="@+id/triangle"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/circle_regular"
-        android:onClick="chooseAvatar"/>
+        android:onClick="chooseAvatar"
+        android:soundEffectsEnabled="false"/>
 
     <ImageButton
         android:id="@+id/triangle"
@@ -94,7 +98,8 @@
         app:layout_constraintStart_toEndOf="@+id/square"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/triangle_regular"
-        android:onClick="chooseAvatar"/>
+        android:onClick="chooseAvatar"
+        android:soundEffectsEnabled="false"/>
 
     <ImageButton
         android:id="@+id/cloudLvl2"
@@ -111,7 +116,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cloud"
         app:srcCompat="@drawable/cloud_special"
-        android:onClick="chooseAvatar"/>
+        android:onClick="chooseAvatar"
+        android:soundEffectsEnabled="false"/>
 
     <ImageButton
         android:id="@+id/squareLvl2"
@@ -128,7 +134,8 @@
         app:layout_constraintStart_toEndOf="@+id/cloudLvl2"
         app:layout_constraintTop_toBottomOf="@+id/square"
         app:srcCompat="@drawable/square_special"
-        android:onClick="chooseAvatar"/>
+        android:onClick="chooseAvatar"
+        android:soundEffectsEnabled="false"/>
 
     <ImageButton
         android:id="@+id/triangleLvl2"
@@ -145,7 +152,8 @@
         app:layout_constraintStart_toEndOf="@+id/squareLvl2"
         app:layout_constraintTop_toBottomOf="@+id/triangle"
         app:srcCompat="@drawable/triangle_special"
-        android:onClick="chooseAvatar"/>
+        android:onClick="chooseAvatar"
+        android:soundEffectsEnabled="false"/>
 
     <ImageButton
         android:id="@+id/lumpLvl2"
@@ -162,7 +170,8 @@
         app:layout_constraintStart_toEndOf="@+id/triangleLvl2"
         app:layout_constraintTop_toBottomOf="@+id/lump"
         app:srcCompat="@drawable/circle_special"
-        android:onClick="chooseAvatar"/>
+        android:onClick="chooseAvatar"
+        android:soundEffectsEnabled="false"/>
 
     <ImageView
         android:id="@+id/lockedCloud"

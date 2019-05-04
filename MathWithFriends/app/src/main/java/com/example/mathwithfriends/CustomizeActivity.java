@@ -33,10 +33,10 @@ public class CustomizeActivity extends AppCompatActivity {
     private Integer gamesPlayed;
     private Integer gamesWon;
     public Boolean soundSetting;        // User's current Sound Setting
-    private Boolean musSetting;          // User's current Music Setting
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         // Initialize activity/buttons.
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -53,6 +53,9 @@ public class CustomizeActivity extends AppCompatActivity {
 
         // Check user's achievement level and lock avatars accordingly.
         updateUserAchievements();
+
+        getMusicSetting();
+
     }
 
     public void getCurrAvatar() {
@@ -107,8 +110,8 @@ public class CustomizeActivity extends AppCompatActivity {
 
                 gamesPlayed = user.getGamesPlayed();
                 gamesWon = user.getGamesWon();
-                soundSetting = user.getSfxSetting();
-                musSetting = user.getMusicSetting();
+                soundSetting = user.getSfxSetting();    //get user's soundsetting
+
 
                 Log.d("CustomizeActivity", "played | won: " + String.valueOf(gamesPlayed) + " | " + String.valueOf(gamesWon));
 
@@ -260,4 +263,86 @@ public class CustomizeActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void getMusicSetting() {
+        if (userID == null) {
+            Log.e("CustomizeActivity", "User ID not found!");
+            return;
+        }
+
+        DatabaseReference userRef = mDatabase.child("Users").child(userID);
+
+        userRef.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                User user = mutableData.getValue(User.class);
+
+                // Ignore when Firebase Transactions optimistically uses
+                // null before actually reading in from the database
+                if (user == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                // Ensure this user has MusicSetting
+                if (user.getMusicSetting() == null) {
+                    user.setMusicSetting(true);
+                }
+
+                mutableData.setValue(user);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+                if (dataSnapshot == null) {
+                    Log.e("CustomizeActivity", "Data Snapshot of user data was null. Could not update musicSetting.");
+                    return;
+                }
+
+                Boolean currMusicSetting = dataSnapshot.child("musicSetting").getValue(Boolean.class);
+
+
+                if (currMusicSetting == null) {
+                    Log.e("CustomizeActivity", "Data Snapshot of musicSetting was null. Could not update musicSetting.");
+                    return;
+                }
+
+                if (currMusicSetting) {
+                    startMusic();
+                }
+
+                else {
+                    stopMusic();
+                }
+            }
+        });
+    }
+
+    private void startMusic() {
+        startService(new Intent(this, MusicPlayer.class)); //starts MusicPlayer Service
+    }
+
+    private void stopMusic(){
+        stopService(new Intent(this, MusicPlayer.class));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        getMusicSetting();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopMusic();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getMusicSetting();
+    }
+
 }

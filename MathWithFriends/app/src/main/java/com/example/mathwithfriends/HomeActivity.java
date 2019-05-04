@@ -102,7 +102,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopMusic();
+        getMusicSetting();
     }
 
     @Override
@@ -114,7 +114,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        startMusic();
+        getMusicSetting();
     }
 
 
@@ -163,7 +163,7 @@ public class HomeActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (currMusicSetting.booleanValue() == true) {
+                if (currMusicSetting) {
                     musicToggle.setChecked(true);
                     musicToggle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_musicimg, 0, 0);
                     startMusic();
@@ -387,6 +387,7 @@ public class HomeActivity extends AppCompatActivity {
     public void onHomepageCustomizeClick(View view) {
         Intent intent = new Intent(HomeActivity.this, CustomizeActivity.class);
         startActivity(intent);
+        finish();
     }
 
     public void onHomepageAchievementClick(View view) {
