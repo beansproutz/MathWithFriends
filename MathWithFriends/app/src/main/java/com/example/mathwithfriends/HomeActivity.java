@@ -1,7 +1,6 @@
 package com.example.mathwithfriends;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,8 +9,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ToggleButton;
 
@@ -45,12 +42,6 @@ public class HomeActivity extends AppCompatActivity {
             Log.e("HomeActivity", "Entered home page without authentication");
             finish();
         }
-
-        Button goToCustomize = (Button) findViewById(R.id.customizeButton);
-        Button goToAchievement = (Button) findViewById(R.id.gotoAchievement);
-        ToggleButton sfxToggle = (ToggleButton) findViewById(R.id.sfxButton);
-        ToggleButton musicToggle = (ToggleButton) findViewById(R.id.musicButton);
-
 
         //Access Firebase and get the user's Music Settings
         getMusicSetting();
