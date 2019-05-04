@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#A6CFD5">
@@ -14,7 +15,7 @@
         android:background="@drawable/loading_button_bg"
         android:onClick="onQueueClick"
         android:textSize="15sp"
-        android:text="QUEUE"
+        android:text="READY?"
         android:layout_below="@+id/constraintLayout"
         android:layout_centerHorizontal="true"/>
 
@@ -62,4 +63,10 @@
         android:onClick="onBackClick"
         android:src="@android:drawable/ic_menu_revert"
         android:layout_alignParentTop="true" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="640dp"
+        android:layout_height="255dp"
+        app:srcCompat="@drawable/circle_regular" />
 </RelativeLayout>
