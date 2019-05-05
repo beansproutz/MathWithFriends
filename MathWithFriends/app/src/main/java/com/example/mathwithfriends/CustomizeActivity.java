@@ -53,7 +53,7 @@ public class CustomizeActivity extends AppCompatActivity {
         // Check user's achievement level and lock avatars accordingly.
         updateUserAchievements();
 
-        getMusicSetting();
+        getMusicSetting(2);
 
     }
 
@@ -263,7 +263,7 @@ public class CustomizeActivity extends AppCompatActivity {
         });
     }
 
-    public void getMusicSetting() {
+    public void getMusicSetting(final Integer songNum) {
         if (userID == null) {
             Log.e("CustomizeActivity", "User ID not found!");
             return;
@@ -308,7 +308,7 @@ public class CustomizeActivity extends AppCompatActivity {
                 }
 
                 if (currMusicSetting) {
-                    startMusic();
+                    startMusic(songNum);
                 }
 
                 else {
@@ -318,8 +318,10 @@ public class CustomizeActivity extends AppCompatActivity {
         });
     }
 
-    private void startMusic() {
-        startService(new Intent(this, MusicPlayer.class)); //starts MusicPlayer Service
+    private void startMusic(Integer songNum) {
+        Intent serviceIntent = new Intent(this,MusicPlayer.class);
+        serviceIntent.putExtra("Song", songNum);
+        startService(serviceIntent);
     }
 
     private void stopMusic(){
@@ -329,7 +331,7 @@ public class CustomizeActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        getMusicSetting();
+        getMusicSetting(1); //plays track 1 (Homescreen Music)
     }
 
     @Override
@@ -341,7 +343,7 @@ public class CustomizeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        getMusicSetting();
+        getMusicSetting(2); //plays track 2 (Customize Music)
     }
 
 }

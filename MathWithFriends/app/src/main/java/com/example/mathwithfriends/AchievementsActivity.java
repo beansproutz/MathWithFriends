@@ -42,7 +42,7 @@ public class AchievementsActivity extends AppCompatActivity {
         updateUserAchievements();
 
         // Check User's Music Setting and Play music if setting is true
-        getMusicSetting();
+        getMusicSetting(3); //plays track 3 (Achievement Music)
     }
 
     // Check and update the status of achievements for user
@@ -110,7 +110,7 @@ public class AchievementsActivity extends AppCompatActivity {
         finish();
     }
 
-    public void getMusicSetting() {
+    public void getMusicSetting(final Integer songNum) {
         if (userID == null) {
             Log.e("AchievementsActivity", "User ID not found!");
             return;
@@ -155,7 +155,7 @@ public class AchievementsActivity extends AppCompatActivity {
                 }
 
                 if (currMusicSetting) {
-                    startMusic();
+                    startMusic(songNum);
                 }
 
                 else {
@@ -165,8 +165,10 @@ public class AchievementsActivity extends AppCompatActivity {
         });
     }
 
-    private void startMusic() {
-        startService(new Intent(this, MusicPlayer.class)); //starts MusicPlayer Service
+    private void startMusic(Integer songNum) {
+        Intent serviceIntent = new Intent(this,MusicPlayer.class);
+        serviceIntent.putExtra("Song", songNum);
+        startService(serviceIntent);
     }
 
     private void stopMusic(){
@@ -176,7 +178,7 @@ public class AchievementsActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        getMusicSetting();
+        getMusicSetting(1); //plays track 1 (Homescreen Music)
     }
 
     @Override
@@ -188,6 +190,6 @@ public class AchievementsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        getMusicSetting();
+        getMusicSetting(3); //plays track 3 (Achievement Music)
     }
 }

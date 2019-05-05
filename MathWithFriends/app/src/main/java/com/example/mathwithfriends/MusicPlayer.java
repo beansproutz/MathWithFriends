@@ -6,8 +6,11 @@ import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.OnLifecycleEvent;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.internal.LifecycleActivity;
 
@@ -30,7 +33,35 @@ public class MusicPlayer extends Service {
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
-        player.start();
+        Bundle extras = intent.getExtras();
+        if (extras == null)
+            Log.d("Service", "null");
+        else {
+            Log.d("Service", "notnull");
+            Integer from = (Integer) extras.get("Song");
+            player.stop();
+            player.release();
+
+
+
+            Log.d("MYINT", "value: " + from);
+
+            switch(from) {
+                case 1:
+                    player = MediaPlayer.create(this, R.raw.sample);
+                    break;
+                case 2:
+                    player = MediaPlayer.create(this, R.raw.sample2);
+                    break;
+                case 3:
+                    player = MediaPlayer.create(this, R.raw.sample3);
+            }
+
+            player.start();
+            player.setLooping(true);
+            player.setVolume(100,100);
+        }
+
         return super.onStartCommand(intent, flags, startId);
     }
 
