@@ -15,6 +15,7 @@ import android.widget.ToggleButton;
 import com.example.server.User;
 import com.example.utility.FullScreenModifier;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,6 +29,7 @@ public class HomeActivity extends AppCompatActivity {
     private String userID = FirebaseAuth.getInstance().getUid();
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference mDatabase; //Used to Write to MusicSetting in Database
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +37,7 @@ public class HomeActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_home);
         FullScreenModifier.setFullscreen(getWindow().getDecorView());
-
+        mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         if (userID == null) {
@@ -52,6 +54,11 @@ public class HomeActivity extends AppCompatActivity {
         // Access Firebase and display user's Avatar
         setAvatar();
 
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        FirebaseUser curruser = mAuth.getCurrentUser();
     }
 
     public void updateMusicSetting(final Boolean musicVal) {
