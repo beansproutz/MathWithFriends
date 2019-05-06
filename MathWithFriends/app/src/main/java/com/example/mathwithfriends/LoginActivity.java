@@ -55,7 +55,7 @@ public class LoginActivity extends Activity {
         mAuth = FirebaseAuth.getInstance();
         userEmail = findViewById(R.id.et_user_login);
         userPass = findViewById(R.id.et_user_password);
-        SignInButton signInButton = findViewById(R.id.googleBtn);
+        /*SignInButton signInButton = findViewById(R.id.googleBtn);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,7 +69,7 @@ public class LoginActivity extends Activity {
 
 
             }
-        });
+        });*/
     }
 
     private void signIn() {

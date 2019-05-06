@@ -45,7 +45,7 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         //Access Firebase and get the user's Music Settings
-        getMusicSetting();
+        getMusicSetting(1);  //plays track 1 (Homescreen Music)
 
         //Access Firebase and get the user's SFX Settings
         getSFXSetting();
@@ -88,8 +88,10 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    private void startMusic() {
-        startService(new Intent(this, MusicPlayer.class)); //starts MusicPlayer Service
+    private void startMusic(Integer songNum) {
+        Intent serviceIntent = new Intent(this,MusicPlayer.class);
+        serviceIntent.putExtra("Song", songNum);
+        startService(serviceIntent);
     }
 
     private void stopMusic(){
@@ -99,7 +101,6 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        getMusicSetting();
     }
 
     @Override
@@ -111,11 +112,11 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        getMusicSetting();
+        getMusicSetting(1); //plays track 1 (Homescreen Music)
     }
 
 
-    public void getMusicSetting() {
+    public void getMusicSetting(final Integer songNum) {
         if (userID == null) {
             Log.e(TAG, "User ID not found!");
             return;
@@ -163,7 +164,7 @@ public class HomeActivity extends AppCompatActivity {
                 if (currMusicSetting) {
                     musicToggle.setChecked(true);
                     musicToggle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_musicimg, 0, 0);
-                    startMusic();
+                    startMusic(songNum);
                 }
 
                 else {
@@ -304,7 +305,7 @@ public class HomeActivity extends AppCompatActivity {
         final Boolean currMusicSetting;
 
         if (musicToggle.isChecked()) {
-            startMusic();
+            startMusic(1);
             currMusicSetting = true;
             musicToggle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_musicimg, 0, 0);
 
@@ -385,6 +386,7 @@ public class HomeActivity extends AppCompatActivity {
         Intent intent = new Intent(HomeActivity.this, CustomizeActivity.class);
         startActivity(intent);
         finish();
+        getMusicSetting(2); //plays track 2 (Customize Music)
     }
 
     public void onHomepageAchievementClick(View view) {
