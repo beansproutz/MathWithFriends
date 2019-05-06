@@ -526,6 +526,5 @@ public class GameActivity extends AppCompatActivity {
 
         else if (avatarID == 4 || avatarID == 8)
             player.setBackgroundResource(R.drawable.player_circle_outline);
-
     }
 }

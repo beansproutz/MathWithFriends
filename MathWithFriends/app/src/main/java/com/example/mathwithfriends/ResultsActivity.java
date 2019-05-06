@@ -139,5 +139,11 @@ public class ResultsActivity extends AppCompatActivity {
             winMsg.setVisibility(View.INVISIBLE);
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mDatabase.child("Rooms").child(roomID).setValue(null);
+    }
 }
 
