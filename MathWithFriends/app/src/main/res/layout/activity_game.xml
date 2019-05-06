@@ -30,7 +30,6 @@
             android:layout_marginTop="15dp"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="15dp"
-            android:background="@drawable/game_avatar_outline"
             android:contentDescription="@string/player_1_avatar"
             android:src="@drawable/cloud_special"
             android:translationZ="3dp" />
@@ -41,6 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/player1ImageView"
             android:layout_centerHorizontal="true"
+            android:textColor="#000000"
             android:text="@string/player1Display"
             android:textSize="20sp" />
 
@@ -70,7 +70,6 @@
             android:layout_marginTop="15dp"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="15dp"
-            android:background="@drawable/game_avatar_outline"
             android:contentDescription="@string/player_1_avatar"
             android:src="@drawable/triangle_special"
             android:translationZ="3dp" />
@@ -81,6 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/player2ImageView"
             android:layout_centerHorizontal="true"
+            android:textColor="#000000"
             android:text="@string/player2Display"
             android:textSize="20sp" />
     </RelativeLayout>
@@ -112,6 +112,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/goalTextView"
             android:layout_centerHorizontal="true"
+            android:text="2"
+            android:textColor="#000000"
             android:textSize="40sp" />
     </RelativeLayout>
 
@@ -144,11 +146,11 @@
             android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
-            android:background="#FFFFFFCC"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:textSize="25sp"
-            android:onClick="clickOperand" />
+            android:background="@color/colorPrimaryDark"
+            android:onClick="clickOperand"
+            android:gravity="center"
+            android:textColor="#FFFFFF"
+            android:textSize="25sp" />
 
         <TextView
             android:id="@+id/secondNumber"
@@ -160,9 +162,9 @@
             android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
-            android:background="#FFFFFFCC"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
+            android:background="@color/colorPrimaryDark"
+            android:textColor="#FFFFFF"
+            android:gravity="center"
             android:textSize="25sp"
             android:onClick="clickOperand" />
     </RelativeLayout>
@@ -213,7 +215,6 @@
 
         <TextView
             android:id="@+id/operand1"
-            android:textColor="#FFFFFFFF"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginLeft="20dp"
@@ -221,11 +222,13 @@
             android:layout_weight="1"
             android:background="@color/colorPrimaryDark"
             android:gravity="center"
-            android:onClick="clickOperand" />
+            android:onClick="clickOperand"
+            android:textColor="#FFFFFFFF"
+            android:text="7"
+            android:textSize="30sp" />
 
         <TextView
             android:id="@+id/operand2"
-            android:textColor="#FFFFFFFF"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginLeft="20dp"
@@ -233,11 +236,13 @@
             android:layout_weight="1"
             android:background="@color/colorPrimaryDark"
             android:gravity="center"
-            android:onClick="clickOperand" />
+            android:onClick="clickOperand"
+            android:textColor="#FFFFFFFF"
+            android:text="9"
+            android:textSize="30sp" />
 
         <TextView
             android:id="@+id/operand3"
-            android:textColor="#FFFFFFFF"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginLeft="20dp"
@@ -245,11 +250,13 @@
             android:layout_weight="1"
             android:background="@color/colorPrimaryDark"
             android:gravity="center"
-            android:onClick="clickOperand" />
+            android:onClick="clickOperand"
+            android:textColor="#FFFFFFFF"
+            android:text="5"
+            android:textSize="30sp" />
 
         <TextView
             android:id="@+id/operand4"
-            android:textColor="#FFFFFFFF"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginLeft="20dp"
@@ -257,11 +264,13 @@
             android:layout_weight="1"
             android:background="@color/colorPrimaryDark"
             android:gravity="center"
-            android:onClick="clickOperand" />
+            android:onClick="clickOperand"
+            android:textColor="#FFFFFFFF"
+            android:text="4"
+            android:textSize="30sp" />
 
         <TextView
             android:id="@+id/operand5"
-            android:textColor="#FFFFFFFF"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginLeft="20dp"
@@ -269,7 +278,10 @@
             android:layout_weight="1"
             android:background="@color/colorPrimaryDark"
             android:gravity="center"
-            android:onClick="clickOperand" />
+            android:onClick="clickOperand"
+            android:textColor="#FFFFFFFF"
+            android:text="1"
+            android:textSize="30sp" />
     </LinearLayout>
 
 </RelativeLayout>

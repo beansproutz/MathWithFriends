@@ -38,6 +38,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         FullScreenModifier.setFullscreen(getWindow().getDecorView());
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         if (userID == null) {
             Log.e("HomeActivity", "Entered home page without authentication");
