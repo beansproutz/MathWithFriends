@@ -1,7 +1,6 @@
 package com.example.mathwithfriends;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,14 +9,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ToggleButton;
 
 import com.example.server.User;
 import com.example.utility.FullScreenModifier;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,6 +29,7 @@ public class HomeActivity extends AppCompatActivity {
     private String userID = FirebaseAuth.getInstance().getUid();
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference mDatabase; //Used to Write to MusicSetting in Database
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +37,7 @@ public class HomeActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_home);
         FullScreenModifier.setFullscreen(getWindow().getDecorView());
-
+        mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         if (userID == null) {
@@ -46,14 +45,8 @@ public class HomeActivity extends AppCompatActivity {
             finish();
         }
 
-        Button goToCustomize = (Button) findViewById(R.id.customizeButton);
-        Button goToAchievement = (Button) findViewById(R.id.gotoAchievement);
-        ToggleButton sfxToggle = (ToggleButton) findViewById(R.id.sfxButton);
-        ToggleButton musicToggle = (ToggleButton) findViewById(R.id.musicButton);
-
-
         //Access Firebase and get the user's Music Settings
-        getMusicSetting();
+        getMusicSetting(1);  //plays track 1 (Homescreen Music)
 
         //Access Firebase and get the user's SFX Settings
         getSFXSetting();
@@ -61,6 +54,11 @@ public class HomeActivity extends AppCompatActivity {
         // Access Firebase and display user's Avatar
         setAvatar();
 
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        FirebaseUser curruser = mAuth.getCurrentUser();
     }
 
     public void updateMusicSetting(final Boolean musicVal) {
@@ -91,8 +89,10 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    private void startMusic() {
-        startService(new Intent(this, MusicPlayer.class)); //starts MusicPlayer Service
+    private void startMusic(Integer songNum) {
+        Intent serviceIntent = new Intent(this,MusicPlayer.class);
+        serviceIntent.putExtra("Song", songNum);
+        startService(serviceIntent);
     }
 
     private void stopMusic(){
@@ -102,7 +102,6 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopMusic();
     }
 
     @Override
@@ -114,11 +113,11 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        startMusic();
+        getMusicSetting(1); //plays track 1 (Homescreen Music)
     }
 
 
-    public void getMusicSetting() {
+    public void getMusicSetting(final Integer songNum) {
         if (userID == null) {
             Log.e(TAG, "User ID not found!");
             return;
@@ -163,10 +162,10 @@ public class HomeActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (currMusicSetting.booleanValue() == true) {
+                if (currMusicSetting) {
                     musicToggle.setChecked(true);
                     musicToggle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_musicimg, 0, 0);
-                    startMusic();
+                    startMusic(songNum);
                 }
 
                 else {
@@ -307,7 +306,7 @@ public class HomeActivity extends AppCompatActivity {
         final Boolean currMusicSetting;
 
         if (musicToggle.isChecked()) {
-            startMusic();
+            startMusic(1);
             currMusicSetting = true;
             musicToggle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_musicimg, 0, 0);
 
@@ -387,6 +386,8 @@ public class HomeActivity extends AppCompatActivity {
     public void onHomepageCustomizeClick(View view) {
         Intent intent = new Intent(HomeActivity.this, CustomizeActivity.class);
         startActivity(intent);
+        finish();
+        getMusicSetting(2); //plays track 2 (Customize Music)
     }
 
     public void onHomepageAchievementClick(View view) {

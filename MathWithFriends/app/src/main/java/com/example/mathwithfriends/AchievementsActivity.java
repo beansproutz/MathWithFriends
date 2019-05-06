@@ -40,6 +40,9 @@ public class AchievementsActivity extends AppCompatActivity {
 
         // Check if achievements are locked and update availability accordingly
         updateUserAchievements();
+
+        // Check User's Music Setting and Play music if setting is true
+        getMusicSetting(3); //plays track 3 (Achievement Music)
     }
 
     // Check and update the status of achievements for user
@@ -105,5 +108,88 @@ public class AchievementsActivity extends AppCompatActivity {
         Intent intent = new Intent(AchievementsActivity.this, HomeActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    public void getMusicSetting(final Integer songNum) {
+        if (userID == null) {
+            Log.e("AchievementsActivity", "User ID not found!");
+            return;
+        }
+
+        DatabaseReference userRef = mDatabase.child("Users").child(userID);
+
+        userRef.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                User user = mutableData.getValue(User.class);
+
+                // Ignore when Firebase Transactions optimistically uses
+                // null before actually reading in from the database
+                if (user == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                // Ensure this user has MusicSetting
+                if (user.getMusicSetting() == null) {
+                    user.setMusicSetting(true);
+                }
+
+                mutableData.setValue(user);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+                if (dataSnapshot == null) {
+                    Log.e("AchievementsActivity", "Data Snapshot of user data was null. Could not update musicSetting.");
+                    return;
+                }
+
+                Boolean currMusicSetting = dataSnapshot.child("musicSetting").getValue(Boolean.class);
+
+
+                if (currMusicSetting == null) {
+                    Log.e("AchievementsActivity", "Data Snapshot of musicSetting was null. Could not update musicSetting.");
+                    return;
+                }
+
+                if (currMusicSetting) {
+                    startMusic(songNum);
+                }
+
+                else {
+                    stopMusic();
+                }
+            }
+        });
+    }
+
+    private void startMusic(Integer songNum) {
+        Intent serviceIntent = new Intent(this,MusicPlayer.class);
+        serviceIntent.putExtra("Song", songNum);
+        startService(serviceIntent);
+    }
+
+    private void stopMusic(){
+        stopService(new Intent(this, MusicPlayer.class));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        getMusicSetting(1); //plays track 1 (Homescreen Music)
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopMusic();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getMusicSetting(3); //plays track 3 (Achievement Music)
     }
 }
