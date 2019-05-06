@@ -22,16 +22,13 @@
 
     <ImageButton
         android:id="@+id/homeButton"
-        android:layout_width="250dp"
-        android:layout_height="70dp"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/home"
-        android:contentDescription="@string/app_name"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/back"
         android:onClick="returnHome"
-        android:text=""
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         android:soundEffectsEnabled="false"/>
 
