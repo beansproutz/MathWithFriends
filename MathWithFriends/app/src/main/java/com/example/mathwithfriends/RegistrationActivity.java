@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.WindowManager;
@@ -21,8 +20,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class RegistrationActivity extends AppCompatActivity {
-    public final static String TAG = "RegistrationTAG";
-    private TextView userEmail, userPass, userConPass;
+    private TextView userName;
+    private TextView userEmail;
+    private TextView userPass;
+    private TextView userConfirmationPass;
     private FirebaseAuth mAuth;
 
     @Override
@@ -35,66 +36,67 @@ public class RegistrationActivity extends AppCompatActivity {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
-        userEmail = findViewById(R.id.et_reg_userEmail);
+        userName = findViewById(R.id.et_reg_username);
+        userEmail = findViewById(R.id.et_reg_email);
         userPass = findViewById(R.id.et_reg_password);
-        // Confirmation password
-        userConPass = findViewById(R.id.et_reg_confirm_password);
+        userConfirmationPass = findViewById(R.id.et_reg_confirm_password);
     }
 
     public void signUp(View view) {
-        String user = userEmail.getText().toString();
-        final String password = userPass.getText().toString();
-        String confirmPassword = userConPass.getText().toString();
+        String user = userName.getText().toString();
+        String email = userEmail.getText().toString();
+        String password = userPass.getText().toString();
+        String confirmPassword = userConfirmationPass.getText().toString();
 
         // Check to see if any of the sign-up fields are empty.
-        if (checkForEmptyString(user, password, confirmPassword))
-            return;
-
-        // If there are leading or trailing whitespces, then this will remove it.
-        user = user.trim();
-
-        // Check to see if it's a valid email.
-        if (!Patterns.EMAIL_ADDRESS.matcher(user).matches()) {
-            userEmail.setError("Please enter a valid email");
-            userEmail.requestFocus();
+        if (checkForEmptyString(user, password, confirmPassword)) {
             return;
         }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(RegistrationActivity.this, "Invalid email", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Remove leading and trailing whitespaces
+        user = user.trim();
+        email = email.trim();
+        password = password.trim();
+        confirmPassword = confirmPassword.trim();
 
         // Check to see if the passwords match each other.
-        if (validatePasswords(password, confirmPassword)){
-            Toast.makeText(RegistrationActivity.this, "Passwords do not match",
-                    Toast.LENGTH_SHORT).show();
+        if (validatePasswords(password, confirmPassword)) {
+            Toast.makeText(RegistrationActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
             userPass.setText(null);
-            userConPass.setText(null);
+            userConfirmationPass.setText(null);
             return;
         }
 
-        // Minimum password length for firebase is 6. Thus we are checking for that.
-        if (password.length()<6){
+        final int MIN_FIREBASE_PASSWORD_LENGTH = 6;
+
+        if (password.length() < MIN_FIREBASE_PASSWORD_LENGTH){
             userPass.setError("Password must be at least 6 characters");
             userPass.requestFocus();
             return;
         }
 
-        Log.d("Username", user);
-        Log.d("Password", password);
+        final String userName = user;
+        final String userEmail = email;
 
-        mAuth.createUserWithEmailAndPassword(user, password)
+        mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        // Sign in success, update UI with the signed-in user's information
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Toast.makeText(getApplicationContext(),
-                                    "User registration: successful", Toast.LENGTH_SHORT).show();
-                            postUserData();
-                            Intent intent = new Intent(RegistrationActivity.this, HomeActivity.class);
-                            startActivity(intent); // Change back to Home Screen
-                        } else {
-
-                            // If sign in fails, display a message to the user.
-                            Toast.makeText(RegistrationActivity.this,
-                                    "This email has already been used", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "User registration: successful", Toast.LENGTH_SHORT).show();
+                            postUserData(userName, userEmail);
+                            startActivity(new Intent(RegistrationActivity.this, LoginActivity.class));
+                            finish();
+                        }
+                        // If sign in fails, display a message to the user.
+                        else {
+                            Toast.makeText(RegistrationActivity.this, "This username has already been used", Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -106,10 +108,16 @@ public class RegistrationActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void postUserData(){
+    private void postUserData(String userName, String userEmail){
+        String userID = mAuth.getUid();
+
+        if (userID == null) {
+            return;
+        }
+
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        User user = new User(1, 0, 0, true , true);
+        User user = new User(userName, userEmail);
 
         mDatabase.child("Users").child(mAuth.getUid()).setValue(user);
     }
@@ -118,10 +126,10 @@ public class RegistrationActivity extends AppCompatActivity {
         return !password.equals(confirmPassword);
     }
 
-    private boolean checkForEmptyString(String email, String password, String conPassword) {
-        if (validateEmptyString(email)){
-            userEmail.setError("Email is required");
-            userEmail.requestFocus();
+    private boolean checkForEmptyString(String username, String password, String conPassword) {
+        if (validateEmptyString(username)){
+            userName.setError("Username is required");
+            userName.requestFocus();
             return true;
         }
         if (validateEmptyString(password)){
@@ -130,8 +138,8 @@ public class RegistrationActivity extends AppCompatActivity {
             return true;
         }
         if (validateEmptyString(conPassword)){
-            userConPass.setError("Confirmation password is required");
-            userConPass.requestFocus();
+            userConfirmationPass.setError("Confirmation password is required");
+            userConfirmationPass.requestFocus();
             return true;
         }
 

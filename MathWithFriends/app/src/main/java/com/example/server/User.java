@@ -1,12 +1,12 @@
 package com.example.server;
 
-import android.text.BoringLayout;
-
 import com.google.firebase.database.IgnoreExtraProperties;
 import java.io.Serializable;
 
 @IgnoreExtraProperties
 public class User implements Serializable {
+    private String userName;
+    private String userEmail;
     private Integer avatarID;
     private Integer gamesWon;
     private Integer gamesPlayed;
@@ -15,6 +15,8 @@ public class User implements Serializable {
 
     public User() {
         // Default constructor
+        this.userName = "";
+        this.userEmail = "";
         this.avatarID = 1;
         this.gamesWon = 0;
         this.gamesPlayed = 0;
@@ -22,12 +24,36 @@ public class User implements Serializable {
         this.sfxSetting = true;
     }
 
-    public User(Integer avatarID, Integer gamesWon, Integer gamesPlayed, Boolean musicSetting, Boolean sfxSetting) {
+    public User(String userName, String userEmail) {
+        this();
+        this.userName = userName;
+        this.userEmail = userEmail;
+    }
+
+    public User(String userName, String userEmail, Integer avatarID, Integer gamesWon, Integer gamesPlayed, Boolean musicSetting, Boolean sfxSetting) {
+        this.userName = userName;
+        this.userEmail = userEmail;
         this.avatarID = avatarID;       // Initialize to default avatar. Users can change later.
         this.gamesWon = gamesWon;       // Initialize to 0. Increments every time user wins a game.
         this.gamesPlayed = gamesPlayed; // Initialize to 0. Increments every time user finishes a game.
         this.musicSetting = musicSetting; //Initialized to true. Changes to false when user presses toggle button.
         this.sfxSetting = sfxSetting; //Initialized to true. Changes to false when user presses toggle button.
+    }
+
+    public String getUserName() {
+        return this.userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserEmail() {
+        return this.userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
     public Integer getAvatarID() {
