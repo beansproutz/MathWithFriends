@@ -117,7 +117,7 @@ public class GameActivity extends AppCompatActivity {
                 return;
             }
 
-            if (currentView == clickedView) {
+            if (currentView == clickedView && currentView.getText() != "") {
                 resetOperand(clickedView);
             }
             else if (isOperationPosition(currentView)) {
@@ -142,6 +142,7 @@ public class GameActivity extends AppCompatActivity {
         if (currentView == null) {
             currentView = clickedView;
             previousPosition = getPosition(clickedView);
+
             // TODO Highlight operands[previousPosition] to indicate it is current view
         }
         // Otherwise, a different operand was clicked
