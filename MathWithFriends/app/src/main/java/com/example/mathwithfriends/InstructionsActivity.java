@@ -32,6 +32,7 @@ public class InstructionsActivity extends Activity {
     final String userID = FirebaseAuth.getInstance().getUid();
     private DatabaseReference mDatabase; // Used for checking MusicSetting
     private String roomID;
+    private boolean hasJoinedRoom = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +139,7 @@ public class InstructionsActivity extends Activity {
                     Intent intent = new Intent(InstructionsActivity.this, GameActivity.class);
                     intent.putExtra("ROOM_ID", roomID);
                     startActivity(intent);
+                    hasJoinedRoom = true;
                     finish();
                 }
                 else {
@@ -222,7 +224,10 @@ public class InstructionsActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        roomsRef.child(roomID).setValue(null);
+
+        if (!hasJoinedRoom && roomID != null) {
+            roomsRef.child(roomID).setValue(null);
+        }
     }
 
     @Override

@@ -148,7 +148,7 @@ public class GameActivity extends AppCompatActivity {
             if (previousPosition != -1)
                 operands[previousPosition].setBackgroundColor(Color.rgb(236, 185, 58));
         }
-        else if (clickedView != currentView) {
+        else {
             previousPosition = getPosition(currentView);
             if (previousPosition != -1)
                 operands[previousPosition].setBackgroundColor(Color.rgb(1, 88, 74));
@@ -156,13 +156,6 @@ public class GameActivity extends AppCompatActivity {
             previousPosition = getPosition(currentView);
             if (previousPosition != -1)
                 operands[previousPosition].setBackgroundColor(Color.rgb(236, 185, 58));
-        }
-        // Otherwise, a different operand was clicked
-        // Make that operand the current view
-        else {
-            currentView = clickedView;
-            previousPosition = getPosition(clickedView);
-            operands[previousPosition].setBackgroundColor(Color.rgb(1, 88, 74));
         }
     }
 
@@ -413,6 +406,7 @@ public class GameActivity extends AppCompatActivity {
                 }
 
                 isFirstUser = userID.equals(room.getFirstUserID());
+                Log.d(TAG, "Boolean for if user matches the first user in room: " + String.valueOf(isFirstUser));
                 getAvatars();
             }
         });
