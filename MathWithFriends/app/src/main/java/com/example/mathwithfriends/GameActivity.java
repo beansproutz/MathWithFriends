@@ -1,6 +1,7 @@
 package com.example.mathwithfriends;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -117,7 +118,7 @@ public class GameActivity extends AppCompatActivity {
                 return;
             }
 
-            if (currentView == clickedView) {
+            if (currentView == clickedView && currentView.getText() != "") {
                 resetOperand(clickedView);
             }
             else if (isOperationPosition(currentView)) {
@@ -135,22 +136,33 @@ public class GameActivity extends AppCompatActivity {
                 clickedView.setText(currentView.getText());
                 currentView.setVisibility(View.INVISIBLE);
             }
-
+            previousPosition = getPosition(currentView);
+            if (previousPosition != -1)
+                operands[previousPosition].setBackgroundColor(Color.rgb(1, 88, 74));
             currentView = null;
         }
 
-        if (currentView == null) {
+        if (currentView == null || clickedView == currentView) {
             currentView = clickedView;
             previousPosition = getPosition(clickedView);
-            // TODO Highlight operands[previousPosition] to indicate it is current view
+            if (previousPosition != -1)
+                operands[previousPosition].setBackgroundColor(Color.rgb(236, 185, 58));
+        }
+        else if (clickedView != currentView) {
+            previousPosition = getPosition(currentView);
+            if (previousPosition != -1)
+                operands[previousPosition].setBackgroundColor(Color.rgb(1, 88, 74));
+            currentView = clickedView;
+            previousPosition = getPosition(currentView);
+            if (previousPosition != -1)
+                operands[previousPosition].setBackgroundColor(Color.rgb(236, 185, 58));
         }
         // Otherwise, a different operand was clicked
         // Make that operand the current view
         else {
             currentView = clickedView;
-            // TODO Unhighlight operands[previousPosition] to indicate there is a new view
             previousPosition = getPosition(clickedView);
-            // TODO Highlight operands[previousPosition] to indicate it is current view
+            operands[previousPosition].setBackgroundColor(Color.rgb(1, 88, 74));
         }
     }
 
@@ -526,6 +538,5 @@ public class GameActivity extends AppCompatActivity {
 
         else if (avatarID == 4 || avatarID == 8)
             player.setBackgroundResource(R.drawable.player_circle_outline);
-
     }
 }

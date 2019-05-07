@@ -6,20 +6,14 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.server.User;
 import com.example.utility.FullScreenModifier;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
@@ -31,17 +25,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends Activity {
 
     public final static String TAG = "LoginActivity";
 
-    private TextView userEmail;
+    private TextView userLogin;
     private TextView userPass;
     private FirebaseAuth mAuth;
     private FirebaseDatabase database;
-    private GoogleSignInClient mGoogleSignInClient;
-    private static final int RC_SIGN_IN = 9001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,78 +46,67 @@ public class LoginActivity extends Activity {
 
         database = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
-        userEmail = findViewById(R.id.et_user_login);
+        userLogin = findViewById(R.id.et_user_login);
         userPass = findViewById(R.id.et_user_password);
-        /*SignInButton signInButton = findViewById(R.id.googleBtn);
-        signInButton.setSize(SignInButton.SIZE_STANDARD);
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestIdToken(getString(R.string.default_web_client_id))
-                        .requestEmail()
-                        .build();
-                mGoogleSignInClient = GoogleSignIn.getClient(LoginActivity.this, gso);
-                signIn();
-
-
-            }
-        });*/
-    }
-
-    private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
-        }
-    }
-
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
-        try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-
-            // Signed in successfully, show authenticated UI.
-            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-            Toast.makeText(this, "Google Login Successful", Toast.LENGTH_LONG).show();
-        } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-        }
     }
 
     public void login(View view) {
-        String email = userEmail.getText().toString();
+        String loginCredential = userLogin.getText().toString();
         String password = userPass.getText().toString();
-        // If there are leading or trailing whitespces, then this will remove it.
-        email = email.trim();
 
-        if (checkForEmptyString(email, password)) {
-            mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                openHomeScreen();
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Toast.makeText(LoginActivity.this, "Invalid email/password",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+        if (checkForEmptyString(loginCredential, password)) {
+            loginCredential = loginCredential.trim();
+            password = password.trim();
+
+            if (!Patterns.EMAIL_ADDRESS.matcher(loginCredential).matches()) {
+                loginWithUsernameAndPassword(loginCredential, password);
+            }
+            else {
+                loginWithEmailAndPassword(loginCredential, password);
+            }
         }
+    }
+
+    private void loginWithUsernameAndPassword(final String userName, final String password) {
+        database.getReference("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    User user = userSnapshot.getValue(User.class);
+
+                    if (user == null) {
+                        continue;
+                    }
+
+                    if (user.getUserName().equals(userName)) {
+                        loginWithEmailAndPassword(user.getUserEmail(), password);
+                        return;
+                    }
+                }
+
+                Toast.makeText(LoginActivity.this, "Invalid login credentials", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void loginWithEmailAndPassword(String email, String password) {
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            openHomeScreen();
+                        }
+                        else {
+                            Toast.makeText(LoginActivity.this, "Invalid login credentials", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     private void openHomeScreen() {
@@ -166,8 +148,8 @@ public class LoginActivity extends Activity {
 
     private boolean checkForEmptyString(String email, String password) {
         if (validateEmptyString(email)) {
-            userEmail.setError("Email is required");
-            userEmail.requestFocus();
+            userLogin.setError("Email/username is required");
+            userLogin.requestFocus();
             return false;
         }
         if (validateEmptyString(password)) {

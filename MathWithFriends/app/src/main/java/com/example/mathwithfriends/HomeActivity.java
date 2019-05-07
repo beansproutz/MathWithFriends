@@ -55,6 +55,7 @@ public class HomeActivity extends AppCompatActivity {
         setAvatar();
 
     }
+
     @Override
     public void onStart() {
         super.onStart();

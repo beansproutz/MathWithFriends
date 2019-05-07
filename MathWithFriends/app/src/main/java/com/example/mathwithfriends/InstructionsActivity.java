@@ -31,7 +31,7 @@ public class InstructionsActivity extends Activity {
     private DatabaseReference roomsRef = database.getReference("Rooms");
     final String userID = FirebaseAuth.getInstance().getUid();
     private DatabaseReference mDatabase; // Used for checking MusicSetting
-
+    private String roomID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +51,7 @@ public class InstructionsActivity extends Activity {
             @Override
             public void onDataChange(@NonNull DataSnapshot roomsDataSnapshot) {
                 for (DataSnapshot roomDataSnapshot : roomsDataSnapshot.getChildren()) {
-                    String roomID = roomDataSnapshot.getKey();
+                    roomID = roomDataSnapshot.getKey();
                     Room room = roomDataSnapshot.getValue(Room.class);
 
                     if (room == null) {
@@ -59,7 +59,7 @@ public class InstructionsActivity extends Activity {
                     }
 
                     if (room.joinable(userID)) {
-                        enterRoom(roomID);
+                        enterRoom();
                         return;
                     }
                 }
@@ -85,7 +85,7 @@ public class InstructionsActivity extends Activity {
 
     // Generates a new room and then enters this user into it
     private void setupRoom() {
-        final String roomID = roomsRef.push().getKey();
+        roomID = roomsRef.push().getKey();
 
         if (roomID == null) {
             Log.e(TAG, "Failed to generate a room ID");
@@ -95,11 +95,11 @@ public class InstructionsActivity extends Activity {
         Room room = new Room();
         roomsRef.child(roomID).setValue(room);
 
-        enterRoom(roomID);
+        enterRoom();
     }
 
     // Enters this user into the game specified by the room ID
-    private void enterRoom(final String roomID) {
+    private void enterRoom() {
         roomsRef.runTransaction(new Transaction.Handler() {
             @NonNull
             @Override
@@ -220,7 +220,10 @@ public class InstructionsActivity extends Activity {
     }
 
     @Override
-    protected void onDestroy() { super.onDestroy(); }
+    protected void onDestroy() {
+        super.onDestroy();
+        roomsRef.child(roomID).setValue(null);
+    }
 
     @Override
     protected void onPause() {
