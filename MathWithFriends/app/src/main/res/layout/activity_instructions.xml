@@ -14,7 +14,9 @@
         android:layout_width="694dp"
         android:layout_height="374dp"
         android:layout_marginStart="400dp"
+        android:layout_marginTop="2dp"
         android:layout_marginEnd="19dp"
+        android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -25,28 +27,44 @@
 
     <Button
         android:id="@+id/backButton"
-        android:layout_width="150dp"
+        android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="bottom"
-        android:layout_marginStart="289dp"
-        android:layout_marginEnd="660dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/home"
+        android:layout_marginEnd="676dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/back"
         android:onClick="onBackClick"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/queueButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:text="READY?"
+        android:layout_width="64dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="490dp"
+        android:layout_marginBottom="70dp"
         android:background="#434141"
+        android:text="READY?"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/backButton"
-        app:layout_constraintEnd_toEndOf="@+id/backButton"
-        app:layout_constraintStart_toStartOf="@+id/backButton" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+    <EditText
+        android:id="@+id/findFriend"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="316dp"
+        android:layout_marginEnd="7dp"
+        android:hint="here"
+        android:inputType="textPersonName"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.849"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>
