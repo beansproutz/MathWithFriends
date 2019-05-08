@@ -58,39 +58,6 @@ public class GameActivity extends AppCompatActivity {
 
         generateNewGame();
         startGame();
-
-        // Set up listener for changes in life points
-        database.getReference("Rooms").child(roomID).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Integer life;
-
-                if (isFirstUser) {
-                    life = dataSnapshot.child("firstUserLife").getValue(Integer.class);
-                }
-                else {
-                    life = dataSnapshot.child("secondUserLife").getValue(Integer.class);
-                }
-
-                if (life == null) {
-                    Log.e(TAG, "Failed to obtain life points of player");
-                    return;
-                }
-
-                if (life == 0) {
-                    Intent intent = new Intent(GameActivity.this, ResultsActivity.class);
-                    intent.putExtra("RESULT", false);
-                    intent.putExtra("ROOM_ID", roomID);
-                    startActivity(intent);
-                    finish();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     // Invoked when the SKIP button is clicked
@@ -206,7 +173,6 @@ public class GameActivity extends AppCompatActivity {
 
         if (hasSucceeded()) {
             updateOpponentLife();
-            generateNewGame();
         }
     }
 
@@ -265,6 +231,8 @@ public class GameActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 }
+
+                generateNewGame();
             }
         });
     }
@@ -406,7 +374,6 @@ public class GameActivity extends AppCompatActivity {
                 }
 
                 isFirstUser = userID.equals(room.getFirstUserID());
-                Log.d(TAG, "Boolean for if user matches the first user in room: " + String.valueOf(isFirstUser));
                 getAvatars();
             }
         });
@@ -481,6 +448,8 @@ public class GameActivity extends AppCompatActivity {
                 opponentAvatar.setImageResource(findAvatarFromID(opponentAvatarID));
                 setPlayerBackground(playerAvatarID, playerBackground);
                 setPlayerBackground(opponentAvatarID, opponentBackground);
+
+                addLifeListener();
             }
         });
     }
@@ -532,5 +501,45 @@ public class GameActivity extends AppCompatActivity {
 
         else if (avatarID == 4 || avatarID == 8)
             player.setBackgroundResource(R.drawable.player_circle_outline);
+    }
+
+    private void addLifeListener() {
+        // Set up listener for changes in life points
+        database.getReference("Rooms").child(roomID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Integer life;
+
+                if (isFirstUser) {
+                    life = dataSnapshot.child("firstUserLife").getValue(Integer.class);
+                }
+                else {
+                    life = dataSnapshot.child("secondUserLife").getValue(Integer.class);
+                }
+
+                if (life == null) {
+                    Log.e(TAG, "Failed to obtain life points of player");
+                    return;
+                }
+
+                if (life == 0) {
+                    Intent intent = new Intent(GameActivity.this, ResultsActivity.class);
+                    intent.putExtra("RESULT", false);
+                    intent.putExtra("ROOM_ID", roomID);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

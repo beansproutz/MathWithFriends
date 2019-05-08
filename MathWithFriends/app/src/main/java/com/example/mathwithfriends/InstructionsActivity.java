@@ -33,6 +33,7 @@ public class InstructionsActivity extends Activity {
     private DatabaseReference mDatabase; // Used for checking MusicSetting
     private String roomID;
     private boolean hasJoinedRoom = false;
+    private ValueEventListener listenerRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +126,7 @@ public class InstructionsActivity extends Activity {
     }
 
     public void waitForGameToStart(final String roomID) {
-        roomsRef.child(roomID).addValueEventListener(new ValueEventListener() {
+        listenerRef = roomsRef.child(roomID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Room room = dataSnapshot.getValue(Room.class);
@@ -224,6 +225,10 @@ public class InstructionsActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        if (listenerRef != null && roomID != null) {
+            roomsRef.child(roomID).removeEventListener(listenerRef);
+        }
 
         if (!hasJoinedRoom && roomID != null) {
             roomsRef.child(roomID).setValue(null);
