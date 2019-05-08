@@ -44,6 +44,8 @@ public class ResultsActivity extends AppCompatActivity {
 
         addListenerOnButton();
         updateStatus();
+
+        getMusicSetting(2);
     }
 
     public void addListenerOnButton() {
@@ -67,6 +69,7 @@ public class ResultsActivity extends AppCompatActivity {
                 Intent intent = new Intent(ResultsActivity.this, HomeActivity.class);
                 startActivity(intent);
                 finish();
+                getMusicSetting(1); //plays track 1 (Homescreen Music)
             }
         });
     }
@@ -138,6 +141,83 @@ public class ResultsActivity extends AppCompatActivity {
             loseMsg.setVisibility(View.VISIBLE);
             winMsg.setVisibility(View.INVISIBLE);
         }
+    }
+
+    public void getMusicSetting(final Integer songNum) {
+        if (userID == null) {
+            Log.e("ResultsActivity", "User ID not found!");
+            return;
+        }
+
+        DatabaseReference userRef = mDatabase.child("Users").child(userID);
+
+        userRef.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                User user = mutableData.getValue(User.class);
+
+                // Ignore when Firebase Transactions optimistically uses
+                // null before actually reading in from the database
+                if (user == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                // Ensure this user has MusicSetting
+                if (user.getMusicSetting() == null) {
+                    user.setMusicSetting(true);
+                }
+
+                mutableData.setValue(user);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+                if (dataSnapshot == null) {
+                    Log.e("ResultsActivity", "Data Snapshot of user data was null. Could not update musicSetting.");
+                    return;
+                }
+
+                Boolean currMusicSetting = dataSnapshot.child("musicSetting").getValue(Boolean.class);
+
+
+                if (currMusicSetting == null) {
+                    Log.e("ResultsActivity", "Data Snapshot of musicSetting was null. Could not update musicSetting.");
+                    return;
+                }
+
+                if (currMusicSetting) {
+                    startMusic(songNum);
+                }
+
+                else {
+                    stopMusic();
+                }
+            }
+        });
+    }
+
+    private void startMusic(Integer songNum) {
+        Intent serviceIntent = new Intent(this,MusicPlayer.class);
+        serviceIntent.putExtra("Song", songNum);
+        startService(serviceIntent);
+    }
+
+    private void stopMusic(){
+        stopService(new Intent(this, MusicPlayer.class));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopMusic();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getMusicSetting(2); //plays track 2 (Customize Music)
     }
 
     @Override

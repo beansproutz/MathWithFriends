@@ -108,6 +108,7 @@ public class AchievementsActivity extends AppCompatActivity {
         Intent intent = new Intent(AchievementsActivity.this, HomeActivity.class);
         startActivity(intent);
         finish();
+        getMusicSetting(1); //plays track 1 (Homescreen Music)
     }
 
     public void getMusicSetting(final Integer songNum) {
@@ -178,7 +179,6 @@ public class AchievementsActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        getMusicSetting(1); //plays track 1 (Homescreen Music)
     }
 
     @Override
@@ -190,6 +190,6 @@ public class AchievementsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        getMusicSetting(3); //plays track 3 (Achievement Music)
+        getMusicSetting(2); //plays song 2
     }
 }

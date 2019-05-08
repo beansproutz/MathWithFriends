@@ -81,7 +81,7 @@ public class InstructionsActivity extends Activity {
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
         finish();
-        getMusicSetting(1); //plays track 1 (Home Music)
+        getMusicSetting(1); //plays song 1
     }
 
     // Generates a new room and then enters this user into it
@@ -228,6 +228,7 @@ public class InstructionsActivity extends Activity {
         if (!hasJoinedRoom && roomID != null) {
             roomsRef.child(roomID).setValue(null);
         }
+        getMusicSetting(3); // Loads game music
     }
 
     @Override
@@ -239,6 +240,6 @@ public class InstructionsActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        getMusicSetting(2); //plays track 2 (Customize Music)
+        getMusicSetting(2); //plays song 2
     }
 }

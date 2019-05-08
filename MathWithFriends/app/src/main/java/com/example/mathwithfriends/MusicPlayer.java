@@ -48,13 +48,13 @@ public class MusicPlayer extends Service {
 
             switch(from) {
                 case 1:
-                    player = MediaPlayer.create(this, R.raw.sample);
+                    player = MediaPlayer.create(this, R.raw.sample);        //HOME MUSIC
                     break;
                 case 2:
-                    player = MediaPlayer.create(this, R.raw.sample2);
+                    player = MediaPlayer.create(this, R.raw.sample2);       //OTHER MUSIC
                     break;
                 case 3:
-                    player = MediaPlayer.create(this, R.raw.sample3);
+                    player = MediaPlayer.create(this, R.raw.sample3);       //GAME MUSIC
             }
 
             player.start();
