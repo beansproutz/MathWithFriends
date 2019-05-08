@@ -159,7 +159,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
                 if (currMusicSetting == null) {
-                    Log.e(TAG, "Data Snapshot of musicSetting was null. Could not update musicSetting.");
+                    Log.e(TAG, "Data Snapshot of musicSetting was null. Could not update soundSetting.");
                     return;
                 }
 
@@ -211,7 +211,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
                 if (dataSnapshot == null) {
-                    Log.e(TAG, "Data Snapshot of user data was null. Could not update musicSetting.");
+                    Log.e(TAG, "Data Snapshot of user data was null. Could not update sfxSetting.");
                     return;
                 }
 

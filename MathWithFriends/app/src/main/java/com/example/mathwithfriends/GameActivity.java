@@ -2,6 +2,7 @@ package com.example.mathwithfriends;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -41,6 +42,7 @@ public class GameActivity extends AppCompatActivity {
     private TextView currentView;
     private int previousPosition;
     private boolean isFirstUser;
+    private boolean soundSetting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,8 @@ public class GameActivity extends AppCompatActivity {
         initialValues = new int[VALUE_COUNT];
 
         getMusicSetting(3);
+        getSFXSetting();        //Retrieve User's sound setting
+
         generateNewGame();
         startGame();
     }
@@ -67,6 +71,25 @@ public class GameActivity extends AppCompatActivity {
     // Generates a new game
     public void clickSkip(View view) {
         generateNewGame();
+
+
+        //Play sound effect for skip
+        if (soundSetting) {
+            MediaPlayer mp;
+            mp = MediaPlayer.create(this, R.raw.swipe2);
+            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    // TODO Auto-generated method stub
+                    mp.reset();
+                    mp.release();
+                    mp = null;
+                }
+            });
+            mp.start();
+        }
+
+
     }
 
     // Invoked when the RESET button is clicked
@@ -176,6 +199,23 @@ public class GameActivity extends AppCompatActivity {
 
         if (hasSucceeded()) {
             updateOpponentLife();
+
+            //Play sound effect for successful answer
+            if (soundSetting) {
+                MediaPlayer mp;
+                mp = MediaPlayer.create(this, R.raw.knife1);
+                mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        // TODO Auto-generated method stub
+                        mp.reset();
+                        mp.release();
+                        mp = null;
+                    }
+                });
+                mp.start();
+            }
+
         }
     }
 
@@ -539,6 +579,49 @@ public class GameActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void getSFXSetting() {
+        if (userID == null) {
+            Log.e(TAG, "User ID not found!");
+            return;
+        }
+
+        DatabaseReference userRef = database.getReference("Users").child(userID);
+
+        userRef.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                User user = mutableData.getValue(User.class);
+
+                // Ignore when Firebase Transactions optimistically uses
+                // null before actually reading in from the database
+                if (user == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                // Ensure SFX Setting is set
+                if (user.getSfxSetting() == null) {
+                    user.setSfxSetting(true);
+                }
+
+                mutableData.setValue(user);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+                if (dataSnapshot == null) {
+                    Log.e(TAG, "Data Snapshot of user data was null. Could not update sfxSetting.");
+                    return;
+                }
+
+                Boolean currSFXSetting = dataSnapshot.child("sfxSetting").getValue(Boolean.class);
+                soundSetting = currSFXSetting;
+            }
+        });
+    }
+
 
     public void getMusicSetting (final Integer songNum) {
         if (userID == null) {
