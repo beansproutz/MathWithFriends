@@ -394,6 +394,8 @@ public class HomeActivity extends AppCompatActivity {
     public void onHomepageAchievementClick(View view) {
         Intent intent = new Intent(HomeActivity.this, AchievementsActivity.class);
         startActivity(intent);
+        finish();
+        getMusicSetting(2); //plays track 2 (Customize Music)
     }
 
     // Invoked when the play button is clicked.
@@ -401,6 +403,8 @@ public class HomeActivity extends AppCompatActivity {
     public void onHomepagePlayClick(View view) {
         Intent intent = new Intent(HomeActivity.this, InstructionsActivity.class);
         startActivity(intent);
+        finish();
+        getMusicSetting(2); //plays track 2 (Customize Music)
     }
 
 }
