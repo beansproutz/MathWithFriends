@@ -36,7 +36,8 @@
         android:background="@drawable/back"
         android:onClick="onBackClick"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:soundEffectsEnabled="false"/>
 
     <Button
         android:id="@+id/queueButton"
@@ -47,7 +48,8 @@
         android:text="READY?"
         android:textColor="#FFFFFF"
         tools:layout_editor_absoluteX="432dp"
-        tools:layout_editor_absoluteY="346dp" />
+        tools:layout_editor_absoluteY="346dp"
+        android:soundEffectsEnabled="false"/>
 
     <EditText
         android:id="@+id/findFriend"
