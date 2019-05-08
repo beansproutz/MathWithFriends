@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.server.Room;
+import com.example.server.User;
 import com.example.utility.FullScreenModifier;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -31,6 +32,7 @@ public class GameActivity extends AppCompatActivity {
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private String userID = FirebaseAuth.getInstance().getUid();
+    private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference(); // Used for loading Music
 
     private String roomID;
     private int[] initialValues;
@@ -56,6 +58,7 @@ public class GameActivity extends AppCompatActivity {
         };
         initialValues = new int[VALUE_COUNT];
 
+        getMusicSetting(3);
         generateNewGame();
         startGame();
     }
@@ -375,6 +378,7 @@ public class GameActivity extends AppCompatActivity {
 
                 isFirstUser = userID.equals(room.getFirstUserID());
                 getAvatars();
+
             }
         });
     }
@@ -512,8 +516,7 @@ public class GameActivity extends AppCompatActivity {
 
                 if (isFirstUser) {
                     life = dataSnapshot.child("firstUserLife").getValue(Integer.class);
-                }
-                else {
+                } else {
                     life = dataSnapshot.child("secondUserLife").getValue(Integer.class);
                 }
 
@@ -533,13 +536,84 @@ public class GameActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
     }
 
+    public void getMusicSetting (final Integer songNum) {
+        if (userID == null) {
+            Log.e("GameActivity", "User ID not found!");
+            return;
+        }
+
+        DatabaseReference userRef = mDatabase.child("Users").child(userID);
+
+        userRef.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                User user = mutableData.getValue(User.class);
+
+                // Ignore when Firebase Transactions optimistically uses
+                // null before actually reading in from the database
+                if (user == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                // Ensure this user has MusicSetting
+                if (user.getMusicSetting() == null) {
+                    user.setMusicSetting(true);
+                }
+
+                mutableData.setValue(user);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+                if (dataSnapshot == null) {
+                    Log.e("GameActivity", "Data Snapshot of user data was null. Could not update musicSetting.");
+                    return;
+                }
+
+                Boolean currMusicSetting = dataSnapshot.child("musicSetting").getValue(Boolean.class);
+
+
+                if (currMusicSetting == null) {
+                    Log.e("GameActivity", "Data Snapshot of musicSetting was null. Could not update musicSetting.");
+                    return;
+                }
+
+                if (currMusicSetting) {
+                    startMusic(songNum);
+                }
+
+                else {
+                    stopMusic();
+                }
+            }
+        });
+    }
+
+    private void startMusic(Integer songNum) {
+        Intent serviceIntent = new Intent(this,MusicPlayer.class);
+        serviceIntent.putExtra("Song", songNum);
+        startService(serviceIntent);
+    }
+
+    private void stopMusic(){
+        stopService(new Intent(this, MusicPlayer.class));
+    }
+
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
+        stopMusic();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getMusicSetting(3); //Plays Game Music
     }
 }
