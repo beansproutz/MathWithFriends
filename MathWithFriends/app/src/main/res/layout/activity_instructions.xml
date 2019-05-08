@@ -45,11 +45,11 @@
         android:layout_height="25dp"
         android:background="#434141"
         android:onClick="onQueueClick"
+        android:soundEffectsEnabled="false"
         android:text="READY?"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="432dp"
-        tools:layout_editor_absoluteY="346dp"
-        android:soundEffectsEnabled="false"/>
+        app:layout_constraintStart_toStartOf="@+id/findFriend"
+        app:layout_constraintTop_toBottomOf="@+id/findFriend" />
 
     <EditText
         android:id="@+id/findFriend"

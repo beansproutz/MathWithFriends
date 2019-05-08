@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.server.User;
 import com.example.utility.FullScreenModifier;
@@ -31,6 +32,7 @@ public class InstructionsActivity extends Activity {
     private DatabaseReference roomsRef = database.getReference("Rooms");
     final String userID = FirebaseAuth.getInstance().getUid();
     private DatabaseReference mDatabase; // Used for checking MusicSetting
+    private String userName;
     private String roomID;
     private boolean hasJoinedRoom = false;
     private ValueEventListener listenerRef;
@@ -42,6 +44,21 @@ public class InstructionsActivity extends Activity {
         setContentView(R.layout.activity_instructions);
         FullScreenModifier.setFullscreen(getWindow().getDecorView());
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        if (userID != null) {
+            mDatabase.child("Users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    userName = dataSnapshot.child("userName").getValue(String.class);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
         getMusicSetting(2); //Checks User's Music Setting (Plays song 2 if true)
     }
 
@@ -49,6 +66,13 @@ public class InstructionsActivity extends Activity {
     // - If there is a vacant room, then join it and wait
     // - If there are only full rooms, make a new one, then join it and wait
     public void onQueueClick(View view) {
+        TextView userNameView = findViewById(R.id.findFriend);
+
+        if (userNameView.getText().length() != 0) {
+            waitForPlayerToAccept(userNameView.getText().toString());
+            return;
+        }
+
         roomsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot roomsDataSnapshot) {
@@ -156,6 +180,50 @@ public class InstructionsActivity extends Activity {
         });
     }
 
+    private void waitForPlayerToAccept(@NonNull final String friendUserName) {
+        roomsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // Assume that we will make a new room
+                roomID = friendUserName;
+
+                for (DataSnapshot roomDataSnapshot : dataSnapshot.getChildren()) {
+                    roomID = roomDataSnapshot.getKey();
+
+                    if (roomID == null) {
+                        continue;
+                    }
+
+                    // If someone made a room for us, join it
+                    if (roomID.equals(userName)) {
+                        roomID = userName;
+                        break;
+                    }
+                }
+
+                Room room;
+
+                if (roomID.equals(friendUserName)) {
+                    room = new Room();
+                }
+                else {
+                    room = dataSnapshot.child(roomID).getValue(Room.class);
+                }
+
+                if (room != null) {
+                    room.addUser(userID);
+                    roomsRef.child(roomID).setValue(room);
+                }
+
+                waitForGameToStart(roomID);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     public void getMusicSetting(final Integer songNum) {
         if (userID == null) {
