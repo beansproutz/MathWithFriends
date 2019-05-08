@@ -228,7 +228,7 @@ public class InstructionsActivity extends Activity {
         if (!hasJoinedRoom && roomID != null) {
             roomsRef.child(roomID).setValue(null);
         }
-        getMusicSetting(3); // Loads game music
+        //getMusicSetting(3); // Loads game music
     }
 
     @Override

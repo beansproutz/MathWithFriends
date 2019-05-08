@@ -58,6 +58,7 @@ public class GameActivity extends AppCompatActivity {
         };
         initialValues = new int[VALUE_COUNT];
 
+        getMusicSetting(3);
         generateNewGame();
         startGame();
 
@@ -410,6 +411,7 @@ public class GameActivity extends AppCompatActivity {
                 isFirstUser = userID.equals(room.getFirstUserID());
                 Log.d(TAG, "Boolean for if user matches the first user in room: " + String.valueOf(isFirstUser));
                 getAvatars();
+
             }
         });
     }
@@ -538,7 +540,7 @@ public class GameActivity extends AppCompatActivity {
 
     public void getMusicSetting(final Integer songNum) {
         if (userID == null) {
-            Log.e("CustomizeActivity", "User ID not found!");
+            Log.e("GameActivity", "User ID not found!");
             return;
         }
 
@@ -568,7 +570,7 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
                 if (dataSnapshot == null) {
-                    Log.e("CustomizeActivity", "Data Snapshot of user data was null. Could not update musicSetting.");
+                    Log.e("GameActivity", "Data Snapshot of user data was null. Could not update musicSetting.");
                     return;
                 }
 
@@ -576,7 +578,7 @@ public class GameActivity extends AppCompatActivity {
 
 
                 if (currMusicSetting == null) {
-                    Log.e("CustomizeActivity", "Data Snapshot of musicSetting was null. Could not update musicSetting.");
+                    Log.e("GameActivity", "Data Snapshot of musicSetting was null. Could not update musicSetting.");
                     return;
                 }
 
