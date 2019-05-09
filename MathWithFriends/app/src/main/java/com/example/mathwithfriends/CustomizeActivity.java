@@ -52,9 +52,6 @@ public class CustomizeActivity extends AppCompatActivity {
 
         // Check user's achievement level and lock avatars accordingly.
         updateUserAchievements();
-
-        getMusicSetting(2);
-
     }
 
     public void getCurrAvatar() {
@@ -122,23 +119,23 @@ public class CustomizeActivity extends AppCompatActivity {
 
     public void checkUserAchievements() {
         if (gamesWon < 5) {
-            ImageButton lockSquare = (ImageButton)findViewById(R.id.squareLvl2);
+            ImageButton lockSquare = findViewById(R.id.squareLvl2);
             lockSquare.setVisibility(View.INVISIBLE);
-            ImageButton lockCloud = (ImageButton)findViewById(R.id.cloudLvl2);
+            ImageButton lockCloud = findViewById(R.id.cloudLvl2);
             lockCloud.setVisibility(View.INVISIBLE);
-            ImageButton lockTriangle = (ImageButton)findViewById(R.id.triangleLvl2);
+            ImageButton lockTriangle = findViewById(R.id.triangleLvl2);
             lockTriangle.setVisibility(View.INVISIBLE);
-            ImageButton lockLump = (ImageButton)findViewById(R.id.lumpLvl2);
+            ImageButton lockLump = findViewById(R.id.lumpLvl2);
             lockLump.setVisibility(View.INVISIBLE);
         }
         else if (gamesWon < 10) {
             ImageView unlockSquare = findViewById(R.id.lockedSquare);
             unlockSquare.setVisibility(View.GONE);
-            ImageButton lockCloud = (ImageButton)findViewById(R.id.cloudLvl2);
+            ImageButton lockCloud = findViewById(R.id.cloudLvl2);
             lockCloud.setVisibility(View.INVISIBLE);
-            ImageButton lockTriangle = (ImageButton)findViewById(R.id.triangleLvl2);
+            ImageButton lockTriangle = findViewById(R.id.triangleLvl2);
             lockTriangle.setVisibility(View.INVISIBLE);
-            ImageButton lockLump = (ImageButton)findViewById(R.id.lumpLvl2);
+            ImageButton lockLump = findViewById(R.id.lumpLvl2);
             lockLump.setVisibility(View.INVISIBLE);
         }
         else if (gamesWon < 15) {
@@ -147,9 +144,9 @@ public class CustomizeActivity extends AppCompatActivity {
             ImageView unlockTriangle = findViewById(R.id.lockedTriangle);
             unlockTriangle.setVisibility(View.GONE);
 
-            ImageButton lockCloud = (ImageButton)findViewById(R.id.cloudLvl2);
+            ImageButton lockCloud = findViewById(R.id.cloudLvl2);
             lockCloud.setVisibility(View.INVISIBLE);
-            ImageButton lockLump = (ImageButton)findViewById(R.id.lumpLvl2);
+            ImageButton lockLump = findViewById(R.id.lumpLvl2);
             lockLump.setVisibility(View.INVISIBLE);
         }
         else {
@@ -218,10 +215,8 @@ public class CustomizeActivity extends AppCompatActivity {
             mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
-                    // TODO Auto-generated method stub
                     mp.reset();
                     mp.release();
-                    mp = null;
                 }
             });
             mp.start();
@@ -257,93 +252,26 @@ public class CustomizeActivity extends AppCompatActivity {
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
                 Intent intent = new Intent(CustomizeActivity.this, HomeActivity.class);
+                intent.putExtra("CONTINUE_PLAYING_MUSIC", true);
                 startActivity(intent);
                 finish();
             }
         });
     }
 
-    public void getMusicSetting(final Integer songNum) {
-        if (userID == null) {
-            Log.e("CustomizeActivity", "User ID not found!");
-            return;
-        }
-
-        DatabaseReference userRef = mDatabase.child("Users").child(userID);
-
-        userRef.runTransaction(new Transaction.Handler() {
-            @NonNull
-            @Override
-            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
-                User user = mutableData.getValue(User.class);
-
-                // Ignore when Firebase Transactions optimistically uses
-                // null before actually reading in from the database
-                if (user == null) {
-                    return Transaction.success(mutableData);
-                }
-
-                // Ensure this user has MusicSetting
-                if (user.getMusicSetting() == null) {
-                    user.setMusicSetting(true);
-                }
-
-                mutableData.setValue(user);
-                return Transaction.success(mutableData);
-            }
-
-            @Override
-            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
-                if (dataSnapshot == null) {
-                    Log.e("CustomizeActivity", "Data Snapshot of user data was null. Could not update musicSetting.");
-                    return;
-                }
-
-                Boolean currMusicSetting = dataSnapshot.child("musicSetting").getValue(Boolean.class);
-
-
-                if (currMusicSetting == null) {
-                    Log.e("CustomizeActivity", "Data Snapshot of musicSetting was null. Could not update musicSetting.");
-                    return;
-                }
-
-                if (currMusicSetting) {
-                    startMusic(songNum);
-                }
-
-                else {
-                    stopMusic();
-                }
-            }
-        });
-    }
-
-    private void startMusic(Integer songNum) {
-        Intent serviceIntent = new Intent(this,MusicPlayer.class);
-        serviceIntent.putExtra("Song", songNum);
-        startService(serviceIntent);
-    }
-
-    private void stopMusic(){
-        stopService(new Intent(this, MusicPlayer.class));
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        getMusicSetting(1); //plays track 1 (Homescreen Music)
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        stopMusic();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        getMusicSetting(2); //plays track 2 (Customize Music)
     }
 
 }

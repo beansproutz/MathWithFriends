@@ -45,7 +45,7 @@ public class ResultsActivity extends AppCompatActivity {
         addListenerOnButton();
         updateStatus();
 
-        getMusicSetting(2);
+        getMusicSetting(1);
     }
 
     public void addListenerOnButton() {
@@ -67,9 +67,9 @@ public class ResultsActivity extends AppCompatActivity {
             @Override
             public void onClick(View arg0) {
                 Intent intent = new Intent(ResultsActivity.this, HomeActivity.class);
+                intent.putExtra("CONTINUE_PLAYING_MUSIC", true);
                 startActivity(intent);
                 finish();
-                getMusicSetting(1); //plays track 1 (Homescreen Music)
             }
         });
     }
@@ -211,13 +211,11 @@ public class ResultsActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        stopMusic();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        getMusicSetting(2); //plays track 2 (Customize Music)
     }
 
     @Override

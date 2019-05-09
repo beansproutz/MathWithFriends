@@ -72,7 +72,6 @@ public class GameActivity extends AppCompatActivity {
     public void clickSkip(View view) {
         generateNewGame();
 
-
         //Play sound effect for skip
         if (soundSetting) {
             MediaPlayer mp;
@@ -83,7 +82,6 @@ public class GameActivity extends AppCompatActivity {
                     // TODO Auto-generated method stub
                     mp.reset();
                     mp.release();
-                    mp = null;
                 }
             });
             mp.start();
@@ -210,7 +208,6 @@ public class GameActivity extends AppCompatActivity {
                         // TODO Auto-generated method stub
                         mp.reset();
                         mp.release();
-                        mp = null;
                     }
                 });
                 mp.start();
@@ -617,6 +614,11 @@ public class GameActivity extends AppCompatActivity {
                 }
 
                 Boolean currSFXSetting = dataSnapshot.child("sfxSetting").getValue(Boolean.class);
+
+                if (currSFXSetting == null) {
+                    return;
+                }
+
                 soundSetting = currSFXSetting;
             }
         });

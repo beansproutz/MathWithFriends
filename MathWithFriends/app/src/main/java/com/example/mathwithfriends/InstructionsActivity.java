@@ -13,7 +13,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.server.User;
 import com.example.utility.FullScreenModifier;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -31,7 +30,6 @@ public class InstructionsActivity extends Activity {
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference roomsRef = database.getReference("Rooms");
     final String userID = FirebaseAuth.getInstance().getUid();
-    private DatabaseReference mDatabase; // Used for checking MusicSetting
     private String userName;
     private String roomID;
     private boolean hasJoinedRoom = false;
@@ -43,10 +41,9 @@ public class InstructionsActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_instructions);
         FullScreenModifier.setFullscreen(getWindow().getDecorView());
-        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         if (userID != null) {
-            mDatabase.child("Users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference("Users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     userName = dataSnapshot.child("userName").getValue(String.class);
@@ -58,8 +55,6 @@ public class InstructionsActivity extends Activity {
                 }
             });
         }
-
-        getMusicSetting(2); //Checks User's Music Setting (Plays song 2 if true)
     }
 
     // Invoked when the queue button is clicked.
@@ -104,9 +99,9 @@ public class InstructionsActivity extends Activity {
     // Invoked when the back button is clicked
     public void onBackClick(View view) {
         Intent intent = new Intent(this, HomeActivity.class);
+        intent.putExtra("CONTINUE_PLAYING_MUSIC", true);
         startActivity(intent);
         finish();
-        getMusicSetting(1); //plays song 1
     }
 
     // Generates a new room and then enters this user into it
@@ -163,6 +158,7 @@ public class InstructionsActivity extends Activity {
                 if (room.full()) {
                     Intent intent = new Intent(InstructionsActivity.this, GameActivity.class);
                     intent.putExtra("ROOM_ID", roomID);
+                    stopMusic();
                     startActivity(intent);
                     hasJoinedRoom = true;
                     finish();
@@ -225,67 +221,6 @@ public class InstructionsActivity extends Activity {
         });
     }
 
-    public void getMusicSetting(final Integer songNum) {
-        if (userID == null) {
-            Log.e("InstructionsActivity", "User ID not found!");
-            return;
-        }
-
-        DatabaseReference userRef = mDatabase.child("Users").child(userID);
-
-        userRef.runTransaction(new Transaction.Handler() {
-            @NonNull
-            @Override
-            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
-                User user = mutableData.getValue(User.class);
-
-                // Ignore when Firebase Transactions optimistically uses
-                // null before actually reading in from the database
-                if (user == null) {
-                    return Transaction.success(mutableData);
-                }
-
-                // Ensure this user has MusicSetting
-                if (user.getMusicSetting() == null) {
-                    user.setMusicSetting(true);
-                }
-
-                mutableData.setValue(user);
-                return Transaction.success(mutableData);
-            }
-
-            @Override
-            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
-                if (dataSnapshot == null) {
-                    Log.e("InstructionsActivity", "Data Snapshot of user data was null. Could not update musicSetting.");
-                    return;
-                }
-
-                Boolean currMusicSetting = dataSnapshot.child("musicSetting").getValue(Boolean.class);
-
-
-                if (currMusicSetting == null) {
-                    Log.e("InstructionsActivity", "Data Snapshot of musicSetting was null. Could not update musicSetting.");
-                    return;
-                }
-
-                if (currMusicSetting) {
-                    startMusic(songNum);
-                }
-
-                else {
-                    stopMusic();
-                }
-            }
-        });
-    }
-
-    private void startMusic(Integer songNum) {
-        Intent serviceIntent = new Intent(this,MusicPlayer.class);
-        serviceIntent.putExtra("Song", songNum);
-        startService(serviceIntent);
-    }
-
     private void stopMusic(){
         stopService(new Intent(this, MusicPlayer.class));
     }
@@ -301,18 +236,5 @@ public class InstructionsActivity extends Activity {
         if (!hasJoinedRoom && roomID != null) {
             roomsRef.child(roomID).setValue(null);
         }
-        //getMusicSetting(3); // Loads game music
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        stopMusic();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        getMusicSetting(2); //plays song 2
     }
 }

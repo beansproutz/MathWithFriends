@@ -46,7 +46,9 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         //Access Firebase and get the user's Music Settings
-        getMusicSetting(1);  //plays track 1 (Homescreen Music)
+        if (!getIntent().hasExtra("CONTINUE_PLAYING_MUSIC")) {
+            getMusicSetting(1);  //plays track 1 (Homescreen Music)
+        }
 
         //Access Firebase and get the user's SFX Settings
         getSFXSetting();
@@ -91,7 +93,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void startMusic(Integer songNum) {
-        Intent serviceIntent = new Intent(this,MusicPlayer.class);
+        Intent serviceIntent = new Intent(this, MusicPlayer.class);
         serviceIntent.putExtra("Song", songNum);
         startService(serviceIntent);
     }
@@ -108,15 +110,13 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        stopMusic();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        getMusicSetting(1); //plays track 1 (Homescreen Music)
+        // getMusicSetting(1); //plays track 1 (Homescreen Music)
     }
-
 
     public void getMusicSetting(final Integer songNum) {
         if (userID == null) {
@@ -155,8 +155,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
 
                 Boolean currMusicSetting = dataSnapshot.child("musicSetting").getValue(Boolean.class);
-                ToggleButton musicToggle = (ToggleButton) findViewById(R.id.musicButton);
-
+                ToggleButton musicToggle = findViewById(R.id.musicButton);
 
                 if (currMusicSetting == null) {
                     Log.e(TAG, "Data Snapshot of musicSetting was null. Could not update soundSetting.");
@@ -168,12 +167,10 @@ public class HomeActivity extends AppCompatActivity {
                     musicToggle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_musicimg, 0, 0);
                     startMusic(songNum);
                 }
-
                 else {
                     musicToggle.setChecked(false);
                     musicToggle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_musicoff, 0, 0);
                     stopMusic();
-
                 }
             }
         });
@@ -304,13 +301,12 @@ public class HomeActivity extends AppCompatActivity {
 
     public void onMusicToggleClick(View view) {
         ToggleButton musicToggle = (ToggleButton) findViewById(R.id.musicButton);
-        final Boolean currMusicSetting;
+        final boolean currMusicSetting;
 
         if (musicToggle.isChecked()) {
             startMusic(1);
             currMusicSetting = true;
             musicToggle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_musicimg, 0, 0);
-
         }
         else {
             stopMusic();
@@ -388,14 +384,12 @@ public class HomeActivity extends AppCompatActivity {
         Intent intent = new Intent(HomeActivity.this, CustomizeActivity.class);
         startActivity(intent);
         finish();
-        getMusicSetting(2); //plays song 2
     }
 
     public void onHomepageAchievementClick(View view) {
         Intent intent = new Intent(HomeActivity.this, AchievementsActivity.class);
         startActivity(intent);
         finish();
-        getMusicSetting(2); //plays song 2
     }
 
     // Invoked when the play button is clicked.
@@ -404,7 +398,6 @@ public class HomeActivity extends AppCompatActivity {
         Intent intent = new Intent(HomeActivity.this, InstructionsActivity.class);
         startActivity(intent);
         finish();
-        getMusicSetting(2); //plays song 2
     }
 
 }
