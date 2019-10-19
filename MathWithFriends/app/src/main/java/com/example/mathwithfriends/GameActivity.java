@@ -416,6 +416,46 @@ public class GameActivity extends AppCompatActivity {
                 isFirstUser = userID.equals(room.getFirstUserID());
                 getAvatars();
 
+                if (isFirstUser) {
+                    setFirstPlayerName(room.getFirstUserID());
+                    setSecondPlayerName(room.getSecondUserID());
+                }
+                else {
+                    setFirstPlayerName(room.getSecondUserID());
+                    setSecondPlayerName(room.getFirstUserID());
+                }
+            }
+        });
+    }
+
+    private void setFirstPlayerName(final String firstUserID) {
+        database.getReference("Users").child(firstUserID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String userName = dataSnapshot.child("userName").getValue(String.class);
+                TextView firstUserName = findViewById(R.id.player1Name);
+                firstUserName.setText(userName);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void setSecondPlayerName(final String secondUserID) {
+        database.getReference("Users").child(secondUserID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String userName = dataSnapshot.child("userName").getValue(String.class);
+                TextView secondUserName = findViewById(R.id.player2Name);
+                secondUserName.setText(userName);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }
@@ -553,8 +593,18 @@ public class GameActivity extends AppCompatActivity {
 
                 if (isFirstUser) {
                     life = dataSnapshot.child("firstUserLife").getValue(Integer.class);
+                    Integer opponentLife = dataSnapshot.child("secondUserLife").getValue(Integer.class);
+                    TextView playerLifeView = findViewById(R.id.player1Lives);
+                    TextView opponentLifeView = findViewById(R.id.player2Lives);
+                    playerLifeView.setText("Lives: " + String.valueOf(life));
+                    opponentLifeView.setText("Lives: " + String.valueOf(opponentLife));
                 } else {
                     life = dataSnapshot.child("secondUserLife").getValue(Integer.class);
+                    Integer opponentLife = dataSnapshot.child("firstUserLife").getValue(Integer.class);
+                    TextView playerLifeView = findViewById(R.id.player1Lives);
+                    TextView opponentLifeView = findViewById(R.id.player2Lives);
+                    playerLifeView.setText("Lives: " + String.valueOf(life));
+                    opponentLifeView.setText("Lives: " + String.valueOf(opponentLife));
                 }
 
                 if (life == null) {

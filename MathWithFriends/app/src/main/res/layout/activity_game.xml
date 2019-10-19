@@ -16,6 +16,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/player_cloud_outline"
+        android:gravity="center_horizontal"
         android:minWidth="100dp"
         android:minHeight="200dp"
         android:paddingBottom="35sp">
@@ -40,9 +41,22 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/player1ImageView"
             android:layout_centerHorizontal="true"
-            android:textColor="#000000"
             android:text="@string/player1Display"
+            android:textColor="#000000"
             android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/player1Lives"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/player1Name"
+            android:layout_alignStart="@+id/player1ImageView"
+            android:layout_alignEnd="@+id/player1ImageView"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="0dp"
+            android:text="Lives: 3"
+            android:textAlignment="center" />
 
     </RelativeLayout>
 
@@ -83,6 +97,19 @@
             android:textColor="#000000"
             android:text="@string/player2Display"
             android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/player2Lives"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/player2Name"
+            android:layout_alignStart="@+id/player2ImageView"
+            android:layout_alignEnd="@+id/player2ImageView"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="0dp"
+            android:text="Lives: 3"
+            android:textAlignment="center" />
     </RelativeLayout>
 
     <RelativeLayout
